@@ -1,0 +1,58 @@
+﻿@model IEnumerable<projectShopLaptop.DAL.Tbl_Product>
+
+@{
+    ViewBag.Title = "Sản phẩm";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+<div class="container-fluid px-4">
+    <h1 class="mt-4">Sản phẩm</h1>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item active">Trang chủ</li>
+        <li class="breadcrumb-item">Sản phầm</li>
+    </ol>
+    <div class="card mb-4">
+        <div class="card-header">
+            <i class="fas fa-table me-1"></i>
+            <a href="../Admin/ProductAdd" class="btn btn-info pull-right">
+                <i class="fa fa-plus"></i> Thêm mới
+            </a>
+        </div>
+        <div class="card-body">
+            <table id="datatablesSimple">
+                <thead>
+                    <tr>
+                        <th>Sr. No.</th>
+                        <th>Tên sản phẩm</th>
+                        <th>Hình ảnh</th>
+                        <th>Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                    int count = 1;
+                    }
+
+                    @foreach (var item in Model)
+                        {
+                    <tr>
+                        <td>@count</td>
+                        <td>@item.ProductName</td>
+                        <td>
+                            <img src="@Url.Content("~/img/" + item.ProductImage)" class="img-thumbnail" width="50" />
+                        </td>
+                        <td>
+                            @using (Html.BeginForm("DeleteProduct", "Admin", new { id = item.ProductId }, FormMethod.Post))
+                            {
+                                <button type="submit" class="btn btn-danger">Xóa</button>
+                            }
+                            @Html.ActionLink("Cập nhật", "ProductEdit", new { productId = item.ProductId }, new { @class = "btn btn-primary" })
+                        </td>
+                    </tr>
+                    count++;
+                        }
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

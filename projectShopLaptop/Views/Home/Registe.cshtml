@@ -1,0 +1,151 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Đăng Ký</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to right, #6a11cb, #2575fc);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            max-width: 400px;
+            width: 100%;
+        }
+
+        .form.registration {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .logo img {
+            width: 80px;
+            margin-bottom: 20px;
+        }
+
+        form {
+            width: 100%;
+        }
+
+            form p {
+                margin-bottom: 15px;
+            }
+
+            form label {
+                display: block;
+                margin-bottom: 5px;
+                font-weight: bold;
+            }
+
+            form input[type="text"],
+            form input[type="email"],
+            form input[type="password"] {
+                width: 100%;
+                padding: 10px;
+                border: 1px solid #ddd;
+                border-radius: 5px;
+                box-sizing: border-box;
+            }
+
+            form input[type="submit"] {
+                width: 100%;
+                padding: 10px;
+                background: #6a11cb;
+                color: #ffffff;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+                font-size: 16px;
+            }
+
+                form input[type="submit"]:hover {
+                    background-color: #0056b3;
+                }
+
+            form a {
+                text-decoration: none;
+                font-size: 14px;
+            }
+
+                form a:hover {
+                    text-decoration: underline;
+                }
+
+        span {
+            color: red;
+        }
+
+        .text-danger {
+            color: red;
+            margin-bottom: 15px;
+        }
+
+        </style>
+</head>
+<body>
+    <div class="container clearfix">
+        <div class="form registration">
+            <a class="logo" href="@Url.Action("Index", "Home")">
+                <img src="~/img/logoLogin.png" alt="Logo" />
+            </a>
+            <form method="post" action="@Url.Action("Registe", "Home")">
+                <p>
+                    <label>Tên hiển thị<span>*</span></label>
+                    <input type="text" name="name" required>
+                </p>
+                <p>
+                    <label>Tên đăng nhập<span>*</span></label>
+                    <input type="text" name="user" required>
+                </p>
+                <p>
+                    <label>Email<span>*</span></label>
+                    <input type="email" name="email" required>
+                </p>
+                <p>
+                    <label>Mật khẩu<span>*</span></label>
+                    <input type="password" name="password" required>
+                </p>
+                <p>
+                    <label>Nhập lại mật khẩu<span>*</span></label>
+                    <input type="password" name="confirmPassword" required>
+                </p>
+
+                @if (!ViewData.ModelState.IsValid)
+                {
+                    <div>
+                        @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                        {
+                            <span>@error.ErrorMessage</span><br />
+                        }
+                    </div>
+                }
+                <p>
+                    <label>
+                        <a href="@Url.Action("Login", "Home")">Bạn đã có tài khoản?</a>
+                    </label>
+                    <input type="submit" value="Đăng kí" />
+                </p>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
+

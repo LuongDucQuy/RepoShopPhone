@@ -1,0 +1,44 @@
+﻿@model List<projectShopLaptop.DAL.Tbl_Category>
+@{
+    ViewBag.Title = "Danh mục";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+<div class="container-fluid px-4">
+    <h1 class="mt-4">Danh mục</h1>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item active">Trang chủ</li>
+        <li class="breadcrumb-item">Danh mục</li>
+    </ol>
+    <div class="card mb-4">
+        <div class="card-header">
+            <i class="fas fa-table me-1"></i>
+            <a href="../Admin/AddCategory" class="btn btn-info pull-right">
+                <i class="fa fa-plus"></i> Thêm mới
+            </a>
+        </div>
+        <div class="card-body">
+            <table id="datatablesSimple">
+                <thead>
+                    <tr>
+                        <th>Sr. No.</th>
+                        <th>Tên danh mục</th>
+                        <th>Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach(var item in Model)
+                    {
+                    <tr>
+                        <td>@(Model.IndexOf(item)+1)</td>
+                        <td>@item.CategoryName</td>
+                        <td>
+                            @Html.ActionLink("Cập nhật", "CategoryEdit", new { catId = item.CategoryId })
+                        </td>
+                    </tr> 
+                    }
+                </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

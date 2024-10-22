@@ -1,0 +1,327 @@
+﻿@model projectShopLaptop.Models.ProductDetail
+@{
+    ViewBag.Title = "shoppingCart";
+    Layout = "~/Views/Shared/productView.cshtml";
+}
+<!-- Shop Detail Start -->
+<div class="container-fluid pb-5">
+    <div class="row px-xl-5">
+        <div class="col-lg-5 mb-30">
+            <div id="product-carousel" class="carousel slide" data-ride="carousel">
+                <div class="carousel-inner bg-light">
+                    <div class="carousel-item active">
+                        <img class="w-100 h-100" src="~/img/proDetail-2.jpg" alt="Image">
+                    </div>
+                    <div class="carousel-item">
+                        <img class="w-100 h-100" src="~/img/proDetail-2.1.jpg" alt="Image">
+                    </div>
+                    <div class="carousel-item">
+                        <img class="w-100 h-100" src="~/img/proDetail-2.2.jpg" alt="Image">
+                    </div>
+                    <div class="carousel-item">
+                        <img class="w-100 h-100" src="~/img/proDetail-2.3.jpg" alt="Image">
+                    </div>
+                </div>
+                <a class="carousel-control-prev" href="#product-carousel" data-slide="prev">
+                    <i class="fa fa-2x fa-angle-left text-dark"></i>
+                </a>
+                <a class="carousel-control-next" href="#product-carousel" data-slide="next">
+                    <i class="fa fa-2x fa-angle-right text-dark"></i>
+                </a>
+            </div>
+        </div>
+
+        <div class="col-lg-7 h-auto mb-30">
+            <div class="h-100 bg-light p-30">
+                <h3>
+                    @Model.ProductName
+                </h3>
+                <div class="d-flex mb-3">
+                    <div class="text-primary mr-2">
+                        <small class="fa fa-star text-primary mr"></small>
+                        <small class="fa fa-star text-primary mr"></small>
+                        <small class="fa fa-star text-primary mr"></small>
+                        <small class="fa fa-star text-primary mr"></small>
+                        <small class="fa fa-star text-primary mr"></small>
+                    </div>
+                    <small class="pt-1">(@Model.Quantity)</small>
+                </div>
+                <div class="d-flex align-items-center  mt-2">
+                    <h3>@string.Format(new System.Globalization.CultureInfo("vi-VN"), "{0:C0}", @Model.Price) (@Model.Quantity)</h3>
+                </div>
+                <div class="d-flex align-items-center mb-4 pt-2">
+                    <div class="input-group quantity mr-3" style="width: 130px;">
+                        <div class="input-group-btn">
+                            <button class="btn btn-primary btn-minus">
+                                <i class="fa fa-minus"></i>
+                            </button>
+                        </div>
+                        <input type="text" class="form-control bg-secondary border-0 text-center" value="1">
+                        <div class="input-group-btn">
+                            <button class="btn btn-primary btn-plus">
+                                <i class="fa fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary px-3">
+                        <i class="fa fa-shopping-cart mr-1"></i> Add To
+                        Cart
+                    </button>
+                </div>
+                <div class="d-flex pt-2">
+                    <strong class="text-dark mr-2">Share on:</strong>
+                    <div class="d-inline-flex">
+                        <a class="text-dark px-2" href="">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a class="text-dark px-2" href="">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a class="text-dark px-2" href="">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                        <a class="text-dark px-2" href="">
+                            <i class="fab fa-pinterest"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row px-xl-5">
+        <div class="col">
+            <div class="bg-light p-30">
+                <div class="nav nav-tabs mb-4">
+                    <a class="nav-item nav-link text-dark active" data-toggle="tab" href="#tab-pane-1">TÍNH NĂNG NỔI BẬT</a>
+                    <a class="nav-item nav-link text-dark" data-toggle="tab" href="#tab-pane-2">THÔNG SỐ KỸ THUẬT</a>
+                    <a class="nav-item nav-link text-dark" data-toggle="tab" href="#tab-pane-3">ĐÁNH GIÁ</a>
+                </div>
+                <div class="tab-content">
+                    <ul class="tab-pane fade show active" id="tab-pane-1">
+                        <li>Trải nghiệm đỉnh cao với hiệu năng mạnh mẽ từ vi xử lý tân tiến, kết hợp cùng RAM 12GB cho khả năng đa nhiệm mượt mà.</li>
+                        <li>Lưu trữ thoải mái mọi ứng dụng, hình ảnh và video với bộ nhớ trong 256GB.</li>
+                        <li>Nâng tầm nhiếp ảnh di động với hệ thống camera tiên tiến, cho ra đời những bức ảnh và video chất lượng chuyên nghiệp.</li>
+                        <li>Thiết kế sang trọng, đẳng cấp, khẳng định phong cách thời thượng.</li>
+                    </ul>
+                    <div class="tab-pane fade" id="tab-pane-2">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item px-0">
+                                        Kích thước màn hình
+                                    </li>
+                                    <li class="list-group-item px-0">
+                                        Công nghệ màn hình
+                                    </li>
+                                    <li class="list-group-item px-0">
+                                        Camera sau
+                                    </li>
+                                    <li class="list-group-item px-0">
+                                        Camera trước
+                                    </li>
+                                    <li class="list-group-item px-0">
+                                        Pin
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="col-md-6">
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item px-0">
+                                        6.8 inches
+                                    </li>
+                                    <li class="list-group-item px-0">
+                                        Dynamic AMOLED 2X
+                                    </li>
+                                    <li class="list-group-item px-0">
+                                        Camera chính: 200MP, Laser AF, OIS
+                                    </li>
+                                    <li class="list-group-item px-0">
+                                        12 MP, f/2.2
+                                    </li>
+                                    <li class="list-group-item px-0">
+                                        5,000mAh
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="tab-pane-3">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="media mb-4">
+                                    <img src="~/img/user.jpg" alt="Image" class="img-fluid mr-3 mt-1" style="width: 45px;">
+                                    <div class="media-body">
+                                        <h6>John Doe<small> - <i>01 Jan 2024</i></small></h6>
+                                        <div class="text-primary mb-2">
+                                            <small class="fa fa-star text-primary mr"></small>
+                                            <small class="fa fa-star text-primary mr"></small>
+                                            <small class="fa fa-star text-primary mr"></small>
+                                            <small class="fa fa-star text-primary mr"></small>
+                                            <small class="fa fa-star text-primary mr"></small>
+                                        </div>
+                                        <p>Sản phẩm chất lượng</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <h4 class="mb-4">Leave a review</h4>
+                                <small>Your email address will not be published. Required fields are marked *</small>
+                                <div class="d-flex my-3">
+                                    <p class="mb-0 mr-2">Your Rating * :</p>
+                                    <div class="text-primary">
+                                        <i class="far fa-star"></i>
+                                        <i class="far fa-star"></i>
+                                        <i class="far fa-star"></i>
+                                        <i class="far fa-star"></i>
+                                        <i class="far fa-star"></i>
+                                    </div>
+                                </div>
+                                <form>
+                                    <div class="form-group">
+                                        <label for="message">Your Review *</label>
+                                        <textarea id="message" cols="30" rows="5" class="form-control"></textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="name">Your Name *</label>
+                                        <input type="text" class="form-control" id="name">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="email">Your Email *</label>
+                                        <input type="email" class="form-control" id="email">
+                                    </div>
+                                    <div class="form-group mb-0">
+                                        <input type="submit" value="Leave Your Review" class="btn btn-primary px-3">
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Shop Detail End -->
+<!-- Products Start -->
+<div class="container-fluid py-5">
+    <h2 class="section-title position-relative text-uppercase mx-xl-5 mb-4"><span class="bg-secondary pr-3">Sản Phẩm Tương Tự</span></h2>
+    <div class="row px-xl-5">
+        <div class="col">
+            <div class="owl-carousel related-carousel">
+                <div class="product-item bg-light">
+                    <div class="product-img position-relative overflow-hidden">
+                        <img class="img-fluid w-100" src="~/img/ss-2.jpeg" alt="">
+                        <div class="product-action">
+                            <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-shopping-cart"></i></a>
+                            <a class="btn btn-outline-dark btn-square" href=""><i class="far fa-heart"></i></a>
+                            <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-sync-alt"></i></a>
+                            <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-search"></i></a>
+                        </div>
+                    </div>
+                    <div class="text-center py-4" style="padding-bottom:19px;">
+                        <a class="h6 text-decoration-none text-truncate" href="">
+                            Samsung Galaxy Z Fold6
+                        </a>
+                        <div class="d-flex align-items-center justify-content-center mt-2">
+                            <h5>
+
+                                41.990.000đ
+                            </h5><h6 class="text-muted ml-2"><del>43.990.000đ</del></h6>
+                        </div>
+                        <div class="d-flex align-items-center justify-content-center mb-1">
+                            <small class="fa fa-star text-primary mr-1"></small>
+                            <small class="fa fa-star text-primary mr-1"></small>
+                            <small class="fa fa-star text-primary mr-1"></small>
+                            <small class="fa fa-star text-primary mr-1"></small>
+                            <small class="fa fa-star text-primary mr-1"></small>
+                        </div>
+                    </div>
+                </div>
+                <div class="product-item bg-light" style="padding-bottom:2px;">
+                    <div class="product-img position-relative overflow-hidden">
+                        <img class="img-fluid w-100" src="~/img/ss-3.jpeg" alt="">
+                        <div class="product-action">
+                            <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-shopping-cart"></i></a>
+                            <a class="btn btn-outline-dark btn-square" href=""><i class="far fa-heart"></i></a>
+                            <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-sync-alt"></i></a>
+                            <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-search"></i></a>
+                        </div>
+                    </div>
+                    <div class="text-center py-4">
+                        <a class="h6 text-decoration-none text-truncate" href="">
+                            Samsung Galaxy Z Flip6
+                        </a>
+                        <div class="d-flex align-items-center justify-content-center mt-2">
+                            <h5>
+                                26.990.000đ
+                            </h5><h6 class="text-muted ml-2"><del>28.990.000đ</del></h6>
+                        </div>
+                        <div class="d-flex align-items-center justify-content-center mb-1">
+                            <small class="fa fa-star text-primary mr-1"></small>
+                            <small class="fa fa-star text-primary mr-1"></small>
+                            <small class="fa fa-star text-primary mr-1"></small>
+                            <small class="fa fa-star text-primary mr-1"></small>
+                            <small class="fa fa-star text-primary mr-1"></small>
+                        </div>
+                    </div>
+                </div>
+                <div class="product-item bg-light">
+                    <div class="product-img position-relative overflow-hidden">
+                        <img class="img-fluid w-100" src="~/img/ss-4.png" alt="">
+                        <div class="product-action">
+                            <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-shopping-cart"></i></a>
+                            <a class="btn btn-outline-dark btn-square" href=""><i class="far fa-heart"></i></a>
+                            <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-sync-alt"></i></a>
+                            <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-search"></i></a>
+                        </div>
+                    </div>
+                    <div class="text-center py-4">
+                        <a class="h6 text-decoration-none text-truncate" href="">
+                            Samsung Galaxy M55 (12GB 256GB)
+                        </a>
+                        <div class="d-flex align-items-center justify-content-center mt-2">
+                            <h5>
+                                10.490.000đ
+                            </h5><h6 class="text-muted ml-2"><del>12.690.000đ</del></h6>
+                        </div>
+                        <div class="d-flex align-items-center justify-content-center mb-1">
+                            <small class="fa fa-star text-primary mr-1"></small>
+                            <small class="fa fa-star text-primary mr-1"></small>
+                            <small class="fa fa-star text-primary mr-1"></small>
+                            <small class="fa fa-star text-primary mr-1"></small>
+                            <small class="fa fa-star text-primary mr-1"></small>
+                        </div>
+                    </div>
+                </div>
+                <div class="product-item bg-light" style="padding-bottom:4px;">
+                    <div class="product-img position-relative overflow-hidden">
+                        <img class="img-fluid w-100" src="~/img/ss-5.jpeg" alt="">
+                        <div class="product-action">
+                            <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-shopping-cart"></i></a>
+                            <a class="btn btn-outline-dark btn-square" href=""><i class="far fa-heart"></i></a>
+                            <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-sync-alt"></i></a>
+                            <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-search"></i></a>
+                        </div>
+                    </div>
+                    <div class="text-center py-4">
+                        <a class="h6 text-decoration-none text-truncate" href="">
+                            Samsung Galaxy Tab S9 FE Plus 12GB 256GB
+                        </a>
+                        <div class="d-flex align-items-center justify-content-center mt-2">
+                            <h5>
+                                14.290.000đ
+                            </h5><h6 class="text-muted ml-2"><del>15.990.000đ</del></h6>
+                        </div>
+                        <div class="d-flex align-items-center justify-content-center mb-1">
+                            <small class="fa fa-star text-primary mr-1"></small>
+                            <small class="fa fa-star text-primary mr-1"></small>
+                            <small class="fa fa-star text-primary mr-1"></small>
+                            <small class="fa fa-star text-primary mr-1"></small>
+                            <small class="fa fa-star text-primary mr-1"></small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

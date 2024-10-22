@@ -1,0 +1,240 @@
+﻿@using projectShopLaptop.Models
+@using projectShopLaptop.Models.Home
+@model projectShopLaptop.DAL.Tbl_User
+@{
+    ViewBag.Title = "Thanh toán";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    body {
+        font-family: 'Roboto', sans-serif;
+        background-color: #f8f9fa;
+    }
+
+    .main-container {
+        padding: 20px;
+    }
+
+    .page-title h2 {
+        font-size: 28px;
+        color: #333;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+
+    .page-content {
+        background: #fff;
+        padding: 20px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        border-radius: 5px;
+    }
+
+    .checkout-sep {
+        font-size: 20px;
+        color: #000;
+        margin-bottom: 10px;
+        border-bottom: 2px solid #007bff;
+        padding-bottom: 5px;
+    }
+
+    .box-border {
+        border: 1px solid #ddd;
+        padding: 15px;
+        border-radius: 5px;
+        background-color: #fdfdfd;
+        margin-bottom: 20px;
+    }
+
+    .table.cart_summary {
+        margin: 0 auto;
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+        .table.cart_summary th,
+        .table.cart_summary td {
+            text-align: left;
+            padding: 12px;
+            border: 1px solid #ddd;
+        }
+
+        .table.cart_summary th {
+            background-color: #FFD333;
+            color: white;
+            font-weight: bold;
+        }
+
+        .table.cart_summary tbody tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .table.cart_summary tfoot td {
+            font-weight: bold;
+            background-color: #f7f7f7;
+        }
+
+    .input.form-control {
+        width: 100%;
+        padding: 10px;
+        margin-top: 5px;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        border-color: #007bff;
+        color: #fff;
+        padding: 10px 20px;
+        font-size: 16px;
+        border-radius: 5px;
+        transition: background-color 0.3s ease;
+    }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
+        }
+
+    .alert-danger {
+        background-color: #f8d7da;
+        color: #721c24;
+        border-color: #f5c6cb;
+        padding: 15px;
+        border-radius: 5px;
+        margin: 20px 0;
+        text-align: center;
+    }
+
+    .required::after {
+        content: "*";
+        color: red;
+        margin-left: 5px;
+    }
+
+    .btn.btn-primary {
+        color: #fff !important;
+    }
+
+</style>
+
+@if (Session["cart"] == null)
+{
+    <div class="alert alert-danger">
+        <strong>No product added to cart!</strong>
+    </div>
+}
+else
+{
+    var cart = (List<Item>)Session["cart"];
+    if (cart != null && cart.Any())
+    {
+        <section class="main-container col2-right-layout">
+            <div class="main container">
+                <div class="row">
+                    <div class="col-main col-sm-12 col-xs-12">
+                        <div class="page-title">
+                            <h2>Thanh toán</h2>
+                        </div>
+                        <div class="page-content checkout-page">
+                            <h6 class="checkout-sep">1. Tóm tắt đơn hàng</h6>
+                            <div class="box-border">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered cart_summary" id="tbl_cart">
+                                        <thead>
+                                            <tr>
+                                                <th>Tên sản phẩm</th>
+                                                <th>Giá</th>
+                                                <th>Số lượng</th>
+                                                <th>Tổng tiền</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="cart_body">
+                                            @{
+                                                int total = 0;
+                                            }
+                                            @foreach (var item in cart)
+                                            {
+                                                if (item != null && item.Product != null)
+                                                {
+                                                    int tienSP = Convert.ToInt32(item.Quantity * item.Product.Price);
+                                                    total += tienSP;
+                                                    <tr>
+                                                        <td>@item.Product.ProductName</td>
+                                                        <td>@string.Format(new System.Globalization.CultureInfo("vi-VN"), "{0:C0}", item.Product.Price)</td>
+                                                        <td>@item.Quantity</td>
+                                                        <td>@string.Format(new System.Globalization.CultureInfo("vi-VN"), "{0:C0}", tienSP)</td>
+                                                    </tr>
+                                                }
+                                            }
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <td colspan="2"></td>
+                                                <td><strong>Tổng giá đơn hàng</strong></td>
+                                                <td>@string.Format(new System.Globalization.CultureInfo("vi-VN"), "{0:C0}", total)</td>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <h6 class="checkout-sep">2. Phương thức thanh toán</h6>
+                            <div class="box-border">
+                                <form>
+                                    <ul>
+                                        <li class="row">
+                                            <div class="col-sm-6">
+                                                <label class="required">Thanh toán khi nhận hàng</label>
+                                            </div>
+                                        </li>
+                                        <li class="row">
+                                            <div class="col-sm-6">
+                                                <label>Hoặc</label>
+                                            </div>
+                                        </li>
+                                        <li class="row">
+                                            <div class="col-sm-6">
+                                                <button type="submit" class="btn btn-primary">PAY WITH CARD</button>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </form>
+                            </div>
+
+
+                            <h6 class="checkout-sep">3. Thông tin giao hàng</h6>
+                            <div class="box-border">
+                                <form action="@Url.Action("Checkout", "Home")" method="post">
+                                    <ul>
+                                        <li class="row">
+                                            <div class="col-sm-6">
+                                                <label for="Name" class="required">Tên</label>
+                                                <input class="input form-control" id="txt_name_cod" type="text" name="Name" value="@ViewBag.Name" required>
+                                            </div>
+                                        </li>
+                                        <li class="row">
+                                            <div class="col-sm-6">
+                                                <label for="Address" class="required">Địa chỉ</label>
+                                                <input class="input form-control" id="txt_address_cod" type="text" name="Address" value="@ViewBag.Address" required>
+                                            </div>
+                                        </li>
+                                        <li class="row">
+                                            <div class="col-sm-6">
+                                                <label for="PhoneNumber" class="required">Số điện thoại</label>
+                                                <input class="input form-control" id="txt_phone_cod" type="text" name="PhoneNumber" value="@ViewBag.PhoneNumber" required>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                    <button type="submit" class="btn btn-primary">Đặt hàng</button>
+                                </form>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    }
+}

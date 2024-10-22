@@ -1,0 +1,79 @@
+﻿@model projectShopLaptop.Models.Home.HomeIndexViewModel
+@{
+    ViewBag.Title = "Product Of Category";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- Form tìm kiếm sản phẩm -->
+<div class="col-lg-4 col-6 mx-auto text-left">
+    <form method="post">
+        <div class="input-group">
+            <input type="text" name="search" class="form-control" placeholder="Tìm kiếm sản phẩm">
+            <div class="input-group-append">
+                <button class="input-group-text bg-transparent text-primary">
+                    <i class="fa fa-search"></i>
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<!-- Hiển thị danh sách sản phẩm -->
+<div class="container-fluid pt-5 pb-3">
+    <h2 class="section-title position-relative text-uppercase mx-xl-5 mb-4"><span class="bg-secondary pr-3">Sản Phẩm</span></h2>
+    <div class="row px-xl-5">
+        @if (Model.ListOfProduct != null && Model.ListOfProduct.Any())
+        {
+            foreach (var product in Model.ListOfProduct)
+            {
+                <div class="col-lg-3 col-md-4 col-sm-6 pb-1">
+                    <div class="product-item bg-light mb-4">
+                        <div class="product-img position-relative overflow-hidden">
+                            <img class="img-fluid w-100" src="@Url.Content("~/img/" + product.ProductImage)" alt="Product Image">
+                            <div class="product-action">
+                                @using (Html.BeginForm("proDetail", "detailProduct", new { id = product.ProductId }, FormMethod.Get))
+                                {
+                                    <button class="btn btn-outline-dark btn-square"><i class="fa fa-search"></i></button>
+                                }
+
+                                <p>
+                                    @if (@product.Quantity > 0)
+                                    {
+                                        using (Html.BeginForm("AddToCart", "Home", new { productId = @product.ProductId }, FormMethod.Post))
+                                        {
+                                            <button class="btn btn-outline-dark btn-square" href=""><i class="fa fa-shopping-cart"></i></button>
+                                        }
+                                    }
+                                    else
+                                    {
+                                    <p> Not Availble </p>
+                                }
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="text-center py-4">
+                                <a class="h6 text-decoration-none text-truncate" href="">@product.ProductName</a>
+                                <div class="d-flex align-items-center justify-content-center mt-2">
+                                    <h5>@string.Format(new System.Globalization.CultureInfo("vi-VN"), "{0:C0}", @product.Price) (@product.Quantity)</h5>
+                                </div>
+                                <div class="d-flex align-items-center justify-content-center mb-1">
+                                    <small class="fa fa-star text-primary mr-1"></small>
+                                    <small class="fa fa-star text-primary mr-1"></small>
+                                    <small class="fa fa-star text-primary mr-1"></small>
+                                    <small class="fa fa-star text-primary mr-1"></small>
+                                    <small class="fa fa-star text-primary mr-1"></small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="3">Không có sản phẩm nào được tìm thấy.</td>
+                </tr>
+            }
+        </div>
+    </h2>
+</div>

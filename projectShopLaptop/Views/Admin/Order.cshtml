@@ -1,0 +1,106 @@
+﻿@model IEnumerable<projectShopLaptop.DAL.Tbl_Bill>
+@{
+    ViewBag.Title = "Đơn hàng";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="container-fluid px-4">
+    <h1 class="mt-4">Đơn hàng</h1>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item active">Trang chủ</li>
+        <li class="breadcrumb-item">Đơn hàng</li>
+    </ol>
+    <h1 class="mt-4"></h1>
+    <div class="card mb-4">
+        <div class="card-header">
+            <i class="fas fa-table me-1"></i>
+        </div>
+        <div class="card-body">
+            <table class="table table-bordered table-striped" id="datatablesSimple">
+                <thead class="thead-dark">
+                    <tr>
+                        <th scope="col">STT</th>
+                        <th scope="col">Khách hàng</th>
+                        <th scope="col">Ngày đặt</th>
+                        <th scope="col">Trạng thái</th>
+                        <th scope="col">Giá trị đơn hàng</th>
+                        <th scope="col">Xử lý đơn</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        int count = 1;
+                    }
+
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@count</td>
+                            <td>@item.HoTen</td>
+                            <td>@item.ngayDat</td>
+                            <td>
+                                @{
+                                    string status = item.maTrangThai == 1 ? "Đang chờ duyệt" :
+                                                    item.maTrangThai == 2 ? "Đã duyệt" :
+                                                    item.maTrangThai == 3 ? "Đang giao" :
+                                                    item.maTrangThai == 4 ? "Đã giao" :
+                                                    item.maTrangThai == 5 ? "Đã hủy" : "Hoàn thành";
+
+                                }
+                                @status
+                            </td>
+                            <td>@string.Format(new System.Globalization.CultureInfo("vi-VN"), "{0:C0}", @item.soTien)</td>
+                            <td>
+                                @if (item.maTrangThai == 1)
+                                {
+                                    <!-- Hiển thị nút Duyệt đơn khi trạng thái là 1 -->
+                                    <form action="@Url.Action("ApproveOrder", "Admin")" method="post">
+                                        <input type="hidden" name="billId" value="@item.IDBill" />
+                                        <button type="submit" class="btn btn-info btn-outline btn-xs m-r-5 tooltip-info">
+                                            <i class="fa-solid fa-pen"></i> Duyệt đơn
+                                        </button>
+                                    </form>
+                                }
+                                else if (item.maTrangThai == 2)
+                                {
+                                    <!-- Hiển thị nút Giao hàng khi trạng thái là 2 -->
+                                    <form action="@Url.Action("DeliverOrder", "Admin")" method="post">
+                                        <input type="hidden" name="billId" value="@item.IDBill" />
+                                        <button type="submit" class="btn btn-warning btn-outline btn-xs m-r-5 tooltip-info">
+                                            <i class="fa-solid fa-truck"></i> Giao hàng
+                                        </button>
+                                    </form>
+                                }
+                                else if (item.maTrangThai == 3)
+                                {
+                                    <!-- Hiển thị nút Xác nhận thanh toán khi trạng thái là 3 -->
+                                    <form action="@Url.Action("ConfirmPayment", "Admin")" method="post">
+                                        <input type="hidden" name="billId" value="@item.IDBill" />
+                                        <button type="submit" class="btn btn-success btn-outline btn-xs m-r-5 tooltip-info">
+                                            <i class="fa-solid fa-check"></i> Xác nhận thanh toán
+                                        </button>
+                                    </form>
+                                }
+                                @if (item.maTrangThai < 4) // Chỉ cho phép hủy khi trạng thái là 1, 2, hoặc 3
+                                {
+                                    <form action="@Url.Action("CancelOrder", "Admin")" method="post">
+                                        <input type="hidden" name="billId" value="@item.IDBill" />
+                                        <button type="submit" class="btn btn-danger btn-outline btn-xs m-r-5 tooltip-info">
+                                            <i class="fa-solid fa-trash"></i> Hủy đơn
+                                        </button>
+                                    </form>
+                                }
+
+                            </td>
+                        </tr>
+                        count++;
+                    }
+
+
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+

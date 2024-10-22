@@ -1,0 +1,68 @@
+﻿@model IEnumerable<projectShopLaptop.DAL.Tbl_User>
+@{
+    ViewBag.Title = "Tài khoản khách hàng";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+<div class="container-fluid px-4">
+    <h1 class="mt-4">Khách hàng</h1>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item active">Trang chủ</li>
+        <li class="breadcrumb-item">Khách hàng</li>
+    </ol>
+    <h1 class="mt-4"></h1>
+    <div class="card mb-4">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <span>
+                <i class="fas fa-table me-1"></i> 
+            </span>
+            <a href="../Admin/CustomerAdd" class="btn btn-info">
+                <i class="fa fa-plus"></i> Thêm mới
+            </a>
+        </div>
+        <div class="card-body">
+            <table class="table table-bordered table-striped" id="datatablesSimple">
+                <thead class="thead-dark">
+                    <tr>
+                        <th scope="col">Sr. No.</th>
+                        <th scope="col">Tên</th>
+                        <th scope="col">Tài Khoản</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Mật Khẩu</th>
+                        <th scope="col">Ngày Tạo</th>
+                        <th scope="col">Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        int count = 1;
+                    }
+
+                    @foreach (var item in Model.Where(u => u.role == "User"))
+                    {
+                        <tr>
+                            <td>@count</td>
+                            <td>@item.Name</td>
+                            <td>@item.UserName</td>
+                            <td>@item.EmailId</td>
+                            <td>@item.Password</td>
+                            <td>@item.CreatedOn</td>
+                            <td>
+                                @*<form action="@Url.Action("customerEdit", "Admin")" method="post" style="display:inline;">
+                                    <input type="hidden" name="id" value="@item.user_id" />
+                                    <button type="submit" class="btn btn-sm btn-primary" onclick="return confirm('Bạn có chắc chắn muốn xóa tài khoản này không?');">Cập nhật</button>
+                                </form>*@
+                                <form action="@Url.Action("DeleteAccCtm", "Admin")" method="post" style="display:inline;">
+                                    <input type="hidden" name="id" value="@item.user_id" />
+                                    <button type="submit" class="btn btn-sm btn-danger btnDelete" onclick="return confirm('Bạn có chắc chắn muốn xóa tài khoản này không?');">Xóa</button>
+                                </form>
+                            </td>
+                        </tr>
+                        count++;
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+

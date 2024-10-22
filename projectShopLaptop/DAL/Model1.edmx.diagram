@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="48f8d096e42c4b43ab211343f6763b35" Name="Diagram1">
+        <EntityTypeShape EntityType="dbClickShopModel.Tbl_Cart" Width="1.5" PointX="5.25" PointY="1.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="dbClickShopModel.Tbl_CartStatus" Width="1.5" PointX="5.75" PointY="4.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="dbClickShopModel.Tbl_Category" Width="1.5" PointX="0.75" PointY="1.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="dbClickShopModel.Tbl_MemberRole" Width="1.5" PointX="7.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="dbClickShopModel.Tbl_Roles" Width="1.5" PointX="7.75" PointY="3.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="dbClickShopModel.Tbl_ShippingDetails" Width="1.5" PointX="3" PointY="6" IsExpanded="true" />
+        <EntityTypeShape EntityType="dbClickShopModel.Tbl_SlideImage" Width="1.5" PointX="5.75" PointY="7.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="dbClickShopModel.Tbl_Product" Width="1.5" PointX="3" PointY="1" />
+        <AssociationConnector Association="dbClickShopModel.FK__Tbl_Cart__Produc__5BE2A6F2" />
+        <AssociationConnector Association="dbClickShopModel.FK__Tbl_Produ__Categ__4D94879B" />
+        <EntityTypeShape EntityType="dbClickShopModel.Tbl_User" Width="1.5" PointX="0.875" PointY="6" />
+        <AssociationConnector Association="dbClickShopModel.FK__Tbl_Shipp__Membe__5629CD9C1" />
+        <EntityTypeShape EntityType="dbClickShopModel.Tbl_Bill" Width="1.5" PointX="3.125" PointY="9.875" />
+        <AssociationConnector Association="dbClickShopModel.FK_User_Bill" />
+        <EntityTypeShape EntityType="dbClickShopModel.sysdiagram" Width="1.5" PointX="8.375" PointY="6.75" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

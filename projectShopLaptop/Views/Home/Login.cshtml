@@ -1,0 +1,41 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Đăng Nhập</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="~/css/StyleFormLogin.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="container">
+        <div class="form login">
+            <a class="logo" href="@Url.Action("Index", "Home")">
+                <img src="~/img/logoLogin.png" alt="Logo" />
+            </a>
+            <form role="form" method="post">
+                <p>
+                    <label>Nhập tài khoản đăng nhập<span>*</span></label>
+                    <input class="form-control" placeholder="Username" name="user" type="text" required autofocus>
+                </p>
+                <p>
+                    <label>Nhập mật khẩu<span>*</span></label>
+                    <input class="form-control" placeholder="Password" name="password" type="password" required>
+                </p>
+                <p class="text-danger">
+                    @TempData["error"]
+                </p>
+                <p>
+                    <label>
+                        <a href="@Url.Action("Registe", "Home")">Tạo tài khoản mới</a>
+                    </label>
+                    <button type="submit">Đăng nhập</button>
+                </p>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
