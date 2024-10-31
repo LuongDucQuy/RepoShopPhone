@@ -120,8 +120,15 @@ namespace projectShopLaptop.Controllers
         [HttpGet]
         public ActionResult customerAccount()
         {
-            var users = ctx.Tbl_User.Where(u => u.role == "User").ToList();
-            return View(users);
+            var customer = ctx.Tbl_User.ToList();
+
+            return View(customer);
+        }
+        [HttpPost]
+        public ActionResult customerAccount(int id)
+        {
+
+            return RedirectToAction("customerEdit", new { userId = id });
         }
 
         [Route("XoaTaiKhoan")]
@@ -148,6 +155,7 @@ namespace projectShopLaptop.Controllers
             }
             return RedirectToAction("customerAccount");
         }
+
 
         [HttpPost]
         public ActionResult DeleteProduct(int id)
@@ -216,7 +224,9 @@ namespace projectShopLaptop.Controllers
 
             if (bill != null)
             {
-                bill.maTrangThai = 3; // Đặt mã trạng thái thành "Đang giao"
+                bill.maTrangThai = 3;
+                bill.ngayGiao = DateTime.Now;
+                // Đặt mã trạng thái thành "Đang giao"
                 ctx.SaveChanges();
 
                 TempData["success"] = "Đơn hàng đang được giao.";
@@ -267,72 +277,161 @@ namespace projectShopLaptop.Controllers
         {
             return View();
         }
-
+        [HttpGet]
         public ActionResult Categories()
         {
             List<Tbl_Category> allcategories = _unitOfWork.GetRepositoryInstance<Tbl_Category>().GetAllRecordsIQueryable().Where(i => i.IsDelete == false).ToList();
             return View(allcategories);
         }
 
-        public ActionResult AddCategory()
+        [HttpPost]
+        public async Task<ActionResult> AddCategory(string nameCate)
         {
-            return UpdateCategory(0);
-        }
-
-        public ActionResult UpdateCategory(int? categoryId)
-        {
-            CategoryDetail cd = new CategoryDetail();
-            if (categoryId.HasValue && categoryId > 0)
+            if (string.IsNullOrEmpty(nameCate))
             {
-                cd = JsonConvert.DeserializeObject<CategoryDetail>(
-                    JsonConvert.SerializeObject(_unitOfWork.GetRepositoryInstance<Tbl_Category>().GetFirstorDefault(categoryId.Value))
-                );
+                return Json(new { success = false, message = "Thông tin đầu vào không hợp lệ." });
             }
-            return View("UpdateCategory", cd);
+
+            var cateNew = new Tbl_Category
+            {
+                CategoryName = nameCate,
+                IsDelete = false,
+                IsActive = true
+            };
+
+            try
+            {
+                ctx.Tbl_Category.Add(cateNew);
+                await ctx.SaveChangesAsync();
+
+                var updatedCategories = await ctx.Tbl_Category.Where(i => i.IsDelete == false)
+                                .Select(c => new
+                                {
+                                    c.CategoryId,
+                                    c.CategoryName,
+                                    // Chỉ chọn các thuộc tính cần thiết để tránh vòng lặp
+                                })
+                                .ToListAsync();
+                return Json(new { success = true, categories = updatedCategories });
+            }
+            catch (Exception ex)
+            {
+                // Ghi log lỗi (nếu cần)
+                return Json(new { success = false, message = "Đã xảy ra lỗi khi thêm danh mục.", error = ex.Message });
+            }
         }
 
         [HttpPost]
-        public ActionResult UpdateCategory(CategoryDetail model)
+        public async Task<ActionResult> UpdateCate(int id, string nameCate)
         {
-            if (ModelState.IsValid)
+            Console.WriteLine("ok");
+            if (string.IsNullOrEmpty(nameCate))
             {
-                if (model.CategoryId > 0)
-                {
-                    var category = _unitOfWork.GetRepositoryInstance<Tbl_Category>().GetFirstorDefault(model.CategoryId);
-                    if (category != null)
-                    {
-                        category.CategoryName = model.CategoryName;
-                        _unitOfWork.GetRepositoryInstance<Tbl_Category>().Update(category);
-                    }
-                }
-                else
-                {
-                    var newCategory = new Tbl_Category
-                    {
-                        CategoryName = model.CategoryName,
-                        IsActive = true,
-                        IsDelete = false 
-                    };
-                    _unitOfWork.GetRepositoryInstance<Tbl_Category>().Add(newCategory);
-                }
-
-                return RedirectToAction("Categories");
+                return Json(new { success = false, message = "Thông tin đầu vào không hợp lệ." });
             }
 
-            return View(model);
-        }
+            var category = await ctx.Tbl_Category.FirstOrDefaultAsync(c => c.CategoryId == id);
+            if (category == null)
+            {
+                return Json(new { success = false, message = "Danh mục không tồn tại." });
+            }
 
+            category.CategoryName = nameCate;
 
-        public ActionResult CategoryEdit(int catId)
-        {
-            return View(_unitOfWork.GetRepositoryInstance<Tbl_Category>().GetFirstorDefault(catId));
+            try
+            {
+                await ctx.SaveChangesAsync();
+                // Lấy danh sách danh mục cập nhật
+                var updatedCategories = await ctx.Tbl_Category.Where(i => i.IsDelete == false)
+                                .Select(c => new
+                                {
+                                    c.CategoryId,
+                                    c.CategoryName,
+                                    // Chỉ chọn các thuộc tính cần thiết để tránh vòng lặp
+                                })
+                                .ToListAsync();
+                return Json(new { success = true, categories = updatedCategories });
+            }
+            catch (Exception ex)
+            {
+                // Ghi log lỗi (nếu cần)
+                return Json(new { success = false, message = "Đã xảy ra lỗi khi cập nhật danh mục.", error = ex.Message });
+            }
         }
 
         [HttpPost]
-        public ActionResult CategoryEdit(Tbl_Category tbl)
+        public async Task<ActionResult> UpdateProduct(int id, string nameCate)
         {
-            _unitOfWork.GetRepositoryInstance<Tbl_Category>().Update(tbl);
-            return RedirectToAction("Categories");
+            Console.WriteLine("ok");
+            if (string.IsNullOrEmpty(nameCate))
+            {
+                return Json(new { success = false, message = "Thông tin đầu vào không hợp lệ." });
+            }
+
+            var category = await ctx.Tbl_Product.FirstOrDefaultAsync(c => c.ProductId == id);
+            if (category == null)
+            {
+                return Json(new { success = false, message = "Danh mục không tồn tại." });
+            }
+
+            category.ProductName = nameCate;
+
+            try
+            {
+                await ctx.SaveChangesAsync();
+                // Lấy danh sách danh mục cập nhật
+                var updatedCategories = await ctx.Tbl_Product
+                                .Select(c => new
+                                {
+                                    c.ProductId,
+                                    c.ProductName,
+                                    // Chỉ chọn các thuộc tính cần thiết để tránh vòng lặp
+                                })
+                                .ToListAsync();
+                return Json(new { success = true, categories = updatedCategories });
+            }
+            catch (Exception ex)
+            {
+                // Ghi log lỗi (nếu cần)
+                return Json(new { success = false, message = "Đã xảy ra lỗi khi cập nhật danh mục.", error = ex.Message });
+            }
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> AddProduct(string nameCate)
+        {
+            if (string.IsNullOrEmpty(nameCate))
+            {
+                return Json(new { success = false, message = "Thông tin đầu vào không hợp lệ." });
+            }
+
+            var cateNew = new Tbl_Product
+            {
+                ProductName = nameCate,
+                IsDelete = false,
+                IsActive = true
+            };
+
+            try
+            {
+                ctx.Tbl_Product.Add(cateNew);
+                await ctx.SaveChangesAsync();
+
+                var updatedCategories = await ctx.Tbl_Product.Where(i => i.IsDelete == false)
+                                .Select(c => new
+                                {
+                                    c.ProductId,
+                                    c.ProductName,
+                                    // Chỉ chọn các thuộc tính cần thiết để tránh vòng lặp
+                                })
+                                .ToListAsync();
+                return Json(new { success = true, categories = updatedCategories });
+            }
+            catch (Exception ex)
+            {
+                // Ghi log lỗi (nếu cần)
+                return Json(new { success = false, message = "Đã xảy ra lỗi khi thêm danh mục.", error = ex.Message });
+            }
         }
 
         public ActionResult Customer()
@@ -340,18 +439,131 @@ namespace projectShopLaptop.Controllers
             return View(_unitOfWork.GetRepositoryInstance<Tbl_User>().GetProduct());
         }
 
-        public ActionResult customerEdit(int customerId)
+
+        //[HttpPost]
+        //public ActionResult customerEdit(int id)
+        //{
+        //    //var customer = ctx.Tbl_User.Where(c => c.user_id == id).FirstOrDefault();
+        //    //return View(customer);
+        //    ViewBag.CustomerList = GetCustomer();
+        //    return View(_unitOfWork.GetRepositoryInstance<Tbl_User>().GetFirstorDefault(id));
+        //}
+
+        //[HttpGet]
+        //public ActionResult CustomerEdit(int userId)
+        //{
+        //    // Retrieve the customer details using the userId
+        //    var customer = _unitOfWork.GetRepositoryInstance<Tbl_User>().GetAllRecords()
+        //                        .FirstOrDefault(u => u.user_id == userId);
+
+        //    if (customer == null)
+        //    {
+        //        TempData["Message"] = "Không tìm thấy khách hàng.";
+        //        return RedirectToAction("customerAccount");
+        //    }
+        //    return View(customer);
+        //}
+
+        //[HttpPost]
+        //public ActionResult CustomerEdit(Tbl_User updatedUser)
+        //{
+        //    if (!ModelState.IsValid)
+        //    {
+        //        ViewBag.CustomerList = GetCustomer();
+        //        return View(updatedUser); // Return the view with validation errors
+        //    }
+
+        //    // Retrieve the existing customer
+        //    var existingUser = _unitOfWork.GetRepositoryInstance<Tbl_User>()
+        //                        .GetAllRecords()
+        //                        .FirstOrDefault(u => u.user_id == updatedUser.user_id);
+
+        //    if (existingUser == null)
+        //    {
+        //        ModelState.AddModelError("", "Không tìm thấy khách hàng để cập nhật.");
+        //        return View(updatedUser); // Return the view with error
+        //    }
+
+        //    // Update customer details
+        //    existingUser.Name = updatedUser.Name; // Example of updating the name
+        //    existingUser.UserName = updatedUser.UserName; // Update the username if necessary
+        //                                                  // You can add more fields here to update as per your model
+
+        //    try
+        //    {
+        //        // Save changes to the database
+        //        _unitOfWork.GetRepositoryInstance<Tbl_User>().Update(existingUser);
+        //        ctx.SaveChanges();
+        //        TempData["Success"] = "Cập nhật khách hàng thành công.";
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        ModelState.AddModelError("", "Đã xảy ra lỗi khi cập nhật: " + ex.Message);
+        //        ViewBag.CustomerList = GetCustomer();
+        //        return View(updatedUser); // Return the view with error
+        //    }
+
+        //    return RedirectToAction("customerAccount");
+        //}
+
+        [HttpGet]
+        public ActionResult customerEdit(int id)
         {
-            ViewBag.CustomerList = GetCustomer();
-            return View(_unitOfWork.GetRepositoryInstance<Tbl_User>().GetFirstorDefault(customerId));
+            Tbl_User user = ctx.Tbl_User.Find(id);
+            if (user == null)
+            {
+                return HttpNotFound();
+            }
+            return View(user);
         }
 
+
+        // Cập nhật user
         [HttpPost]
-        public ActionResult customerEdit(Tbl_User tbl)
+        //[AllowAnonymous]
+        //[ValidateAntiForgeryToken]
+        public ActionResult customerEdit(int user_id, string Name, string UserName, string EmailId, string Password)
         {
-            _unitOfWork.GetRepositoryInstance<Tbl_User>().Update(tbl);
-            return RedirectToAction("customerAccount");
+            TempData["Message"] = "";
+
+            if (ModelState.IsValid)
+            {
+                if (user_id <= 0)
+                {
+                    // Xử lý trường hợp user_id không hợp lệ
+                    ModelState.AddModelError("user_id", "ID người dùng không hợp lệ.");
+                    return View();
+                }
+
+                // Truy vấn người dùng theo user_id
+                Tbl_User existingUser = ctx.Tbl_User.Find(user_id);
+
+                // Không rỗng và không phải là null
+                if (existingUser != null)
+                {
+                    // Cập nhật thông tin người dùng
+                    existingUser.Name = Name;
+                    existingUser.UserName = UserName;
+                    existingUser.EmailId = EmailId;
+                    existingUser.Password = Password;
+                    existingUser.CreatedOn = DateTime.Now;
+
+                    // Lưu thay đổi vào cơ sở dữ liệu
+                    ctx.SaveChanges();
+                    TempData["Message"] = "Cập nhật tài khoản thành công";
+
+                    // Chuyển hướng đến một view hoặc action thành công
+                    return RedirectToAction("customerAccount");
+                }
+
+                // Xử lý trường hợp không tìm thấy người dùng với user_id đã cho
+                ModelState.AddModelError("", "Không tìm thấy người dùng.");
+            }
+
+            // Nếu kiểm tra model thất bại hoặc có bất kỳ lỗi nào khác, trở về view chỉnh sửa
+            return View();
         }
+
 
         public ActionResult Product()
         {

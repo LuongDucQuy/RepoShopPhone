@@ -162,25 +162,18 @@
                                                         <img src="@Url.Content("~/img/" + item.Product.ProductImage)" alt="@item.Product.ProductName" style="width: 40px; height: 40px; object-fit: cover; border-radius: 5px; margin-right: 10px;">
                                                         <span class="text-dark">@item.Product.ProductName (@item.Quantity)</span>
                                                     </div>
-                                                    <a href="@Url.Action("RemoveFromCart", "Home", new { productId = item.Product.ProductId })" class="text-danger">
+                                                    <a href="javascript:void(0);" class="text-danger remove-item" data-product-id="@item.Product.ProductId">
                                                         <i class="fa fa-times"></i>
                                                     </a>
                                                 </li>
                                             }
-
-                                            <li class="dropdown-divider"></li>
-
-                                            <li>
-                                                <a href="@Url.Action("shoppingCart", "Home")">Giỏ hàng</a>
-                                            </li>
                                         }
-                                        else
-                                        {
-                                            <li class="text-center">Giỏ hàng trống</li>
-                                        }
+                                        <li class="dropdown-divider"></li>
+                                        <li>
+                                            <a href="@Url.Action("shoppingCart", "Home")">Giỏ hàng</a>
+                                        </li>
+
                                     </ul>
-
-
                                 </li>
                             </ul>
                         </div>

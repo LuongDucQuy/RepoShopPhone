@@ -28,7 +28,7 @@ namespace projectShopLaptop.Controllers
             // Lấy danh sách các danh mục từ cơ sở dữ liệu
             ViewBag.Categories = ctx.Tbl_Category.ToList();
 
-            return View(model.CreateModel(search, 4, page));
+            return View(model.CreateModel(search, 8, page));
             //}
         }
         [HttpGet]
@@ -294,15 +294,48 @@ namespace projectShopLaptop.Controllers
             return View();
         }
 
-        public ActionResult Done()
+        [HttpPost]
+        public JsonResult AddToCart(int productId)
         {
-            return View();
+            var cart = Session["cart"] as List<Item> ?? new List<Item>();
+            var product = ctx.Tbl_Product.Find(productId);
+
+            if (product != null)
+            {
+                var existingItem = cart.FirstOrDefault(item => item.Product.ProductId == productId);
+
+                if (existingItem != null)
+                {
+                    existingItem.Quantity++;
+                }
+                else
+                {
+                    cart.Add(new Item()
+                    {
+                        Product = product,
+                        Quantity = 1
+                    });
+                }
+
+                Session["cart"] = cart;
+
+                // Trả về thông tin sản phẩm để cập nhật giỏ hàng
+                return Json(new
+                {
+                    success = true,
+                    product = new
+                    {
+                        productId = product.ProductId,
+                        productName = product.ProductName,
+                        productImage = product.ProductImage,
+                        quantity = cart.FirstOrDefault(item => item.Product.ProductId == productId)?.Quantity ?? 1
+                    }
+                });
+            }
+
+            return Json(new { success = false });
         }
 
-        public ActionResult CheckoutDetails()
-        {
-            return View();
-        }
 
         public ActionResult AddToCart(int productId, string url)
         {
@@ -363,21 +396,26 @@ namespace projectShopLaptop.Controllers
             return Redirect(url);
         }
 
-        public ActionResult RemoveFromCart(int productId)
+        [HttpPost]
+        public JsonResult RemoveFromCart(int productId)
         {
-            List<Item> cart = (List<Item>)Session["cart"];
-            // var product = ctx.Tbl_Product.Find(productId);
-            foreach(var item in cart)
+            var cart = Session["cart"] as List<Item> ?? new List<Item>();
+
+            var itemToRemove = cart.FirstOrDefault(item => item.Product.ProductId == productId);
+            if (itemToRemove != null)
             {
-                if (item.Product.ProductId == productId)
-                {
-                    cart.Remove(item);
-                    break;
-                }
+                cart.Remove(itemToRemove);
             }
+
             Session["cart"] = cart;
-            return Redirect("Index");
+
+            return Json(new
+            {
+                success = true,
+                cartItemCount = cart.Count
+            });
         }
+
 
         public ActionResult RemoveCart(int id, string url)
         {
@@ -394,6 +432,24 @@ namespace projectShopLaptop.Controllers
             }
             // Sử dụng url để chuyển hướng chính xác
             return RedirectToAction(url);
+        }
+
+        [HttpPost]
+        public JsonResult Search(string search)
+        {
+            // Logic tìm kiếm sản phẩm dựa trên biến search
+            var results = ctx.Tbl_Product
+                .Where(p => p.ProductName.Contains(search))
+                .Select(p => new
+                {
+                    p.ProductId,
+                    p.ProductName,
+                    p.ProductImage,
+                    p.Price
+                })
+                .ToList();
+
+            return Json(results);
         }
 
     }

@@ -1,0 +1,69 @@
+﻿/* Thiết lập nền cho modal */
+.modal-content {
+    border-radius: 10px; /* Bo tròn góc của modal */
+}
+
+/* Định dạng tiêu đề modal */
+.modal-header {
+    background-color: #007bff; /* Màu nền của tiêu đề */
+    color: white; /* Màu chữ */
+}
+
+/* Định dạng các nút trong modal */
+.modal-footer .btn {
+    border-radius: 5px; /* Bo tròn góc của nút */
+}
+
+/* Thiết lập màu nền cho bảng */
+.table {
+    background-color: #f8f9fa; /* Màu nền nhẹ cho bảng */
+    border-radius: 10px; /* Bo tròn góc của bảng */
+    overflow: hidden; /* Để tránh viền bị bo tròn */
+}
+
+    /* Định dạng tiêu đề bảng */
+    .table thead th {
+        background-color: #343a40; /* Màu nền tối cho tiêu đề */
+        color: white; /* Màu chữ trắng */
+    }
+
+    /* Định dạng hàng trong bảng */
+    .table tbody tr:nth-child(even) {
+        background-color: #e9ecef; /* Màu nền cho hàng chẵn */
+    }
+
+    .table tbody tr:hover {
+        background-color: #d4d4d4; /* Màu nền khi di chuột qua hàng */
+    }
+
+    /* Định dạng nút trong bảng */
+    .table .btn {
+        border-radius: 5px; /* Bo tròn góc của nút */
+        padding: 5px 10px; /* Định dạng padding cho nút */
+    }
+
+/* Định dạng các trường nhập trong modal */
+.modal-body .form-control {
+    border-radius: 5px; /* Bo tròn góc của input */
+    border: 1px solid #ced4da; /* Định dạng viền cho input */
+}
+
+/* Định dạng nút thêm danh mục */
+.btn-primary {
+    background-color: #007bff; /* Màu nền chính của nút */
+    border-color: #007bff; /* Màu viền của nút */
+}
+
+    .btn-primary:hover {
+        background-color: #0056b3; /* Màu nền khi di chuột qua nút */
+    }
+
+/* Định dạng nút hủy */
+.btn-danger {
+    background-color: #dc3545; /* Màu nền của nút hủy */
+    border-color: #dc3545; /* Màu viền của nút hủy */
+}
+
+    .btn-danger:hover {
+        background-color: #c82333; /* Màu nền khi di chuột qua nút hủy */
+    }

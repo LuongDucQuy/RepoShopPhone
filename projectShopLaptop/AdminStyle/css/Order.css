@@ -1,0 +1,143 @@
+﻿/* Căn chỉnh và định dạng toàn bộ container */
+.container-fluid {
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+}
+
+/* Định dạng tiêu đề */
+h1 {
+    font-size: 28px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+/* Breadcrumb */
+.breadcrumb {
+    background-color: #e9ecef;
+    border-radius: 5px;
+    padding: 10px 15px;
+    margin-bottom: 20px;
+}
+
+.breadcrumb-item {
+    font-size: 16px;
+}
+
+/* Định dạng card */
+.card-header {
+    background-color: #007bff;
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+    padding: 15px;
+}
+
+.card-body {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Định dạng bảng */
+.table {
+    margin-bottom: 0;
+    background-color: #ffffff;
+    border-collapse: collapse;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+}
+
+    .table thead {
+        background-color: #343a40;
+        color: #ffffff;
+    }
+
+    .table th, .table td {
+        padding: 12px 15px;
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    .table th {
+        font-size: 16px;
+        font-weight: bold;
+    }
+
+    .table td {
+        font-size: 14px;
+    }
+
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: #f8f9fa;
+}
+
+.table-bordered th, .table-bordered td {
+    border: 1px solid #dee2e6;
+}
+
+/* Định dạng trạng thái đơn hàng */
+.thead-dark th {
+    background-color: #343a40;
+    color: #ffffff;
+}
+
+.btn-outline {
+    border-width: 1px;
+    padding: 6px 12px;
+    margin-right: 5px;
+    font-size: 14px;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+    .btn-outline:hover {
+        background-color: #f0f0f0;
+    }
+
+/* Nút bấm theo trạng thái */
+.btn-info {
+    background-color: #17a2b8;
+    color: #fff;
+    border-color: #17a2b8;
+}
+
+.btn-warning {
+    background-color: #ffc107;
+    color: #fff;
+    border-color: #ffc107;
+}
+
+.btn-success {
+    background-color: #28a745;
+    color: #fff;
+    border-color: #28a745;
+}
+
+.btn-danger {
+    background-color: #dc3545;
+    color: #fff;
+    border-color: #dc3545;
+}
+
+/* Hover effect cho nút */
+.btn-info:hover {
+    background-color: #138496;
+    border-color: #138496;
+}
+
+.btn-warning:hover {
+    background-color: #e0a800;
+    border-color: #e0a800;
+}
+
+.btn-success:hover {
+    background-color: #218838;
+    border-color: #218838;
+}
+
+.btn-danger:hover {
+    background-color: #c82333;
+    border-color: #c82333;
+}

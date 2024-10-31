@@ -3,10 +3,11 @@
     ViewBag.Title = "Tài khoản khách hàng";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
+<link href="~/AdminStyle/css/CustomerAccount.css" rel="stylesheet" />
 <div class="container-fluid px-4">
     <h1 class="mt-4">Khách hàng</h1>
     <ol class="breadcrumb mb-4">
-        <li class="breadcrumb-item active">Trang chủ</li>
+        <li class="breadcrumb-item">Trang chủ</li>
         <li class="breadcrumb-item">Khách hàng</li>
     </ol>
     <h1 class="mt-4"></h1>
@@ -47,10 +48,10 @@
                             <td>@item.Password</td>
                             <td>@item.CreatedOn</td>
                             <td>
-                                @*<form action="@Url.Action("customerEdit", "Admin")" method="post" style="display:inline;">
+                                <form action="@Url.Action("customerEdit", "Admin")" method="get" style="display:inline;">
                                     <input type="hidden" name="id" value="@item.user_id" />
-                                    <button type="submit" class="btn btn-sm btn-primary" onclick="return confirm('Bạn có chắc chắn muốn xóa tài khoản này không?');">Cập nhật</button>
-                                </form>*@
+                                    <button type="submit" class="btn btn-sm btn-primary">Cập nhật</button>
+                                </form>
                                 <form action="@Url.Action("DeleteAccCtm", "Admin")" method="post" style="display:inline;">
                                     <input type="hidden" name="id" value="@item.user_id" />
                                     <button type="submit" class="btn btn-sm btn-danger btnDelete" onclick="return confirm('Bạn có chắc chắn muốn xóa tài khoản này không?');">Xóa</button>

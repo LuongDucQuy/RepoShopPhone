@@ -4,17 +4,18 @@
     ViewBag.Title = "Sản phẩm";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
+<link href="~/AdminStyle/css/Product.css" rel="stylesheet" />
 <div class="container-fluid px-4">
-    <h1 class="mt-4">Sản phẩm</h1>
+    <h2 class="mt-4">Sản phẩm</h2>
     <ol class="breadcrumb mb-4">
-        <li class="breadcrumb-item active">Trang chủ</li>
-        <li class="breadcrumb-item">Sản phầm</li>
+        <li class="breadcrumb-item">Trang chủ</li>
+        <li class="breadcrumb-item active">Sản phẩm</li>
     </ol>
     <div class="card mb-4">
         <div class="card-header">
             <i class="fas fa-table me-1"></i>
             <a href="../Admin/ProductAdd" class="btn btn-info pull-right">
-                <i class="fa fa-plus"></i> Thêm mới
+                <i class="fa fa-plus"></i> Thêm sản phẩm
             </a>
         </div>
         <div class="card-body">
@@ -29,27 +30,29 @@
                 </thead>
                 <tbody>
                     @{
-                    int count = 1;
+                        int count = 1;
                     }
 
                     @foreach (var item in Model)
-                        {
-                    <tr>
-                        <td>@count</td>
-                        <td>@item.ProductName</td>
-                        <td>
-                            <img src="@Url.Content("~/img/" + item.ProductImage)" class="img-thumbnail" width="50" />
-                        </td>
-                        <td>
-                            @using (Html.BeginForm("DeleteProduct", "Admin", new { id = item.ProductId }, FormMethod.Post))
-                            {
-                                <button type="submit" class="btn btn-danger">Xóa</button>
-                            }
-                            @Html.ActionLink("Cập nhật", "ProductEdit", new { productId = item.ProductId }, new { @class = "btn btn-primary" })
-                        </td>
-                    </tr>
-                    count++;
-                        }
+                    {
+                        <tr>
+                            <td>@count</td>
+                            <td>@item.ProductName</td>
+                            <td>
+                                <img src="@Url.Content("~/img/" + item.ProductImage)" class="img-thumbnail" width="50" />
+                            </td>
+                            <td class="d-flex align-items-center">
+                                @Html.ActionLink("Cập nhật", "ProductEdit", new { productId = item.ProductId }, new { @class = "btn btn-primary" })
+                                @using (Html.BeginForm("DeleteProduct", "Admin", new { id = item.ProductId }, FormMethod.Post))
+                                {
+                                    <button type="submit" class="btn btn-danger">
+                                        Xóa
+                                    </button>
+                                }
+                            </td>
+                        </tr>
+                        count++;
+                    }
 
                 </tbody>
             </table>

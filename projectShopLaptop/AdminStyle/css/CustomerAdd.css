@@ -1,0 +1,75 @@
+﻿/* Style for the form container */
+.form-horizontal {
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #f9f9f9; /* Light grey background */
+    border: 1px solid #ddd; /* Light border */
+    border-radius: 5px; /* Rounded corners */
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); /* Light shadow */
+}
+
+/* Header style */
+h2 {
+    text-align: center;
+    color: #333; /* Dark grey text */
+    margin-bottom: 20px;
+}
+
+/* Label styling */
+.control-label {
+    font-weight: bold;
+    color: #555; /* Medium grey text */
+    margin-bottom: 5px;
+}
+
+/* Form controls styling */
+.form-control {
+    border: 1px solid #ccc; /* Light border */
+    border-radius: 4px; /* Rounded corners */
+    padding: 10px;
+    font-size: 14px;
+    width: 100%;
+    box-sizing: border-box;
+    transition: border-color 0.3s ease;
+}
+
+    .form-control:focus {
+        border-color: #007bff; /* Blue border on focus */
+        box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Light blue shadow on focus */
+    }
+
+/* Button styling */
+.btn {
+    background-color: #007bff; /* Blue background */
+    color: white; /* White text */
+    border: none;
+    padding: 10px 20px;
+    font-size: 14px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+    margin-top: 10px;
+}
+
+    .btn:hover {
+        background-color: #0056b3; /* Darker blue on hover */
+    }
+
+/* Validation message styling */
+.text-danger {
+    color: #d9534f; /* Red text for validation errors */
+    font-size: 13px;
+    margin-top: 5px;
+}
+
+/* Form group alignment */
+.form-group {
+    margin-bottom: 15px;
+}
+
+/* Center submit button */
+.col-md-offset-2 {
+    margin-left: 0; /* Remove offset */
+    text-align: center;
+}

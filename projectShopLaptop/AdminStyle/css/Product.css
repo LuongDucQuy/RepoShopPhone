@@ -1,0 +1,125 @@
+﻿/* Container styles */
+.container-fluid {
+    background-color: #f8f9fa;
+    padding: 20px;
+}
+
+/* Title and breadcrumb styles */
+h1.mt-4 {
+    font-weight: bold;
+    color: #343a40;
+}
+
+.breadcrumb {
+    background-color: #e9ecef;
+    padding: 10px 15px;
+    border-radius: 5px;
+}
+
+.breadcrumb-item {
+    color: #6c757d;
+}
+
+    .breadcrumb-item.active {
+        color: #343a40;
+    }
+
+/* Card styles */
+.card {
+    border-radius: 8px;
+    border: none;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+}
+
+.card-header {
+    background-color: #007bff;
+    color: white;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+}
+
+    .card-header a.btn-info {
+        background-color: #17a2b8;
+        border: none;
+        color: white;
+        text-decoration: none;
+    }
+
+.card-body {
+    padding: 20px;
+}
+
+/* Table styles */
+#datatablesSimple {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0 auto;
+    background-color: #ffffff;
+}
+
+    #datatablesSimple th, #datatablesSimple td {
+        padding: 12px 15px;
+        text-align: center;
+        border: 1px solid #dee2e6;
+    }
+
+    #datatablesSimple th {
+        background-color: #343a40;
+        color: white;
+        font-weight: bold;
+    }
+
+    #datatablesSimple tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+
+    #datatablesSimple tr:hover {
+        background-color: #e9ecef;
+        cursor: pointer;
+    }
+
+/* Image thumbnail styles */
+.img-thumbnail {
+    border-radius: 5px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Button styles */
+.btn {
+    padding: 8px 12px;
+    font-size: 14px;
+    margin: 0 5px;
+}
+
+.btn-danger {
+    background-color: #dc3545;
+    border: none;
+    color: white;
+}
+
+    .btn-danger:hover {
+        background-color: #c82333;
+    }
+
+.btn-primary {
+    background-color: #007bff;
+    border: none;
+    color: white;
+}
+
+    .btn-primary:hover {
+        background-color: #0056b3;
+    }
+
+/* Flex container for action buttons */
+.d-flex {
+    display: flex;
+}
+
+    .d-flex .btn {
+        margin-right: 5px;
+    }

@@ -4,39 +4,7 @@
 @{
     ViewBag.Title = "Home Page";
 }
-
-<style>
-    .phanTrang {
-        display: flex;
-        justify-content: center; /* Căn giữa các trang */
-        margin: 20px 0; /* Khoảng cách trên và dưới */
-        font-family: Arial, sans-serif; /* Font chữ */
-    }
-
-        .phanTrang a,
-        .phanTrang span {
-            background-color: #FFD333; /* Màu nền của các trang */
-            color: white; /* Màu chữ */
-            padding: 10px 15px; /* Khoảng cách bên trong */
-            margin: 0 5px; /* Khoảng cách giữa các trang */
-            border-radius: 5px; /* Bo góc */
-            text-decoration: none; /* Xóa gạch chân */
-            transition: background-color 0.3s; /* Hiệu ứng chuyển màu */
-        }
-
-            .phanTrang a:hover {
-                background-color: #0056b3; /* Màu nền khi hover */
-            }
-
-        .phanTrang span {
-            background-color: #f8f9fa; /* Màu nền của trang hiện tại */
-            color: #495057; /* Màu chữ của trang hiện tại */
-            pointer-events: none; /* Không cho phép nhấn vào */
-            border: 1px solid #007bff; /* Đường viền cho trang hiện tại */
-        }
-
-</style>
-
+<link href="~/AdminStyle/css/IndexHome.css" rel="stylesheet" />
 <!-- Carousel Start -->
 <div class="container-fluid mb-3">
     <div class="row px-xl-5">
@@ -225,22 +193,21 @@
                     <div class="product-action">
                         @using (Html.BeginForm("proDetail", "detailProduct", FormMethod.Get))
                         {
-                        @Html.Hidden("id", item.ProductId)
-                        <button class="btn btn-outline-dark btn-square"><i class="fa fa-search"></i></button>
+                            @Html.Hidden("id", item.ProductId)
+                            <button class="btn btn-outline-dark btn-square"><i class="fa fa-search"></i></button>
                         }
-                        <p>
-                            @if(item.Quantity > 0)
+                            @if (item.Quantity > 0)
                             {
-                            using (Html.BeginForm("AddToCart", "Home", new {productId = item.ProductId}, FormMethod.Post))
-                                {
-                            <button class="btn btn-outline-dark btn-square" href=""><i class="fa fa-shopping-cart"></i></button>
-                                }
+                                <button type="submit" class="btn btn-outline-dark btn-square addToCartBtn"
+                                        data-product-id="@item.ProductId">
+                                    <i class="fa fa-shopping-cart"></i>
+                                </button>
                             }
-                        else{
-                        <p> Not Availble </p>
+                            else
+                            {
+                            <p>Not Available</p>
                             }
-                            </p>
-                        </div>
+                    </div>
                 </div>
                 <div class="text-center py-4">
                     <a class="h6 text-decoration-none text-truncate" href="">@item.ProductName</a>
@@ -404,8 +371,95 @@
 <script src="~/lib/owlcarousel/owl.carousel.min.js"></script>
 
 <!-- Contact Javascript File -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="~/mail/jqBootstrapValidation.min.js"></script>
 <script src="~/mail/contact.js"></script>
 
 <!-- Template Javascript -->
 <script src="~/js/main.js"></script>
+
+<script>
+    $(document).ready(function () {
+        // Thêm sản phẩm vào giỏ hàng
+        $(".addToCartBtn").click(function () {
+            var productId = $(this).data("product-id");
+
+            $.ajax({
+                url: '@Url.Action("AddToCart", "Home")',
+                method: "POST",
+                data: { productId: productId },
+                success: function (response) {
+                    if (response.success) {
+                        Swal.fire(
+                            'Thành công!',
+                            'Sản phẩm đã được thêm vào giỏ hàng!',
+                            'success'
+                        );
+
+                        // Cập nhật số lượng giỏ hàng
+                        if (response.cartItemCount) {
+                            $("#cart-count-value").text(response.cartItemCount);
+                        }
+
+                        // Kiểm tra nếu sản phẩm đã tồn tại trong danh sách giỏ hàng
+                        var existingItem = $(".dropdown-menu").find(`[data-product-id='${response.product.productId}']`);
+                        if (existingItem.length > 0) {
+                            var quantityText = existingItem.closest("li").find("span.text-dark");
+                            var newQuantity = response.product.quantity;
+                            quantityText.text(`${response.product.productName} (${newQuantity})`);
+                        } else {
+                            var newItemHtml = `
+                                <li class="d-flex align-items-center justify-content-between mb-2">
+                                    <div class="d-flex align-items-center">
+                                        <img src="@Url.Content("~/img/` + response.product.productImage + `")" alt="` + response.product.productName + `" style="width: 40px; height: 40px; object-fit: cover; border-radius: 5px; margin-right: 10px;">
+                                        <span class="text-dark">` + response.product.productName + ` (` + response.product.quantity + `)</span>
+                                    </div>
+                                    <a href="javascript:void(0);" class="text-danger remove-item" data-product-id="` + response.product.productId + `">
+                                        <i class="fa fa-times"></i>
+                                    </a>
+                                </li>`;
+                            $(".dropdown-menu").prepend(newItemHtml);
+                        }
+                    }
+                },
+                error: function () {
+                    Swal.fire(
+                        'Lỗi!',
+                        'Đã xảy ra lỗi khi thêm sản phẩm vào giỏ hàng.',
+                        'error'
+                    );
+                }
+            });
+        });
+
+        // Xóa sản phẩm khỏi giỏ hàng
+        $(document).on("click", ".remove-item", function () {
+            var productId = $(this).data("product-id");
+            var listItem = $(this).closest("li");
+
+            $.ajax({
+                url: '@Url.Action("RemoveFromCart", "Home")',
+                method: "POST",
+                data: { productId: productId },
+                success: function (response) {
+                    if (response.success) {
+                        listItem.remove(); // Xóa phần tử khỏi danh sách
+                        $("#cart-count-value").text(response.cartItemCount); // Cập nhật số lượng giỏ hàng
+                        Swal.fire(
+                            'Thành công!',
+                            'Sản phẩm đã được xóa khỏi giỏ hàng!',
+                            'success'
+                        );
+                    }
+                },
+                error: function () {
+                    Swal.fire(
+                        'Lỗi!',
+                        'Đã xảy ra lỗi khi xóa sản phẩm khỏi giỏ hàng.',
+                        'error'
+                    );
+                }
+            });
+        });
+    });
+</script>

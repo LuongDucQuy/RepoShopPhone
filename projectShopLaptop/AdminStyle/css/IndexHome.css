@@ -1,0 +1,45 @@
+﻿.phanTrang {
+    display: flex;
+    justify-content: center; /* Căn giữa các trang */
+    margin: 20px 0; /* Khoảng cách trên và dưới */
+    font-family: Arial, sans-serif; /* Font chữ */
+}
+
+    .phanTrang a,
+    .phanTrang span {
+        background-color: #FFD333; /* Màu nền của các trang */
+        color: white; /* Màu chữ */
+        padding: 10px 15px; /* Khoảng cách bên trong */
+        margin: 0 5px; /* Khoảng cách giữa các trang */
+        border-radius: 5px; /* Bo góc */
+        text-decoration: none; /* Xóa gạch chân */
+        transition: background-color 0.3s; /* Hiệu ứng chuyển màu */
+    }
+
+        .phanTrang a:hover {
+            background-color: #0056b3; /* Màu nền khi hover */
+        }
+
+    .phanTrang span {
+        background-color: #f8f9fa; /* Màu nền của trang hiện tại */
+        color: #495057; /* Màu chữ của trang hiện tại */
+        pointer-events: none; /* Không cho phép nhấn vào */
+        border: 1px solid #007bff; /* Đường viền cho trang hiện tại */
+    }
+.product-action {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Khoảng cách giữa các biểu tượng */
+}
+
+    .product-action button,
+    .product-action .not-available {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+    }
+
+.not-available {
+    color: #888; /* Màu sắc cho thông báo "Not Available" */
+}

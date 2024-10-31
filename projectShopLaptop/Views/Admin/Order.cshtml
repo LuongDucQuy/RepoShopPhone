@@ -3,7 +3,7 @@
     ViewBag.Title = "Đơn hàng";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
-
+<link href="~/AdminStyle/css/Order.css" rel="stylesheet" />
 <div class="container-fluid px-4">
     <h1 class="mt-4">Đơn hàng</h1>
     <ol class="breadcrumb mb-4">
@@ -81,7 +81,7 @@
                                         </button>
                                     </form>
                                 }
-                                @if (item.maTrangThai < 4) // Chỉ cho phép hủy khi trạng thái là 1, 2, hoặc 3
+                                @if (item.maTrangThai < 3) // Chỉ cho phép hủy khi trạng thái là 1, 2
                                 {
                                     <form action="@Url.Action("CancelOrder", "Admin")" method="post">
                                         <input type="hidden" name="billId" value="@item.IDBill" />
@@ -95,9 +95,6 @@
                         </tr>
                         count++;
                     }
-
-
-
                 </tbody>
             </table>
         </div>

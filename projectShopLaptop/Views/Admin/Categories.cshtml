@@ -3,42 +3,76 @@
     ViewBag.Title = "Danh mục";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
-<div class="container-fluid px-4">
-    <h1 class="mt-4">Danh mục</h1>
-    <ol class="breadcrumb mb-4">
-        <li class="breadcrumb-item active">Trang chủ</li>
-        <li class="breadcrumb-item">Danh mục</li>
-    </ol>
-    <div class="card mb-4">
-        <div class="card-header">
-            <i class="fas fa-table me-1"></i>
-            <a href="../Admin/AddCategory" class="btn btn-info pull-right">
-                <i class="fa fa-plus"></i> Thêm mới
-            </a>
-        </div>
-        <div class="card-body">
-            <table id="datatablesSimple">
-                <thead>
-                    <tr>
-                        <th>Sr. No.</th>
-                        <th>Tên danh mục</th>
-                        <th>Thao tác</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach(var item in Model)
-                    {
-                    <tr>
-                        <td>@(Model.IndexOf(item)+1)</td>
-                        <td>@item.CategoryName</td>
-                        <td>
-                            @Html.ActionLink("Cập nhật", "CategoryEdit", new { catId = item.CategoryId })
-                        </td>
-                    </tr> 
-                    }
-                </tbody>
-                </table>
+<link href="~/AdminStyle/css/Cate.css" rel="stylesheet" />
+<div class="p-3">
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModalCenter">
+        <i class="bi bi-plus-circle-fill"></i> Tạo danh mục mới
+    </button>
+
+    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Thêm danh mục mới</h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="mb-3">
+                            <label for="InputName" class="form-label">Tên danh mục</label>
+                            <input name="name" type="text" class="form-control" id="InputName">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                            <button type="button" class="btn btn-primary" onclick="AddCate()">Thêm</button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
+
+
 </div>
+<table class="table">
+
+    <thead>
+        <tr>
+            <th scope="col">Sr. No.</th>
+            <th scope="col">Tên danh mục</th>
+            <th scope="col">Thao tác</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr id="viewRow-@item.CategoryId">
+                <th scope="row">@item.CategoryId</th>
+                <td>@item.CategoryName</td>
+
+                <td scope="col">
+                    <button id="edit" type="button" class="btn btn-secondary" onclick="editItem(@item.CategoryId)">
+                        <i class="bi bi-pencil-square"></i> Sửa
+                    </button>
+                </td>
+            </tr>
+            <tr id="editRow-@item.CategoryId" style="display:none;">
+                <th scope="row">@item.CategoryId</th>
+                <td>
+                    <input type="text" id="categoryName-@item.CategoryId" value="@item.CategoryName" class="form-control" />
+                </td>
+
+                <td scope="col">
+                    <button type="button" id="save" class="btn btn-secondary" onclick="updateItem(@item.CategoryId)">
+                        <i class="bi bi-save"></i> Lưu
+                    </button>
+                    <button type="button" id="cancel" class="btn btn-danger" onclick="cancelEdit(@item.CategoryId)">
+                        <i class="bi bi-x-circle"></i> Hủy
+                    </button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

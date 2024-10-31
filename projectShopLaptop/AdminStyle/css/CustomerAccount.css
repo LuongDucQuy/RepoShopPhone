@@ -1,0 +1,127 @@
+﻿.container-fluid.px-4 {
+    background-color: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+/* Tiêu đề */
+h1.mt-4 {
+    font-size: 28px;
+    font-weight: bold;
+    color: #333;
+}
+
+/* Breadcrumb */
+.breadcrumb {
+    background-color: #e9ecef;
+    border-radius: 5px;
+}
+
+.breadcrumb-item {
+    font-size: 14px;
+    color: #6c757d;
+}
+
+/* Card */
+.card {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+    background-color: #007bff;
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+    padding: 15px;
+}
+
+    .card-header .btn-info {
+        background-color: #17a2b8;
+        border-color: #17a2b8;
+        color: white;
+    }
+
+        .card-header .btn-info:hover {
+            background-color: #138496;
+            border-color: #117a8b;
+        }
+
+/* Bảng */
+.table {
+    margin-top: 20px;
+    background-color: white;
+    font-size: 14px;
+}
+
+    .table thead {
+        background-color: #343a40;
+        color: white;
+        text-align: center;
+    }
+
+    .table tbody tr {
+        transition: background-color 0.3s;
+    }
+
+        .table tbody tr:hover {
+            background-color: #f1f3f5;
+        }
+
+    /* Cột thao tác */
+    .table tbody td:last-child {
+        text-align: center;
+    }
+
+/* Nút cập nhật và xóa */
+.btn {
+    margin: 2px;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+    color: white;
+}
+
+    .btn-primary:hover {
+        background-color: #0056b3;
+        border-color: #004085;
+    }
+
+.btn-danger {
+    background-color: #dc3545;
+    border-color: #dc3545;
+    color: white;
+}
+
+    .btn-danger:hover {
+        background-color: #c82333;
+        border-color: #bd2130;
+    }
+
+/* Tô đậm các nút hành động */
+.btn-sm {
+    padding: 5px 10px;
+    font-size: 12px;
+}
+media (max-width: 768px) {
+    .container-fluid.px-4
+
+{
+    padding: 10px;
+}
+
+.card-header {
+    font-size: 16px;
+}
+
+.table {
+    font-size: 12px;
+}
+
+.btn-sm {
+    padding: 3px 8px;
+}
+}
