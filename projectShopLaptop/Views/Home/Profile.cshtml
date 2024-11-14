@@ -1,0 +1,123 @@
+﻿    @model projectShopLaptop.Models.Home.UserProfileViewModel
+
+    @{
+        ViewBag.Title = "Thông tin cá nhân";
+    }
+    <style>
+        /* Tạo một phong cách đẹp và dễ nhìn cho các form */
+        .form-horizontal {
+            width: 600px;
+            margin: 0 auto;
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Khoảng cách giữa các phần tử trong form */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        /* Cải thiện độ đẹp cho các label */
+        .control-label {
+            font-weight: bold;
+            color: #333;
+        }
+
+        /* Cải thiện kiểu cho các input */
+        input.form-control {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 8px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+            /* Thêm hiệu ứng focus cho input */
+            input.form-control:focus {
+                border-color: #66afe9;
+                outline: none;
+                box-shadow: 0 0 8px rgba(102, 175, 233, 0.6);
+            }
+
+        /* Nút submit đẹp hơn */
+        .btn-default {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+            .btn-default:hover {
+                background-color: #45a049;
+            }
+
+        /* Thông báo lỗi Validation */
+        .text-danger {
+            color: #d9534f;
+            font-size: 0.875em;
+        }
+    </style>
+
+    @using (Html.BeginForm("Profile", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h2 class="text-center">Thông tin cá nhân</h2>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.User.user_id)
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.User.Name, "Tên hiển thị", htmlAttributes: new { @class = "control-label col-md-4" })
+            <div class="col-md-12">
+                <input type="text" name="Name" value="@Model.User.Name" class="form-control" />
+                @Html.ValidationMessageFor(model => model.User.Name, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.User.EmailId, "Email", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-12">
+                <input type="email" name="EmailId" value="@Model.User.EmailId" class="form-control" />
+                @Html.ValidationMessageFor(model => model.User.EmailId, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.User.Password, "Mật khẩu mới", htmlAttributes: new { @class = "control-label col-md-4" })
+            <div class="col-md-12">
+                <input type="password" name="Password" value="" class="form-control" />
+                @Html.ValidationMessageFor(model => model.User.Password, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.User.Address, "Địa chỉ", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-12">
+                <input type="text" name="Address" value="@Model.User.Address" class="form-control" />
+                @Html.ValidationMessageFor(model => model.User.Address, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.User.PhoneNumber, "Số điện thoại", htmlAttributes: new { @class = "control-label col-md-4" })
+            <div class="col-md-12">
+                <input type="text" name="PhoneNumber" value="@Model.User.PhoneNumber" class="form-control" />
+                @Html.ValidationMessageFor(model => model.User.PhoneNumber, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-3; text-center">
+                <input type="submit" value="Cập nhật" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+    }
+

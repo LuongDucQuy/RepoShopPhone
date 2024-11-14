@@ -3,32 +3,8 @@
   "WorkspaceRootPath": "C:\\project\\projectShopLaptop\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{4E42688B-8F7F-4CB1-B7CB-952ED302BC36}|projectShopLaptop\\projectShopLaptop.csproj|C:\\project\\projectShopLaptop\\projectshoplaptop\\views\\home\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{4E42688B-8F7F-4CB1-B7CB-952ED302BC36}|projectShopLaptop\\projectShopLaptop.csproj|solutionrelative:projectshoplaptop\\views\\home\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{4E42688B-8F7F-4CB1-B7CB-952ED302BC36}|projectShopLaptop\\projectShopLaptop.csproj|c:\\project\\projectshoplaptop\\projectshoplaptop\\repository\\irepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{4E42688B-8F7F-4CB1-B7CB-952ED302BC36}|projectShopLaptop\\projectShopLaptop.csproj|solutionrelative:projectshoplaptop\\repository\\irepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{4E42688B-8F7F-4CB1-B7CB-952ED302BC36}|projectShopLaptop\\projectShopLaptop.csproj|C:\\project\\projectShopLaptop\\projectshoplaptop\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{4E42688B-8F7F-4CB1-B7CB-952ED302BC36}|projectShopLaptop\\projectShopLaptop.csproj|solutionrelative:projectshoplaptop\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{4E42688B-8F7F-4CB1-B7CB-952ED302BC36}|projectShopLaptop\\projectShopLaptop.csproj|C:\\project\\projectShopLaptop\\projectshoplaptop\\models\\categorydetail.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{4E42688B-8F7F-4CB1-B7CB-952ED302BC36}|projectShopLaptop\\projectShopLaptop.csproj|solutionrelative:projectshoplaptop\\models\\categorydetail.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{4E42688B-8F7F-4CB1-B7CB-952ED302BC36}|projectShopLaptop\\projectShopLaptop.csproj|C:\\project\\projectShopLaptop\\projectshoplaptop\\repository\\genericunitofwork.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{4E42688B-8F7F-4CB1-B7CB-952ED302BC36}|projectShopLaptop\\projectShopLaptop.csproj|solutionrelative:projectshoplaptop\\repository\\genericunitofwork.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{4E42688B-8F7F-4CB1-B7CB-952ED302BC36}|projectShopLaptop\\projectShopLaptop.csproj|C:\\project\\projectShopLaptop\\projectshoplaptop\\models\\home\\homeindexviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{4E42688B-8F7F-4CB1-B7CB-952ED302BC36}|projectShopLaptop\\projectShopLaptop.csproj|solutionrelative:projectshoplaptop\\models\\home\\homeindexviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{4E42688B-8F7F-4CB1-B7CB-952ED302BC36}|projectShopLaptop\\projectShopLaptop.csproj|C:\\project\\projectShopLaptop\\projectshoplaptop\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{4E42688B-8F7F-4CB1-B7CB-952ED302BC36}|projectShopLaptop\\projectShopLaptop.csproj|solutionrelative:projectshoplaptop\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{4E42688B-8F7F-4CB1-B7CB-952ED302BC36}|projectShopLaptop\\projectShopLaptop.csproj|c:\\project\\projectshoplaptop\\projectshoplaptop\\views\\admin\\productedit.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{4E42688B-8F7F-4CB1-B7CB-952ED302BC36}|projectShopLaptop\\projectShopLaptop.csproj|solutionrelative:projectshoplaptop\\views\\admin\\productedit.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     }
   ],
   "DocumentGroupContainers": [
@@ -38,7 +14,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 11,
+          "SelectedChildIndex": 5,
           "Children": [
             {
               "$type": "Bookmark",
@@ -62,88 +38,15 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "IRepository.cs",
-              "DocumentMoniker": "C:\\project\\projectShopLaptop\\projectShopLaptop\\Repository\\IRepository.cs",
-              "RelativeDocumentMoniker": "projectShopLaptop\\Repository\\IRepository.cs",
-              "ToolTip": "C:\\project\\projectShopLaptop\\projectShopLaptop\\Repository\\IRepository.cs",
-              "RelativeToolTip": "projectShopLaptop\\Repository\\IRepository.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAAzAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-01T08:56:07.253Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "GenericUnitOfWork.cs",
-              "DocumentMoniker": "C:\\project\\projectShopLaptop\\projectShopLaptop\\Repository\\GenericUnitOfWork.cs",
-              "RelativeDocumentMoniker": "projectShopLaptop\\Repository\\GenericUnitOfWork.cs",
-              "ToolTip": "C:\\project\\projectShopLaptop\\projectShopLaptop\\Repository\\GenericUnitOfWork.cs",
-              "RelativeToolTip": "projectShopLaptop\\Repository\\GenericUnitOfWork.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAACoAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-01T08:55:27.045Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "HomeIndexViewModel.cs",
-              "DocumentMoniker": "C:\\project\\projectShopLaptop\\projectShopLaptop\\Models\\Home\\HomeIndexViewModel.cs",
-              "RelativeDocumentMoniker": "projectShopLaptop\\Models\\Home\\HomeIndexViewModel.cs",
-              "ToolTip": "C:\\project\\projectShopLaptop\\projectShopLaptop\\Models\\Home\\HomeIndexViewModel.cs",
-              "RelativeToolTip": "projectShopLaptop\\Models\\Home\\HomeIndexViewModel.cs",
-              "ViewState": "AgIAAAEAAAAAAAAAAAAAADAAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-01T08:52:39.246Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "CategoryDetail.cs",
-              "DocumentMoniker": "C:\\project\\projectShopLaptop\\projectShopLaptop\\Models\\CategoryDetail.cs",
-              "RelativeDocumentMoniker": "projectShopLaptop\\Models\\CategoryDetail.cs",
-              "ToolTip": "C:\\project\\projectShopLaptop\\projectShopLaptop\\Models\\CategoryDetail.cs",
-              "RelativeToolTip": "projectShopLaptop\\Models\\CategoryDetail.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-01T08:52:28.816Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "HomeController.cs",
-              "DocumentMoniker": "C:\\project\\projectShopLaptop\\projectShopLaptop\\Controllers\\HomeController.cs",
-              "RelativeDocumentMoniker": "projectShopLaptop\\Controllers\\HomeController.cs",
-              "ToolTip": "C:\\project\\projectShopLaptop\\projectShopLaptop\\Controllers\\HomeController.cs",
-              "RelativeToolTip": "projectShopLaptop\\Controllers\\HomeController.cs",
-              "ViewState": "AgIAABEAAAAAAAAAAAAAwCcAAAAWAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-01T08:16:59.667Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "_Layout.cshtml",
-              "DocumentMoniker": "C:\\project\\projectShopLaptop\\projectShopLaptop\\Views\\Shared\\_Layout.cshtml",
-              "RelativeDocumentMoniker": "projectShopLaptop\\Views\\Shared\\_Layout.cshtml",
-              "ToolTip": "C:\\project\\projectShopLaptop\\projectShopLaptop\\Views\\Shared\\_Layout.cshtml",
-              "RelativeToolTip": "projectShopLaptop\\Views\\Shared\\_Layout.cshtml",
-              "ViewState": "AgIAAFEAAAAAAAAAAAAAAG4AAAAhAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2024-11-01T08:16:16.86Z"
-            },
-            {
-              "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "Index.cshtml",
-              "DocumentMoniker": "C:\\project\\projectShopLaptop\\projectShopLaptop\\Views\\Home\\Index.cshtml",
-              "RelativeDocumentMoniker": "projectShopLaptop\\Views\\Home\\Index.cshtml",
-              "ToolTip": "C:\\project\\projectShopLaptop\\projectShopLaptop\\Views\\Home\\Index.cshtml",
-              "RelativeToolTip": "projectShopLaptop\\Views\\Home\\Index.cshtml",
-              "ViewState": "AgIAALcAAAAAAAAAAAAAAMEAAABLAAAAAAAAAA==",
+              "Title": "ProductEdit.cshtml",
+              "DocumentMoniker": "C:\\project\\projectShopLaptop\\projectShopLaptop\\Views\\Admin\\ProductEdit.cshtml",
+              "RelativeDocumentMoniker": "projectShopLaptop\\Views\\Admin\\ProductEdit.cshtml",
+              "ToolTip": "C:\\project\\projectShopLaptop\\projectShopLaptop\\Views\\Admin\\ProductEdit.cshtml",
+              "RelativeToolTip": "projectShopLaptop\\Views\\Admin\\ProductEdit.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABQAAABDAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2024-11-01T08:10:26.487Z",
+              "WhenOpened": "2024-11-14T02:58:31.031Z",
               "EditorCaption": ""
             }
           ]

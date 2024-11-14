@@ -20,18 +20,22 @@
         <!-- Navbar-->
         <ul class="navbar-nav ms-lg-auto ms-md-0 me-3 me-lg-4">
             <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    <i class="fas fa-user fa-fw"></i>
-                    @*@{
-                            var user = HttpContext.Current.Session["user"].ToString();
+                <a class="nav-link dropdown-toggle d-flex align-items-center" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <img src="~/img/7.jpg" alt="User Logo" class="rounded-circle" style="width: 30px; height: 30px; object-fit: cover; margin-right: 8px;">
+                    <span class="d-none d-sm-inline">
+                        <!-- Hiển thị tên người dùng -->
+                        @*@{
+                            var user = HttpContext.Current.Session["user"]?.ToString() ?? "User";
                             <span>@user</span>
                         }*@
+                    </span>
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                     <li><a class="dropdown-item" href="@Url.Action("Logout", "Home")">Đăng xuất</a></li>
                 </ul>
             </li>
         </ul>
+
     </nav>
     <div id="layoutSidenav">
         <div id="layoutSidenav_nav">
@@ -39,7 +43,7 @@
                 <div class="sb-sidenav-menu">
                     <div class="nav">
                         <div class="sb-sidenav-menu-heading">Core</div>
-                        <a class="nav-link" href="../Admin/Dashboard">
+                        <a class="nav-link" href="../Statistical/Dashboard">
                             <div class="sb-nav-link-icon"><i class="fas fa-home"></i></div>
                             Trang chủ
                         </a>

@@ -1,106 +1,113 @@
-﻿
-@{
-    Layout = null;
+﻿@{
+    ViewBag.Title = "Đăng ký";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
+<style>
+    /* Container styling */
+    .container {
+        max-width: 500px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #f9f9f9;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <title>Đăng Ký</title>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: linear-gradient(to right, #6a11cb, #2575fc);
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
+    /* Registration form styling */
+    .form.registration {
+        text-align: center;
+    }
 
-        .container {
-            background: #ffffff;
-            border-radius: 8px;
-            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-            max-width: 400px;
-            width: 100%;
-        }
-
-        .form.registration {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .logo img {
-            width: 80px;
+        .form.registration .logo img {
+            width: 50px;
             margin-bottom: 20px;
         }
 
-        form {
-            width: 100%;
-        }
-
-            form p {
-                margin-bottom: 15px;
-            }
-
-            form label {
-                display: block;
-                margin-bottom: 5px;
-                font-weight: bold;
-            }
-
-            form input[type="text"],
-            form input[type="email"],
-            form input[type="password"] {
-                width: 100%;
-                padding: 10px;
-                border: 1px solid #ddd;
-                border-radius: 5px;
-                box-sizing: border-box;
-            }
-
-            form input[type="submit"] {
-                width: 100%;
-                padding: 10px;
-                background: #6a11cb;
-                color: #ffffff;
-                border: none;
-                border-radius: 5px;
-                cursor: pointer;
-                font-size: 16px;
-            }
-
-                form input[type="submit"]:hover {
-                    background-color: #0056b3;
-                }
-
-            form a {
-                text-decoration: none;
-                font-size: 14px;
-            }
-
-                form a:hover {
-                    text-decoration: underline;
-                }
-
-        span {
-            color: red;
-        }
-
-        .text-danger {
-            color: red;
+        .form.registration form p {
             margin-bottom: 15px;
+            text-align: left;
         }
 
-        </style>
-</head>
-<body>
+        .form.registration label {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .form.registration input[type="text"],
+        .form.registration input[type="email"],
+        .form.registration input[type="password"] {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        .form.registration input[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            background-color: #007bff;
+            color: #fff;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+            .form.registration input[type="submit"]:hover {
+                background-color: #0056b3;
+            }
+
+        /* Error message styling */
+        .form.registration div span {
+            color: red;
+            font-size: 14px;
+        }
+
+
+    .container-fluid h5 {
+        color: #fff;
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+    .container-fluid p,
+    .container-fluid a {
+        font-size: 14px;
+        color: #adb5bd;
+    }
+
+        .container-fluid a:hover {
+            color: #fff;
+            text-decoration: none;
+        }
+
+    /* Social buttons */
+    .btn-square {
+        width: 36px;
+        height: 36px;
+        line-height: 36px;
+        border-radius: 50%;
+        text-align: center;
+        background-color: #007bff;
+        color: #fff;
+        margin-right: 8px;
+    }
+
+        .btn-square i {
+            font-size: 18px;
+        }
+
+    /* Footer payment section */
+    .border-top {
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        padding-top: 20px;
+    }
+
+</style>
     <div class="container clearfix">
         <div class="form registration">
             <a class="logo" href="@Url.Action("Index", "Home")">
@@ -146,6 +153,75 @@
             </form>
         </div>
     </div>
-</body>
-</html>
+    <div class="container-fluid bg-dark text-secondary mt-5 pt-5">
+        <div class="row px-xl-5 pt-5">
+            <div class="col-lg-4 col-md-12 mb-5 pr-3 pr-xl-5">
+                <h5 class="text-secondary text-uppercase mb-4">Hỗ Trợ - Dịch Vụ</h5>
+                <p class="mb-4">
+                    Chính sách và hướng dẫn mua hàng trả góp
+                    <br> Hướng dẫn mua hàng và chính sách vận chuyển
+                    <br> Tra cứu đơn hàng
+                    <br> Chính sách đổi mới và bảo hành
+                    <br> Dịch vụ bảo hành mở rộng
+                    <br> Chính sách bảo mật
+                    <br> Chính sách giải quyết khiếu nại
+                    <br> Quy chế hoạt động
+                </p>
+                <p class="mb-2"><i class="fa fa-map-marker-alt text-primary mr-3"></i>123 Street, New York, USA</p>
+                <p class="mb-2"><i class="fa fa-envelope text-primary mr-3"></i>luongducquy20041117@gmail.com</p>
+                <p class="mb-0"><i class="fa fa-phone-alt text-primary mr-3"></i>+012 345 6789</p>
+            </div>
+            <div class="col-lg-8 col-md-12">
+                <div class="row">
+                    <div class="col-md-4 mb-5">
+                        <h5 class="text-secondary text-uppercase mb-4">Thông Tin Liên Hệ</h5>
+                        <div class="d-flex flex-column justify-content-start">
+                            <a class="text-secondary mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Thông tin các trang TMĐT</a>
+                            <a class="text-secondary mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Khách hàng doanh nghiệp (B2B)</a>
+                            <a class="text-secondary mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Tra cứu bảo hành</a>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-5">
+                        <h5 class="text-secondary text-uppercase mb-4">Dịch Vụ Và Thông Tin Khác</h5>
+                        <div class="d-flex flex-column justify-content-start">
+                            <a class="text-secondary mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Chính sách bảo mật thông tin cá nhân</a>
+                            <a class="text-secondary mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Chính sách Bảo hành</a>
+                            <a class="text-secondary mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Liên hệ hợp tác kinh doanh</a>
+                            <a class="text-secondary mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Dịch vụ bảo hành mở rộng</a>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-5">
+                        <h5 class="text-secondary text-uppercase mb-4">ĐĂNG KÝ NHẬN KHUYẾN MÃI</h5>
+                        <form action="">
+                            <div class="input-group">
+                                <input type="text" class="form-control" placeholder="Your Email Address">
+                                <div class="input-group-append">
+                                    <button class="btn btn-primary">Sign Up</button>
+                                </div>
+                            </div>
+                        </form>
+                        <h6 class="text-secondary text-uppercase mt-4 mb-3">Follow Us</h6>
+                        <div class="d-flex">
+                            <a class="btn btn-primary btn-square mr-2" href="#"><i class="fab fa-twitter"></i></a>
+                            <a class="btn btn-primary btn-square mr-2" href="#"><i class="fab fa-facebook-f"></i></a>
+                            <a class="btn btn-primary btn-square mr-2" href="#"><i class="fab fa-linkedin-in"></i></a>
+                            <a class="btn btn-primary btn-square" href="#"><i class="fab fa-instagram"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row border-top mx-xl-5 py-4" style="border-color: rgba(256, 256, 256, .1) !important;">
+            <div class="col-md-6 px-xl-0">
+                <p class="mb-md-0 text-center text-md-left text-secondary">
+                    &copy; <a class="text-primary" href="#">Domain</a>. Designed
+                    by
+                    <a class="text-primary" href="https://htmlcodex.com">DucQuys</a>
+                </p>
+            </div>
+            <div class="col-md-6 px-xl-0 text-center text-md-right">
+                <img class="img-fluid" src="~/img/payments.png" alt="">
+            </div>
+        </div>
+    </div>
 

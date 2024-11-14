@@ -1,86 +1,105 @@
-﻿body {
-            background: linear-gradient(to right, #6a11cb, #2575fc);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            font-family: Arial, sans-serif;
+﻿.container {
+    max-width: 500px;
+    margin: 50px auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Logo */
+.logo img {
+    display: block;
+    margin: 0 auto 20px;
+    width: 120px;
+}
+
+/* Style cho form đăng nhập */
+.form.login {
+    text-align: center;
+}
+
+    .form.login p {
+        margin-bottom: 15px;
+    }
+
+    .form.login label {
+        font-weight: bold;
+        color: #333;
+    }
+
+    .form.login input[type="text"],
+    .form.login input[type="password"] {
+        width: 100%;
+        padding: 10px;
+        margin-top: 5px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+    }
+
+    .form.login button[type="submit"] {
+        width: 100%;
+        padding: 10px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+        .form.login button[type="submit"]:hover {
+            background-color: #0056b3;
         }
 
-        .container {
-            width: 100%;
-            max-width: 400px;
-            background: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        }
+/* Style cho thông báo lỗi */
+.text-danger {
+    color: red;
+    font-weight: bold;
+}
 
-        .logo img {
-            display: block;
-            margin: 0 auto 20px;
-            max-width: 150px;
-        }
+/* Footer */
+.container-fluid {
+    background-color: #333;
+    color: #aaa;
+}
 
-        .form p {
-            margin-bottom: 15px;
-        }
+    .container-fluid h5 {
+        color: #ddd;
+    }
 
-        label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-            color: #333;
-        }
+    .container-fluid p,
+    .container-fluid a {
+        color: #bbb;
+        text-decoration: none;
+    }
 
-            label span {
-                color: #e74c3c;
-            }
-
-        .form-control {
-            width: 100%;
-            padding: 10px;
-            margin-top: 5px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            box-sizing: border-box;
-            transition: border-color 0.3s;
-        }
-
-            .form-control:focus {
-                border-color: #6a11cb;
-                outline: none;
-            }
-
-        .text-danger {
-            color: #e74c3c;
-            font-size: 0.9em;
-            margin-top: -10px;
-        }
-
-        button {
-            background: #6a11cb;
+        .container-fluid a:hover {
             color: #fff;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-            width: 100%;
-            margin-top: 10px;
         }
 
-            button:hover {
-                background: #2575fc;
-            }
+    .container-fluid .input-group {
+        margin-top: 10px;
+    }
 
-        a {
-            color: #6a11cb;
-            text-decoration: none;
-            font-size: 0.9em;
-        }
+.btn-primary.btn-square {
+    width: 36px;
+    height: 36px;
+    border-radius: 4px;
+}
 
-            a:hover {
-                text-decoration: underline;
-            }
+.input-group .form-control {
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+}
+
+.input-group-append .btn {
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
+}
+
+/* Bottom footer */
+.row.border-top {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 15px 0;
+}

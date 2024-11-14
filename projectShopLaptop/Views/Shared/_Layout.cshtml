@@ -1,11 +1,11 @@
 ﻿@using projectShopLaptop.Models.Home;
-@model projectShopLaptop.Models.Home.HomeIndexViewModel
+@model dynamic
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewBag.Title - My ASP.NET Application</title>
+    <title>@ViewBag.Title</title>
     @*@Styles.Render("~/Content/css")*@
     @Scripts.Render("~/bundles/modernizr")
     <!-- Favicon -->
@@ -26,38 +26,37 @@
     <link href="~/css/style.css" rel="stylesheet">
     <style>
         .navbar-nav .dropdown-menu {
-        background-color: #f8f9fa; /* Màu nền nhẹ */
-        border-radius: 5px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Đổ bóng mềm mại */
-        padding: 10px; /* Tạo khoảng cách bên trong */
-        width: 300px; /* Điều chỉnh lại kích thước */
+            background-color: #f8f9fa; /* Màu nền nhẹ */
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Đổ bóng mềm mại */
+            padding: 10px; /* Tạo khoảng cách bên trong */
+            width: 300px; /* Điều chỉnh lại kích thước */
         }
 
-        .navbar-nav .dropdown-menu li a {
-        color: #333;
-        text-decoration: none;
-        display: block;
-        padding: 5px 10px;
-        transition: background-color 0.3s, color 0.3s; /* Hiệu ứng chuyển màu */
-        }
+            .navbar-nav .dropdown-menu li a {
+                color: #333;
+                text-decoration: none;
+                display: block;
+                padding: 5px 10px;
+                transition: background-color 0.3s, color 0.3s; /* Hiệu ứng chuyển màu */
+            }
 
-        .navbar-nav .dropdown-menu li a:hover {
-        background-color: #007bff; /* Màu nền khi hover */
-        color: #fff; /* Màu chữ khi hover */
-        border-radius: 3px;
-        }
+                .navbar-nav .dropdown-menu li a:hover {
+                    background-color: #007bff; /* Màu nền khi hover */
+                    color: #fff; /* Màu chữ khi hover */
+                    border-radius: 3px;
+                }
 
-        .navbar-nav .dropdown-menu .dropdown-divider {
-        border-color: #ddd; /* Màu của đường kẻ phân cách */
-        margin: 8px 0;
-        }
+            .navbar-nav .dropdown-menu .dropdown-divider {
+                border-color: #ddd; /* Màu của đường kẻ phân cách */
+                margin: 8px 0;
+            }
 
-        .navbar-nav .dropdown-menu .text-center {
-        font-style: italic; /* Kiểu chữ nghiêng cho thông báo giỏ hàng trống */
-        color: #888; /* Màu xám nhạt */
-        }
-
-        </style>
+            .navbar-nav .dropdown-menu .text-center {
+                font-style: italic; /* Kiểu chữ nghiêng cho thông báo giỏ hàng trống */
+                color: #888; /* Màu xám nhạt */
+            }
+    </style>
 </head>
 <body>
     <!-- Topbar Start -->
@@ -73,14 +72,28 @@
                 <div class="btn-group">
                     <button type="button" class="btn btn-sm btn-light dropdown-toggle" data-toggle="dropdown">
                         <i class="fa fa-user fa-fw"></i>
-                        @*@{
-                                var user = HttpContext.Current.Session["Name"].ToString();
+                        <span class="d-none d-sm-inline">
+                            <!-- Hiển thị tên người dùng -->
+                            @{
+                                var user = HttpContext.Current.Session["user"]?.ToString() ?? "";
                                 <span>@user</span>
-                            }*@
+                            }
+                        </span>
                     </button>
                     <div class="dropdown-menu dropdown-menu-right" style="z-index: 1050;">
-                        <a href="@Url.Action("Registe", "Home")" class="dropdown-item" type="button">Đăng kí</a>
-                        <a href="@Url.Action("Logout", "Home")" class="dropdown-item" type="button">Đăng xuất</a>
+                        @if (Session["user"] != null)
+                        {
+                            <!-- Nếu đã đăng nhập, hiển thị Đăng xuất và Hồ sơ -->
+                            <a href="@Url.Action("Profile", "Home", new { id = ViewBag.UserId })" class="dropdown-item" type="button">Thông tin cá nhân</a>
+                            <a href="@Url.Action("LichSuDonHang", "Home")" class="dropdown-item" type="button">Lịch sử đơn hàng</a>
+                            <a href="@Url.Action("Logout", "Home")" class="dropdown-item" type="button">Đăng xuất</a>
+                        }
+                        else
+                        {
+                            <!-- Nếu chưa đăng nhập, hiển thị Đăng nhập và Đăng ký -->
+                            <a href="@Url.Action("Login", "Home")" class="dropdown-item" type="button">Đăng nhập</a>
+                            <a href="@Url.Action("Registe", "Home")" class="dropdown-item" type="button">Đăng ký</a>
+                        }
                     </div>
                 </div>
             </div>

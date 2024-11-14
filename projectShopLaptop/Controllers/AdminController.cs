@@ -12,9 +12,10 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Helpers;
 using System.Web.Mvc;
-
+using projectShopLaptop.Filters;
 namespace projectShopLaptop.Controllers
 {
+    [AuthorizeAdmin]
     public class AdminController : Controller
     {
         dbClickShopEntities ctx = new dbClickShopEntities();
@@ -41,11 +42,6 @@ namespace projectShopLaptop.Controllers
                 list.Add(new SelectListItem { Value = item.user_id.ToString(), Text = item.Name });
             }
             return list;
-        }
-
-        public ActionResult Dashboard()
-        {
-            return View();
         }
 
         public ActionResult CustomerAdd()
