@@ -3,8 +3,8 @@
   "WorkspaceRootPath": "C:\\project\\projectShopLaptop\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{4E42688B-8F7F-4CB1-B7CB-952ED302BC36}|projectShopLaptop\\projectShopLaptop.csproj|c:\\project\\projectshoplaptop\\projectshoplaptop\\views\\admin\\productedit.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{4E42688B-8F7F-4CB1-B7CB-952ED302BC36}|projectShopLaptop\\projectShopLaptop.csproj|solutionrelative:projectshoplaptop\\views\\admin\\productedit.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{4E42688B-8F7F-4CB1-B7CB-952ED302BC36}|projectShopLaptop\\projectShopLaptop.csproj|c:\\project\\projectshoplaptop\\projectshoplaptop\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{4E42688B-8F7F-4CB1-B7CB-952ED302BC36}|projectShopLaptop\\projectShopLaptop.csproj|solutionrelative:projectshoplaptop\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     }
   ],
   "DocumentGroupContainers": [
@@ -14,39 +14,19 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 5,
+          "SelectedChildIndex": 0,
           "Children": [
-            {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{74946827-37a0-11d2-a273-00c04f8ef4ff}"
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{1c64b9c2-e352-428e-a56d-0ace190b99a6}"
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{b1e99781-ab81-11d0-b683-00aa00a3ee26}"
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{3ae79031-e1bc-11d0-8f78-00a0c9110057}"
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{eefa5220-e298-11d0-8f78-00a0c9110057}"
-            },
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "ProductEdit.cshtml",
-              "DocumentMoniker": "C:\\project\\projectShopLaptop\\projectShopLaptop\\Views\\Admin\\ProductEdit.cshtml",
-              "RelativeDocumentMoniker": "projectShopLaptop\\Views\\Admin\\ProductEdit.cshtml",
-              "ToolTip": "C:\\project\\projectShopLaptop\\projectShopLaptop\\Views\\Admin\\ProductEdit.cshtml",
-              "RelativeToolTip": "projectShopLaptop\\Views\\Admin\\ProductEdit.cshtml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABQAAABDAAAAAAAAAA==",
+              "Title": "_Layout.cshtml",
+              "DocumentMoniker": "C:\\project\\projectShopLaptop\\projectShopLaptop\\Views\\Shared\\_Layout.cshtml",
+              "RelativeDocumentMoniker": "projectShopLaptop\\Views\\Shared\\_Layout.cshtml",
+              "ToolTip": "C:\\project\\projectShopLaptop\\projectShopLaptop\\Views\\Shared\\_Layout.cshtml",
+              "RelativeToolTip": "projectShopLaptop\\Views\\Shared\\_Layout.cshtml",
+              "ViewState": "AgIAAKQAAAAAAAAAAAAAALMAAAA4AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2024-11-14T02:58:31.031Z",
+              "WhenOpened": "2024-11-19T13:58:22.987Z",
               "EditorCaption": ""
             }
           ]

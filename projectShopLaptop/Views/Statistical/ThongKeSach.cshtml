@@ -1,0 +1,130 @@
+﻿@{
+    ViewBag.Title = "Trang chủ";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.min.js"></script>
+<main>
+    <div class="container-fluid px-4">
+        <h1 class="mt-4">Trang chủ</h1>
+        <ol class="breadcrumb mb-4">
+            <li class="breadcrumb-item">Trang chủ</li>
+        </ol>
+        <div class="row">
+            <div class="col-xl-3 col-md-6">
+                <div class="card bg-primary text-white mb-4">
+                    <div class="card-body">Primary Card</div>
+                    <div class="card-footer d-flex align-items-center justify-content-between">
+                        <a class="small text-white stretched-link" href="#">View Details</a>
+                        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-md-6">
+                <div class="card bg-warning text-white mb-4">
+                    <div class="card-body">Warning Card</div>
+                    <div class="card-footer d-flex align-items-center justify-content-between">
+                        <a class="small text-white stretched-link" href="#">View Details</a>
+                        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-md-6">
+                <div class="card bg-success text-white mb-4">
+                    <div class="card-body">Success Card</div>
+                    <div class="card-footer d-flex align-items-center justify-content-between">
+                        <a class="small text-white stretched-link" href="#">View Details</a>
+                        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-md-6">
+                <div class="card bg-danger text-white mb-4">
+                    <div class="card-body">Danger Card</div>
+                    <div class="card-footer d-flex align-items-center justify-content-between">
+                        <a class="small text-white stretched-link" href="#">View Details</a>
+                        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <canvas id="myChart"></canvas>
+        </div>
+    </div>
+</main>
+
+<script>
+    // Get the sales data from ViewBag
+    let labels = @Html.Raw(Json.Encode(ViewBag.Dates));  // Dates (formatted as "yyyy-MM-dd")
+    let data = @Html.Raw(Json.Encode(ViewBag.Revenue));  // Total revenue per day
+
+    // Format the revenue data as Vietnamese Dong (VND)
+    const formatVND = new Intl.NumberFormat('vi-VN', {
+        style: 'currency',
+        currency: 'VND',
+    });
+
+    // Format the data for chart labels (to display in VND)
+    let formattedData = data.map(revenue => formatVND.format(revenue));  // Format each revenue value
+
+    let myChart = document.getElementById('myChart').getContext('2d');
+
+    let lineChart = new Chart(myChart, {
+        type: 'line',
+        data: {
+            labels: labels,  // Dates on the x-axis
+            datasets: [{
+                label: 'Doanh thu theo ngày',  // Chart label
+                data: data,  // Raw revenue data
+                borderColor: 'rgba(75, 192, 192, 1)',  // Line color
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',  // Line fill color
+                fill: true,  // Fill area under the line
+                borderWidth: 2,
+                // Format the tooltip to show revenue in VND
+                tooltip: {
+                    callbacks: {
+                        label: function(tooltipItem) {
+                            return tooltipItem.yLabel + ' VND';  // Add 'VND' to the tooltip
+                        }
+                    }
+                }
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            title: {
+                display: true,
+                text: 'Biểu đồ doanh thu bán hàng theo ngày',
+                fontSize: 20
+            },
+            scales: {
+                xAxes: [{
+                    ticks: {
+                        autoSkip: true,
+                        maxTicksLimit: 10
+                    }
+                }],
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true,
+                        callback: function(value, index, values) {  // Format the Y-axis ticks as VND
+                            return formatVND.format(value);
+                        }
+                    }
+                }]
+            },
+            // Display formatted data as tooltips
+            tooltips: {
+                callbacks: {
+                    label: function(tooltipItem, data) {
+                        // Format the tooltip with VND
+                        return formatVND.format(tooltipItem.yLabel);
+                    }
+                }
+            }
+        }
+    });
+</script>
+

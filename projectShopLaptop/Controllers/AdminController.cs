@@ -13,6 +13,7 @@ using System.Web;
 using System.Web.Helpers;
 using System.Web.Mvc;
 using projectShopLaptop.Filters;
+using projectShopLaptop.Mail;
 namespace projectShopLaptop.Controllers
 {
     [AuthorizeAdmin]
@@ -22,6 +23,24 @@ namespace projectShopLaptop.Controllers
         // GET: Admin
 
         public GenericUnitOfWork _unitOfWork = new GenericUnitOfWork();
+
+        // Kiểm tra xem người dùng đã đăng nhập chưa và xử lý cache
+        protected override void OnActionExecuting(ActionExecutingContext filterContext)
+        {
+            base.OnActionExecuting(filterContext);
+
+            // Nếu người dùng chưa đăng nhập, chuyển hướng đến trang đăng nhập
+            if (Session["user"] == null)
+            {
+                filterContext.Result = RedirectToAction("Login", "Home"); // Chuyển hướng đến trang đăng nhập
+            }
+
+            // Ngừng lưu bộ nhớ cache trên các trang nhạy cảm
+            Response.Cache.SetExpires(DateTime.UtcNow.AddMinutes(-1));
+            Response.Cache.SetCacheability(HttpCacheability.NoCache);
+            Response.Cache.SetNoStore();
+        }
+
         public List<SelectListItem> GetCategory()
         {
             List<SelectListItem> list = new List<SelectListItem>();
@@ -195,6 +214,7 @@ namespace projectShopLaptop.Controllers
         {
             // Tìm đơn hàng theo billId
             var bill = ctx.Tbl_Bill.FirstOrDefault(b => b.IDBill == billId);
+            var user = ctx.Tbl_User.Find(bill.user_id);
 
             if (bill != null)
             {
@@ -202,7 +222,26 @@ namespace projectShopLaptop.Controllers
                 bill.maTrangThai = 2;
                 ctx.SaveChanges();
 
-                TempData["success"] = "Đơn hàng đã được duyệt thành công.";
+                // Định dạng tiền tệ cho số tiền, sử dụng CultureInfo của Việt Nam (VND)
+                var vndCulture = new System.Globalization.CultureInfo("vi-VN");
+                string formattedAmount = bill.soTien.ToString("C0", vndCulture); // Định dạng với ký hiệu tiền tệ (VND)
+
+                // Tạo bảng HTML hiển thị thông tin khách hàng và đơn hàng
+                string customerTable = "<table border='1' cellpadding='5' cellspacing='0'>" +
+                                       "<tr><th>Tên Khách Hàng</th><th>Địa Chỉ</th><th>Điện Thoại</th><th>Số Tiền</th></tr>" +
+                                       "<tr>" +
+                                       $"<td>{bill.HoTen}</td>" +
+                                       $"<td>{bill.diaChi}</td>" +
+                                       $"<td>{bill.dienThoai}</td>" +
+                                       $"<td>{formattedAmount}</td>" +  // Hiển thị số tiền theo định dạng VND
+                                       "</tr>" +
+                                       "</table>";
+
+                // Tạo nội dung email với bảng khách hàng
+                string message = $"Đơn hàng của bạn đã được duyệt thành công. Dưới đây là thông tin đơn hàng:<br><br>{customerTable}";
+
+                // Gửi email thông báo
+                SendMailOrder(user, message);
             }
             else
             {
@@ -210,6 +249,18 @@ namespace projectShopLaptop.Controllers
             }
 
             return RedirectToAction("Order"); // Thay thế bằng tên Action phù hợp để quay lại trang quản lý đơn hàng.
+        }
+
+
+        public async Task SendMailOrder(Tbl_User user , string message)
+        {
+            string code = Guid.NewGuid().ToString();
+
+            // Tạo đường dẫn xác nhận
+            var callbackUrl = Url.Action("ConfirmEmail", "Mail", new { userId = user.user_id, code = code }, protocol: Request.Url.Scheme);
+
+            // Gửi email xác nhận
+            SendMail.SendEmail(user.EmailId, "Thông báo đơn hàng", message, "");
         }
 
         [HttpPost]
@@ -243,10 +294,19 @@ namespace projectShopLaptop.Controllers
 
             if (bill != null)
             {
-                bill.maTrangThai = 4; // Đặt mã trạng thái thành "Đã giao"
-                ctx.SaveChanges();
+                var user = ctx.Tbl_User.Find(bill.user_id);
 
-                TempData["success"] = "Đơn hàng đã được xác nhận thanh toán và chuyển trạng thái thành 'Đã giao'.";
+                if (user != null)
+                {
+                    // Đặt mã trạng thái thành "Đã giao"
+                    bill.maTrangThai = 4;
+                    ctx.SaveChanges();
+                    SendMailOrder(user, "Đơn hàng của bạn đã được xác nhận thanh toán.");
+                }
+                else
+                {
+                    TempData["error"] = "Không tìm thấy thông tin người dùng.";
+                }
             }
             else
             {

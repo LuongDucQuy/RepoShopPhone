@@ -92,6 +92,7 @@
     <EntitySetMapping Name="Tbl_User">
       <EntityTypeMapping TypeName="dbClickShopModel.Tbl_User">
         <MappingFragment StoreEntitySet="Tbl_User">
+          <ScalarProperty Name="confirmEmail" ColumnName="confirmEmail" />
           <ScalarProperty Name="PhoneNumber" ColumnName="PhoneNumber" />
           <ScalarProperty Name="Address" ColumnName="Address" />
           <ScalarProperty Name="role" ColumnName="role" />

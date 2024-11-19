@@ -124,6 +124,7 @@
     <Property Name="role" Type="nvarchar" MaxLength="50" />
     <Property Name="Address" Type="nvarchar" MaxLength="50" />
     <Property Name="PhoneNumber" Type="nvarchar" MaxLength="50" />
+    <Property Name="confirmEmail" Type="bit" Nullable="false" />
   </EntityType>
   <Association Name="FK__Tbl_Cart__Produc__5BE2A6F2">
     <End Role="Tbl_Product" Type="Self.Tbl_Product" Multiplicity="0..1" />

@@ -117,6 +117,13 @@
                 <img src="~/img/logoLogin.png" alt="Logo" />
             </a>
             <form role="form" method="post">
+                @if (ViewBag.ResendEmail != null && ViewBag.ResendEmail == true)
+                {
+                    <div class="alert alert-warning">
+                        <p>@ViewBag.ErrorMessage</p>
+                        @Html.ActionLink("Gửi lại mail, click vào đây", "ResendConfirmationEmail", "Home", new { email = ViewBag.UserEmail }, new { @class = "btn btn-link", onclick = "return confirm('Bạn có chắc chắn muốn gửi lại email xác nhận không?');" })
+                    </div>
+                }
                 <p>
                     <label style="display: flex; align-items:center">Nhập tài khoản đăng nhập<span>*</span></label>
                     <input class="form-control" placeholder="Username" name="user" type="text" required autofocus>
@@ -131,6 +138,9 @@
                 <p>
                     <label style="display: flex; align-items: center;">
                         <a href="@Url.Action("Registe", "Home")">Tạo tài khoản mới</a>
+                    </label>
+                    <label style="display: flex; align-items: center;">
+                        <a href="@Url.Action("ForgotPassword", "Home")">Quên mật khẩu</a>
                     </label>
                     <button type="submit">Đăng nhập</button>
                 </p>

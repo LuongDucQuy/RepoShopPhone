@@ -10,11 +10,10 @@
         <li class="breadcrumb-item">Trang chủ</li>
         <li class="breadcrumb-item">Khách hàng</li>
     </ol>
-    <h1 class="mt-4"></h1>
     <div class="card mb-4">
         <div class="card-header d-flex justify-content-between align-items-center">
             <span>
-                <i class="fas fa-table me-1"></i> 
+                <i class="fas fa-table me-1"></i>
             </span>
             <a href="../Admin/CustomerAdd" class="btn btn-info">
                 <i class="fa fa-plus"></i> Thêm mới
@@ -30,7 +29,7 @@
                         <th scope="col">Email</th>
                         <th scope="col">Mật Khẩu</th>
                         <th scope="col">Ngày Tạo</th>
-                        <th scope="col">Thao tác</th>
+                        <th style="width: 200px">Thao tác</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -48,14 +47,20 @@
                             <td>@item.Password</td>
                             <td>@item.CreatedOn</td>
                             <td>
-                                <form action="@Url.Action("customerEdit", "Admin")" method="get" style="display:inline;">
-                                    <input type="hidden" name="id" value="@item.user_id" />
-                                    <button type="submit" class="btn btn-sm btn-primary">Cập nhật</button>
-                                </form>
-                                <form action="@Url.Action("DeleteAccCtm", "Admin")" method="post" style="display:inline;">
-                                    <input type="hidden" name="id" value="@item.user_id" />
-                                    <button type="submit" class="btn btn-sm btn-danger btnDelete" onclick="return confirm('Bạn có chắc chắn muốn xóa tài khoản này không?');">Xóa</button>
-                                </form>
+                                <div class="btn-group">
+                                    <!-- Cập nhật -->
+                                    <a href="@Url.Action("customerEdit", "Admin", new { id = item.user_id })" class="btn btn-sm btn-primary" title="Cập nhật">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+
+                                    <!-- Xóa -->
+                                    <form action="@Url.Action("DeleteAccCtm", "Admin")" method="post" style="display:inline;">
+                                        <input type="hidden" name="id" value="@item.user_id" />
+                                        <button type="submit" class="btn btn-sm btn-danger btnDelete" title="Xóa" onclick="return confirm('Bạn có chắc chắn muốn xóa tài khoản này không?');">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
                             </td>
                         </tr>
                         count++;
@@ -65,5 +70,3 @@
         </div>
     </div>
 </div>
-
-

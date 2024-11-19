@@ -32,6 +32,7 @@ namespace projectShopLaptop.DAL
         public string role { get; set; }
         public string Address { get; set; }
         public string PhoneNumber { get; set; }
+        public bool confirmEmail { get; set; }
     
         public virtual ICollection<Tbl_ShippingDetails> Tbl_ShippingDetails { get; set; }
         public virtual ICollection<Tbl_Bill> Tbl_Bill { get; set; }

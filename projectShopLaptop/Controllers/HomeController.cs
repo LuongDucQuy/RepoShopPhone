@@ -1,13 +1,16 @@
 ﻿using PagedList;
 using PayPal.Api;
 using projectShopLaptop.DAL;
+using projectShopLaptop.Mail;
 using projectShopLaptop.Models;
 using projectShopLaptop.Models.Home;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
@@ -40,7 +43,7 @@ namespace projectShopLaptop.Controllers
             int pageNumber = (page ?? 1);
 
             IPagedList<Tbl_Product> products = ctx.Tbl_Product
-                .Where(p => p.CategoryId == id)
+                .Where(p => p.CategoryId == id && p.IsActive==true)
                 .OrderBy(p => p.ProductId)
                 .ToPagedList(pageNumber, pageSize);
 
@@ -66,6 +69,15 @@ namespace projectShopLaptop.Controllers
 
                 if (existingUser != null)
                 {
+                    // Kiểm tra nếu email chưa được xác nhận
+                    if (existingUser.confirmEmail == false)
+                    {
+                        ViewBag.ErrorMessage = "Email của bạn chưa được xác nhận. Vui lòng kiểm tra email hoặc yêu cầu gửi lại.";
+                        ViewBag.ResendEmail = true;
+                        ViewBag.UserEmail = existingUser.EmailId; // Để tạo liên kết gửi lại email xác nhận
+                        return View(existingUser); // Giữ người dùng lại trang Login 
+                    }
+
                     // Mã hóa mật khẩu người dùng nhập vào để so sánh
                     var hashedPassword = HashPassword(password);
 
@@ -79,7 +91,7 @@ namespace projectShopLaptop.Controllers
                     // Kiểm tra mật khẩu chưa mã hóa (dành cho trường hợp dữ liệu cũ)
                     else if (existingUser.Password == password)
                     {
-                        // Nếu mật khẩu khớp, tiến hành cập nhật mật khẩu đã mã hóa trong cơ sở dữ liệu
+                        // Nếu mật khẩu khớp, cập nhật mật khẩu đã mã hóa trong cơ sở dữ liệu
                         existingUser.Password = hashedPassword;
                         dbContext.SaveChanges();
 
@@ -90,16 +102,33 @@ namespace projectShopLaptop.Controllers
                     else
                     {
                         // Sai mật khẩu
-                        TempData["error"] = "Tài khoản đăng nhập không đúng.";
+                        TempData["error"] = "Mật khẩu không đúng.";
                         return View();
                     }
                 }
                 else
                 {
-                    TempData["error"] = "Tài khoản đăng nhập không đúng.";
+                    // Sai tài khoản
+                    TempData["error"] = "Tài khoản không tồn tại.";
                     return View();
                 }
             }
+        }
+        [AllowAnonymous]
+        public async Task<ActionResult> ResendConfirmationEmail(string email)
+        {
+            var user = await ctx.Tbl_User.Where(u => u.EmailId == email).FirstOrDefaultAsync();
+            if (user != null && !user.confirmEmail)
+            {
+                string code = Guid.NewGuid().ToString();
+
+                // Tạo đường dẫn xác nhận
+                var callbackUrl = Url.Action("ConfirmEmail", "Mail", new { userId = user.user_id, code = code }, protocol: Request.Url.Scheme);
+
+                // Gửi email xác nhận
+                SendMail.SendEmail(user.EmailId, "Confirm your account", "Please click <a href=\"" + callbackUrl + "\">here</a> to confirm your account.", "");
+            }
+            return View("EmailCheck");
         }
 
         // Hàm thiết lập thông tin phiên đăng nhập
@@ -186,7 +215,19 @@ namespace projectShopLaptop.Controllers
 
                 dbContext.Tbl_User.Add(newUser);
                 dbContext.SaveChanges();
-                return RedirectToAction("Login");
+                // Tạo mã xác nhận
+                string code = Guid.NewGuid().ToString();
+
+                // Tạo đường dẫn xác nhận
+                var callbackUrl = Url.Action("ConfirmEmail", "Mail", new { userId = newUser.user_id, code = code }, protocol: Request.Url.Scheme);
+
+                // Gửi email xác nhận
+                SendMail.SendEmail(newUser.EmailId, "Confirm your account", "Please click <a href=\"" + callbackUrl + "\">here</a> to confirm your account.", "");
+
+                // Thông báo gửi thành công
+                ViewBag.ThongBao = "Chúng tôi đã gửi cho bạn một email để xác thực. Vui lòng kiểm tra!";
+
+                return View("EmailCheck");
             }
         }
 
@@ -300,6 +341,94 @@ namespace projectShopLaptop.Controllers
                 return builder.ToString();
             }
         }
+
+        public ActionResult ForgotPassword()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> ForgotPassword(string email)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View();
+            }
+
+            using (var dbContext = new dbClickShopEntities())
+            {
+                var user = await dbContext.Tbl_User.FirstOrDefaultAsync(u => u.EmailId == email);
+
+                if (user == null)
+                {
+                    ModelState.AddModelError("", "Email không tồn tại trong hệ thống.");
+                    return View();
+                }
+
+                string code = Guid.NewGuid().ToString();
+                var callbackUrl = Url.Action("ResetPassword", "Home", new { email = user.EmailId }, protocol: Request.Url.Scheme);
+
+                SendMail.SendEmail(user.EmailId, "Reset Password", $"Please reset your password by clicking <a href=\"{callbackUrl}\">here</a>.", "");
+
+                ViewBag.Message = "Liên kết đặt lại mật khẩu đã được gửi đến email của bạn. Vui lòng kiểm tra!";
+                return View("EmailCheck");
+            }
+        }
+
+        [AllowAnonymous]
+        public ActionResult ResetPassword(string email)
+        {
+            if (string.IsNullOrEmpty(email))
+            {
+                // Xử lý lỗi nếu thiếu email
+                return RedirectToAction("Index");
+            }
+
+            // Truyền email vào View để sử dụng cho việc hiển thị
+            ViewBag.Email = email;
+            return View();
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> ResetPassword(string email, string password, string confirmPassword)
+        {
+            if (!ModelState.IsValid)
+            {
+                ViewBag.Email = email;  // Giữ lại email khi có lỗi
+                return View();
+            }
+
+            // Kiểm tra nếu mật khẩu và xác nhận mật khẩu khớp nhau
+            if (password != confirmPassword)
+            {
+                ModelState.AddModelError("", "Mật khẩu và xác nhận mật khẩu không khớp.");
+                ViewBag.Email = email;  // Giữ lại email khi mật khẩu không khớp
+                return View();
+            }
+
+            using (var dbContext = new dbClickShopEntities())
+            {
+                var user = await dbContext.Tbl_User.FirstOrDefaultAsync(u => u.EmailId == email);
+
+                if (user == null)
+                {
+                    ModelState.AddModelError("", "Email không tồn tại trong hệ thống.");
+                    ViewBag.Email = email;  // Giữ lại email nếu không tìm thấy người dùng
+                    return View();
+                }
+
+                // Cập nhật mật khẩu
+                user.Password = HashPassword(password);  // Giả sử bạn có phương thức hash mật khẩu
+                await dbContext.SaveChangesAsync();
+
+                return RedirectToAction("Login", "Home");
+            }
+        }
+
 
         public ActionResult shoppingCart()
         {
@@ -584,151 +713,151 @@ namespace projectShopLaptop.Controllers
             }
         }
 
-        public ActionResult FailureView()
-        {
-            return View();
-        }
+        //public ActionResult FailureView()
+        //{
+        //    return View();
+        //}
 
-        public ActionResult SuccessView()
-        {
-            return View();
-        }
+        //public ActionResult SuccessView()
+        //{
+        //    return View();
+        //}
 
-        public ActionResult PaymentWithPaypal(string Cancel = null)
-        {
-            //getting the apiContext  
-            APIContext apiContext = PaypalConfiguration.GetAPIContext();
-            try
-            {
-                //A resource representing a Payer that funds a payment Payment Method as paypal  
-                //Payer Id will be returned when payment proceeds or click to pay  
-                string payerId = Request.Params["PayerID"];
-                if (string.IsNullOrEmpty(payerId))
-                {
-                    //this section will be executed first because PayerID doesn't exist  
-                    //it is returned by the create function call of the payment class  
-                    // Creating a payment  
-                    // baseURL is the url on which paypal sendsback the data.  
-                    string baseURI = Request.Url.Scheme + "://" + Request.Url.Authority + "/Home/PaymentWithPayPal?";
-                    //here we are generating guid for storing the paymentID received in session  
-                    //which will be used in the payment execution  
-                    var guid = Convert.ToString((new Random()).Next(100000));
-                    //CreatePayment function gives us the payment approval url  
-                    //on which payer is redirected for paypal account payment  
-                    var createdPayment = this.CreatePayment(apiContext, baseURI + "guid=" + guid);
-                    //get links returned from paypal in response to Create function call  
-                    var links = createdPayment.links.GetEnumerator();
-                    string paypalRedirectUrl = null;
-                    while (links.MoveNext())
-                    {
-                        Links lnk = links.Current;
-                        if (lnk.rel.ToLower().Trim().Equals("approval_url"))
-                        {
-                            //saving the payapalredirect URL to which user will be redirected for payment  
-                            paypalRedirectUrl = lnk.href;
-                        }
-                    }
-                    // saving the paymentID in the key guid  
-                    Session.Add(guid, createdPayment.id);
-                    return Redirect(paypalRedirectUrl);
-                }
-                else
-                {
-                    // This function exectues after receving all parameters for the payment  
-                    var guid = Request.Params["guid"];
-                    var executedPayment = ExecutePayment(apiContext, payerId, Session[guid] as string);
-                    //If executed payment failed then we will show payment failure message to user  
-                    if (executedPayment.state.ToLower() != "approved")
-                    {
-                        return View("FailureView");
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                return View("FailureView");
-            }
-            //on successful payment, show success page to user.  
-            return View("SuccessView");
-        }
-        private PayPal.Api.Payment payment;
-        private Payment ExecutePayment(APIContext apiContext, string payerId, string paymentId)
-        {
-            var paymentExecution = new PaymentExecution()
-            {
-                payer_id = payerId
-            };
-            this.payment = new Payment()
-            {
-                id = paymentId
-            };
-            return this.payment.Execute(apiContext, paymentExecution);
-        }
+        //public ActionResult PaymentWithPaypal(string Cancel = null)
+        //{
+        //    //getting the apiContext  
+        //    APIContext apiContext = PaypalConfiguration.GetAPIContext();
+        //    try
+        //    {
+        //        //A resource representing a Payer that funds a payment Payment Method as paypal  
+        //        //Payer Id will be returned when payment proceeds or click to pay  
+        //        string payerId = Request.Params["PayerID"];
+        //        if (string.IsNullOrEmpty(payerId))
+        //        {
+        //            //this section will be executed first because PayerID doesn't exist  
+        //            //it is returned by the create function call of the payment class  
+        //            // Creating a payment  
+        //            // baseURL is the url on which paypal sendsback the data.  
+        //            string baseURI = Request.Url.Scheme + "://" + Request.Url.Authority + "/Home/PaymentWithPayPal?";
+        //            //here we are generating guid for storing the paymentID received in session  
+        //            //which will be used in the payment execution  
+        //            var guid = Convert.ToString((new Random()).Next(100000));
+        //            //CreatePayment function gives us the payment approval url  
+        //            //on which payer is redirected for paypal account payment  
+        //            var createdPayment = this.CreatePayment(apiContext, baseURI + "guid=" + guid);
+        //            //get links returned from paypal in response to Create function call  
+        //            var links = createdPayment.links.GetEnumerator();
+        //            string paypalRedirectUrl = null;
+        //            while (links.MoveNext())
+        //            {
+        //                Links lnk = links.Current;
+        //                if (lnk.rel.ToLower().Trim().Equals("approval_url"))
+        //                {
+        //                    //saving the payapalredirect URL to which user will be redirected for payment  
+        //                    paypalRedirectUrl = lnk.href;
+        //                }
+        //            }
+        //            // saving the paymentID in the key guid  
+        //            Session.Add(guid, createdPayment.id);
+        //            return Redirect(paypalRedirectUrl);
+        //        }
+        //        else
+        //        {
+        //            // This function exectues after receving all parameters for the payment  
+        //            var guid = Request.Params["guid"];
+        //            var executedPayment = ExecutePayment(apiContext, payerId, Session[guid] as string);
+        //            //If executed payment failed then we will show payment failure message to user  
+        //            if (executedPayment.state.ToLower() != "approved")
+        //            {
+        //                return View("FailureView");
+        //            }
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return View("FailureView");
+        //    }
+        //    //on successful payment, show success page to user.  
+        //    return View("SuccessView");
+        //}
+        //private PayPal.Api.Payment payment;
+        //private Payment ExecutePayment(APIContext apiContext, string payerId, string paymentId)
+        //{
+        //    var paymentExecution = new PaymentExecution()
+        //    {
+        //        payer_id = payerId
+        //    };
+        //    this.payment = new Payment()
+        //    {
+        //        id = paymentId
+        //    };
+        //    return this.payment.Execute(apiContext, paymentExecution);
+        //}
 
-        private Payment CreatePayment(APIContext apiContext, string redirectUrl)
-        {
-            var listSanPham = Session["cart"] as List<Models.Home.Item>;
-            //create itemlist and add item objects to it  
-            var itemList = new ItemList()
-            {
-                items = new List<PayPal.Api.Item>()
-            };
-            foreach (var item in listSanPham)
-            {
-                itemList.items.Add(new PayPal.Api.Item()
-                {
-                    name = item.Product.ProductName,
-                    currency = "USD",
-                    price = "1",
-                    quantity = item.Quantity.ToString(),
-                    sku = "su",
-                });
-            }
-            //Adding Item Details like name, currency, price etc  
-            var payer = new Payer()
-            {
-                payment_method = "paypal"
-            };
-            // Configure Redirect Urls here with RedirectUrls object  
-            var redirUrls = new RedirectUrls()
-            {
-                cancel_url = redirectUrl + "&Cancel=true",
-                return_url = redirectUrl
-            };
-            // Adding Tax, shipping and Subtotal details  
-            var details = new Details()
-            {
-                tax = "0",
-                shipping = "0",
-                subtotal = "1"
-            };
-            //Final amount with details  
-            var amount = new Amount()
-            {
-                currency = "USD",
-                total = "3", // Total must be equal to sum of tax, shipping and subtotal.  
-                details = details
-            };
-            var transactionList = new List<Transaction>();
-            // Adding description about the transaction  
-            var paypalOrderId = DateTime.Now.Ticks;
-            transactionList.Add(new Transaction()
-            {
-                description = $"Invoice #{paypalOrderId}",
-                invoice_number = paypalOrderId.ToString(), //Generate an Invoice No    
-                amount = amount,
-                item_list = itemList
-            });
-            this.payment = new Payment()
-            {
-                intent = "sale",
-                payer = payer,
-                transactions = transactionList,
-                redirect_urls = redirUrls
-            };
-            // Create a payment using a APIContext  
-            return this.payment.Create(apiContext);
-        }
+        //private Payment CreatePayment(APIContext apiContext, string redirectUrl)
+        //{
+        //    var listSanPham = Session["cart"] as List<Models.Home.Item>;
+        //    //create itemlist and add item objects to it  
+        //    var itemList = new ItemList()
+        //    {
+        //        items = new List<PayPal.Api.Item>()
+        //    };
+        //    foreach (var item in listSanPham)
+        //    {
+        //        itemList.items.Add(new PayPal.Api.Item()
+        //        {
+        //            name = item.Product.ProductName,
+        //            currency = "USD",
+        //            price = "1",
+        //            quantity = item.Quantity.ToString(),
+        //            sku = "su",
+        //        });
+        //    }
+        //    //Adding Item Details like name, currency, price etc  
+        //    var payer = new Payer()
+        //    {
+        //        payment_method = "paypal"
+        //    };
+        //    // Configure Redirect Urls here with RedirectUrls object  
+        //    var redirUrls = new RedirectUrls()
+        //    {
+        //        cancel_url = redirectUrl + "&Cancel=true",
+        //        return_url = redirectUrl
+        //    };
+        //    // Adding Tax, shipping and Subtotal details  
+        //    var details = new Details()
+        //    {
+        //        tax = "0",
+        //        shipping = "0",
+        //        subtotal = "1"
+        //    };
+        //    //Final amount with details  
+        //    var amount = new Amount()
+        //    {
+        //        currency = "USD",
+        //        total = "3", // Total must be equal to sum of tax, shipping and subtotal.  
+        //        details = details
+        //    };
+        //    var transactionList = new List<Transaction>();
+        //    // Adding description about the transaction  
+        //    var paypalOrderId = DateTime.Now.Ticks;
+        //    transactionList.Add(new Transaction()
+        //    {
+        //        description = $"Invoice #{paypalOrderId}",
+        //        invoice_number = paypalOrderId.ToString(), //Generate an Invoice No    
+        //        amount = amount,
+        //        item_list = itemList
+        //    });
+        //    this.payment = new Payment()
+        //    {
+        //        intent = "sale",
+        //        payer = payer,
+        //        transactions = transactionList,
+        //        redirect_urls = redirUrls
+        //    };
+        //    // Create a payment using a APIContext  
+        //    return this.payment.Create(apiContext);
+        //}
 
     }
 }

@@ -8,6 +8,7 @@
     <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
     <link href="~/AdminStyle/css/styles.css" rel="stylesheet" />
     <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"></script>
 
     <link href="~/css/bootstrap.css" rel="stylesheet" />
 </head>
@@ -23,11 +24,11 @@
                 <a class="nav-link dropdown-toggle d-flex align-items-center" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                     <img src="~/img/7.jpg" alt="User Logo" class="rounded-circle" style="width: 30px; height: 30px; object-fit: cover; margin-right: 8px;">
                     <span class="d-none d-sm-inline">
-                        <!-- Hiển thị tên người dùng -->
-                        @*@{
+                         @*Hiển thị tên người dùng*@ 
+                        @{
                             var user = HttpContext.Current.Session["user"]?.ToString() ?? "User";
                             <span>@user</span>
-                        }*@
+                        }
                     </span>
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
@@ -43,7 +44,7 @@
                 <div class="sb-sidenav-menu">
                     <div class="nav">
                         <div class="sb-sidenav-menu-heading">Core</div>
-                        <a class="nav-link" href="../Statistical/Dashboard">
+                        <a class="nav-link" href="../Statistical/ThongKeSach">
                             <div class="sb-nav-link-icon"><i class="fas fa-home"></i></div>
                             Trang chủ
                         </a>

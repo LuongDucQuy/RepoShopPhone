@@ -185,46 +185,50 @@
 <div class="container-fluid pt-5 pb-3">
     <h2 class="section-title position-relative text-uppercase mx-xl-5 mb-4"><span class="bg-secondary pr-3">Sản Phẩm</span></h2>
     <div class="row px-xl-5">
-        @foreach (var item in Model.ListOfProduct){
-        <div class="col-lg-3 col-md-4 col-sm-6 pb-1">
-            <div class="product-item bg-light mb-4">
-                <div class="product-img position-relative overflow-hidden">
-                    <img class="img-fluid w-100" src="~/img/@item.ProductImage" alt="">
-                    <div class="product-action">
-                        @using (Html.BeginForm("proDetail", "detailProduct", FormMethod.Get))
-                        {
-                            @Html.Hidden("id", item.ProductId)
-                            <button class="btn btn-outline-dark btn-square"><i class="fa fa-search"></i></button>
-                        }
-                            @if (item.Quantity > 0)
+        @foreach (var item in Model.ListOfProduct)
+        {
+            if (item.IsActive == true)
+            {
+            <div class="col-lg-3 col-md-4 col-sm-6 pb-1">
+                <div class="product-item bg-light mb-4">
+                    <div class="product-img position-relative overflow-hidden">
+                        <img class="img-fluid w-100" src="~/img/@item.ProductImage" alt="">
+                        <div class="product-action">
+                            @using (Html.BeginForm("proDetail", "detailProduct", FormMethod.Get))
                             {
-                                <button type="submit" class="btn btn-outline-dark btn-square addToCartBtn"
-                                        data-product-id="@item.ProductId">
-                                    <i class="fa fa-shopping-cart"></i>
-                                </button>
+                                @Html.Hidden("id", item.ProductId)
+                                <button class="btn btn-outline-dark btn-square"><i class="fa fa-search"></i></button>
                             }
-                            else
-                            {
-                            <p>Not Available</p>
-                            }
+                                @if (item.Quantity > 0)
+                                {
+                                    <button type="submit" class="btn btn-outline-dark btn-square addToCartBtn"
+                                            data-product-id="@item.ProductId">
+                                        <i class="fa fa-shopping-cart"></i>
+                                    </button>
+                                }
+                                else
+                                {
+                                <p>Not Available</p>
+                                }
+                        </div>
                     </div>
-                </div>
-                <div class="text-center py-4">
-                    <a class="h6 text-decoration-none text-truncate" href="">@item.ProductName</a>
-                    <div class="d-flex align-items-center justify-content-center mt-2">
-                        <h5>@string.Format(new System.Globalization.CultureInfo("vi-VN"), "{0:C0}", item.Price) (@item.Quantity)</h5>
-                    </div>
-                    <div class="d-flex align-items-center justify-content-center mb-1">
-                        <small class="fa fa-star text-primary mr-1"></small>
-                        <small class="fa fa-star text-primary mr-1"></small>
-                        <small class="fa fa-star text-primary mr-1"></small>
-                        <small class="fa fa-star text-primary mr-1"></small>
-                        <small class="fa fa-star text-primary mr-1"></small>
+                    <div class="text-center py-4">
+                        <a class="h6 text-decoration-none text-truncate" href="">@item.ProductName</a>
+                        <div class="d-flex align-items-center justify-content-center mt-2">
+                            <h5>@string.Format(new System.Globalization.CultureInfo("vi-VN"), "{0:C0}", item.Price) (@item.Quantity)</h5>
+                        </div>
+                        <div class="d-flex align-items-center justify-content-center mb-1">
+                            <small class="fa fa-star text-primary mr-1"></small>
+                            <small class="fa fa-star text-primary mr-1"></small>
+                            <small class="fa fa-star text-primary mr-1"></small>
+                            <small class="fa fa-star text-primary mr-1"></small>
+                            <small class="fa fa-star text-primary mr-1"></small>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
             }
+        }
     </div>
 </div>
 <div class="phanTrang">

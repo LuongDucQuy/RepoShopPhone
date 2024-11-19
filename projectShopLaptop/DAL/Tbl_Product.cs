@@ -9,7 +9,6 @@
 
 namespace projectShopLaptop.DAL
 {
-    using Newtonsoft.Json;
     using System;
     using System.Collections.Generic;
     
@@ -33,7 +32,6 @@ namespace projectShopLaptop.DAL
         public Nullable<decimal> Price { get; set; }
     
         public virtual ICollection<Tbl_Cart> Tbl_Cart { get; set; }
-        [JsonIgnore]
         public virtual Tbl_Category Tbl_Category { get; set; }
     }
 }

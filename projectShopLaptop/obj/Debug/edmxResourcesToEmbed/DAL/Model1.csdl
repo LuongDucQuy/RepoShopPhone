@@ -189,6 +189,7 @@
     <NavigationProperty Name="Tbl_Bill" Relationship="dbClickShopModel.FK_User_Bill" FromRole="Tbl_User" ToRole="Tbl_Bill" />
     <Property Name="Address" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
     <Property Name="PhoneNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="confirmEmail" Type="Boolean" Nullable="false" />
   </EntityType>
   <Association Name="FK__Tbl_Shipp__Membe__5629CD9C1">
     <End Type="dbClickShopModel.Tbl_User" Role="Tbl_User" Multiplicity="0..1" />

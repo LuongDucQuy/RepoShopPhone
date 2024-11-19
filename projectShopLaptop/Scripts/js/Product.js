@@ -15,7 +15,7 @@
             },
             success: function (result) {
                 if (result.success) {
-                    alert("cap nhat thanh cong");
+                    alert("Cập nhật thành công");
                     console.log(result.categories);
                     updateProductList(result.categories);
                 } else {
