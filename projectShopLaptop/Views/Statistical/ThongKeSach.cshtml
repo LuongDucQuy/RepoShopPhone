@@ -1,94 +1,120 @@
-﻿@{
+﻿@model IEnumerable<projectShopLaptop.DAL.Tbl_Bill>
+@{
     ViewBag.Title = "Trang chủ";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
+<style>
+    /* Thiết lập chiều cao và chiều rộng biểu đồ */
+    #myChart, #customerChart {
+        width: 100%; /* Chiếm toàn bộ chiều rộng container */
+        max-width: 800px; /* Giới hạn chiều rộng tối đa */
+        height: 400px; /* Chiều cao cố định */
+        margin: 20px auto; /* Căn giữa với khoảng cách phía trên và dưới */
+        border: 1px solid #ddd; /* Đường viền nhạt */
+        border-radius: 8px; /* Bo tròn góc */
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Hiệu ứng đổ bóng */
+    }
+
+    /* Bảng dữ liệu */
+    table.table {
+        font-size: 14px; /* Cỡ chữ nhỏ gọn */
+        border-collapse: collapse; /* Xóa khoảng cách giữa các đường viền */
+    }
+
+        table.table thead {
+            background-color: #343a40; /* Màu nền tối */
+            color: white; /* Chữ màu trắng */
+        }
+
+        table.table th, table.table td {
+            padding: 12px 15px; /* Khoảng cách nội dung */
+            text-align: center; /* Canh giữa nội dung */
+            vertical-align: middle; /* Căn giữa theo chiều dọc */
+            border: 1px solid #ddd; /* Đường viền giữa các ô */
+        }
+
+        table.table tbody tr:nth-child(even) {
+            background-color: #f9f9f9; /* Màu nền xen kẽ */
+        }
+
+        table.table tbody tr:hover {
+            background-color: #f1f1f1; /* Hiệu ứng hover */
+        }
+</style>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.min.js"></script>
 <main>
     <div class="container-fluid px-4">
-        <h1 class="mt-4">Trang chủ</h1>
+        <h2 class="mt-4">Trang chủ</h2>
         <ol class="breadcrumb mb-4">
             <li class="breadcrumb-item">Trang chủ</li>
         </ol>
-        <div class="row">
-            <div class="col-xl-3 col-md-6">
-                <div class="card bg-primary text-white mb-4">
-                    <div class="card-body">Primary Card</div>
-                    <div class="card-footer d-flex align-items-center justify-content-between">
-                        <a class="small text-white stretched-link" href="#">View Details</a>
-                        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-xl-3 col-md-6">
-                <div class="card bg-warning text-white mb-4">
-                    <div class="card-body">Warning Card</div>
-                    <div class="card-footer d-flex align-items-center justify-content-between">
-                        <a class="small text-white stretched-link" href="#">View Details</a>
-                        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-xl-3 col-md-6">
-                <div class="card bg-success text-white mb-4">
-                    <div class="card-body">Success Card</div>
-                    <div class="card-footer d-flex align-items-center justify-content-between">
-                        <a class="small text-white stretched-link" href="#">View Details</a>
-                        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-xl-3 col-md-6">
-                <div class="card bg-danger text-white mb-4">
-                    <div class="card-body">Danger Card</div>
-                    <div class="card-footer d-flex align-items-center justify-content-between">
-                        <a class="small text-white stretched-link" href="#">View Details</a>
-                        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
-                    </div>
-                </div>
-            </div>
-        </div>
         <div class="container">
             <canvas id="myChart"></canvas>
+        </div>
+        <div class="container mt-5">
+            <canvas id="customerChart"></canvas>
+        </div>
+    </div>
+    <div class="card mb-4">
+        <div class="card-header">
+            <i class="fas fa-table me-1"></i>
+        </div>
+        <div class="card-body">
+            <table class="table table-bordered table-striped" id="datatablesSimple">
+                <thead class="thead-dark">
+                    <tr>
+                        <th scope="col">STT</th>
+                        <th scope="col">Khách hàng</th>
+                        <th scope="col">Ngày đặt</th>
+                        <th scope="col">Giá trị đơn hàng</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        int count = 1;
+                    }
+
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@count</td>
+                            <td>@item.HoTen</td>
+                            <td>@item.ngayDat</td>
+                            <td>@string.Format(new System.Globalization.CultureInfo("vi-VN"), "{0:C0}", @item.soTien)</td>
+                        </tr>
+                        count++;
+                    }
+                </tbody>
+            </table>
         </div>
     </div>
 </main>
 
 <script>
-    // Get the sales data from ViewBag
-    let labels = @Html.Raw(Json.Encode(ViewBag.Dates));  // Dates (formatted as "yyyy-MM-dd")
-    let data = @Html.Raw(Json.Encode(ViewBag.Revenue));  // Total revenue per day
+    // Lấy dữ liệu từ ViewBag
+    let labels = @Html.Raw(Json.Encode(ViewBag.Dates));  // Ngày
+    let data = @Html.Raw(Json.Encode(ViewBag.Revenue));  // Doanh thu theo ngày
 
-    // Format the revenue data as Vietnamese Dong (VND)
+    // Format tiền VND
     const formatVND = new Intl.NumberFormat('vi-VN', {
         style: 'currency',
         currency: 'VND',
     });
 
-    // Format the data for chart labels (to display in VND)
-    let formattedData = data.map(revenue => formatVND.format(revenue));  // Format each revenue value
-
+    // Biểu đồ Doanh thu theo ngày
     let myChart = document.getElementById('myChart').getContext('2d');
-
     let lineChart = new Chart(myChart, {
         type: 'line',
         data: {
-            labels: labels,  // Dates on the x-axis
+            labels: labels,
             datasets: [{
-                label: 'Doanh thu theo ngày',  // Chart label
-                data: data,  // Raw revenue data
-                borderColor: 'rgba(75, 192, 192, 1)',  // Line color
-                backgroundColor: 'rgba(75, 192, 192, 0.2)',  // Line fill color
-                fill: true,  // Fill area under the line
+                label: 'Doanh thu theo ngày',
+                data: data,
+                borderColor: 'rgba(75, 192, 192, 1)',
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
                 borderWidth: 2,
-                // Format the tooltip to show revenue in VND
-                tooltip: {
-                    callbacks: {
-                        label: function(tooltipItem) {
-                            return tooltipItem.yLabel + ' VND';  // Add 'VND' to the tooltip
-                        }
-                    }
-                }
+                fill: true,
             }]
         },
         options: {
@@ -97,7 +123,7 @@
             title: {
                 display: true,
                 text: 'Biểu đồ doanh thu bán hàng theo ngày',
-                fontSize: 20
+                fontSize: 20,
             },
             scales: {
                 xAxes: [{
@@ -109,17 +135,67 @@
                 yAxes: [{
                     ticks: {
                         beginAtZero: true,
-                        callback: function(value, index, values) {  // Format the Y-axis ticks as VND
-                            return formatVND.format(value);
+                        stepSize: 20000000, // Hiển thị theo mức 10 triệu
+                        callback: function(value) {
+                            return formatVND.format(value); // Format Y-axis ticks thành VND
                         }
                     }
                 }]
             },
-            // Display formatted data as tooltips
             tooltips: {
                 callbacks: {
-                    label: function(tooltipItem, data) {
-                        // Format the tooltip with VND
+                    label: function(tooltipItem) {
+                        return formatVND.format(tooltipItem.yLabel);
+                    }
+                }
+            }
+        }
+    });
+
+    // Biểu đồ Top khách hàng
+    let customerNames = @Html.Raw(Json.Encode(ViewBag.TopCustomerNames)); // Tên khách hàng
+    let customerSpent = @Html.Raw(Json.Encode(ViewBag.TopCustomerSpent)); // Chi tiêu
+
+    let customerChart = document.getElementById('customerChart').getContext('2d');
+    let barChart = new Chart(customerChart, {
+        type: 'bar',
+        data: {
+            labels: customerNames,
+            datasets: [{
+                label: 'Tổng chi tiêu (VND)',
+                data: customerSpent,
+                backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            title: {
+                display: true,
+                text: 'Top 10 khách hàng mua nhiều nhất',
+                fontSize: 20
+            },
+            scales: {
+                xAxes: [{
+                    ticks: {
+                        autoSkip: false
+                    }
+                }],
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true,
+                        stepSize: 20000000, // Hiển thị theo mức 10 triệu
+                        callback: function(value) {
+                            return formatVND.format(value); // Format Y-axis ticks thành VND
+                        }
+                    }
+                }]
+            },
+            tooltips: {
+                callbacks: {
+                    label: function(tooltipItem) {
                         return formatVND.format(tooltipItem.yLabel);
                     }
                 }
@@ -127,4 +203,5 @@
         }
     });
 </script>
+
 

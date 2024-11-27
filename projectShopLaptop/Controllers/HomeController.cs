@@ -713,6 +713,40 @@ namespace projectShopLaptop.Controllers
             }
         }
 
+        [HttpPost]
+        public ActionResult CancelOrder(int billId)
+        {
+            // Lấy thông tin đơn hàng từ CSDL
+            var bill = ctx.Tbl_Bill.FirstOrDefault(b => b.IDBill == billId);
+
+            if (bill != null)
+            {
+                // Kiểm tra trạng thái đơn hàng
+                if (bill.maTrangThai == 1 || bill.maTrangThai == 2 || bill.maTrangThai == 3)
+                {
+                    // Cập nhật trạng thái đơn hàng thành "Đã hủy"
+                    bill.maTrangThai = 5; // 5 = Đã hủy (mã trạng thái bạn tự định nghĩa)
+                    ctx.SaveChanges();
+
+                    // Thông báo hủy thành công
+                    TempData["Message"] = "Đơn hàng đã được hủy thành công.";
+                }
+                else
+                {
+                    // Thông báo không thể hủy đơn hàng
+                    TempData["Message"] = "Không thể hủy đơn hàng này vì đã được xử lý.";
+                }
+            }
+            else
+            {
+                // Thông báo đơn hàng không tồn tại
+                TempData["Message"] = "Đơn hàng không tồn tại.";
+            }
+
+            // Quay lại trang lịch sử đơn hàng của khách hàng
+            return RedirectToAction("LichSuDonHang");
+        }
+
         //public ActionResult FailureView()
         //{
         //    return View();

@@ -328,7 +328,6 @@ namespace projectShopLaptop.Controllers
             return RedirectToAction("Order"); // Quay lại trang danh sách đơn hàng sau khi hủy đơn
         }
 
-
         public ActionResult purchaseInformation()
         {
             return View();
