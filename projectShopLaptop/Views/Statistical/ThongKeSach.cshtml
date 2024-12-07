@@ -59,6 +59,7 @@
     <div class="card mb-4">
         <div class="card-header">
             <i class="fas fa-table me-1"></i>
+            <h3>Bảng thống kê đơn hàng</h3>
         </div>
         <div class="card-body">
             <table class="table table-bordered table-striped" id="datatablesSimple">
@@ -87,6 +88,11 @@
                     }
                 </tbody>
             </table>
+        </div>
+        <div class="text-end mb-3">
+            <a class="btn btn-primary" href="@Url.Action("ExportPdf", "Statistical")">
+                <i class="fas fa-file-pdf"></i> Xuất báo cáo
+            </a>
         </div>
     </div>
 </main>

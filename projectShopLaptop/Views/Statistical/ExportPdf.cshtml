@@ -1,0 +1,60 @@
+﻿
+@model IEnumerable<projectShopLaptop.DAL.Tbl_Bill>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Báo cáo Đơn hàng</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h2 style="text-align: center;">Báo cáo Đơn hàng</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>STT</th>
+                <th>Khách hàng</th>
+                <th>Ngày đặt</th>
+                <th>Giá trị đơn hàng</th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                int count = 1;
+            }
+
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@count</td>
+                    <td>@item.HoTen</td>
+                    <td>@item.ngayDat.ToString("dd/MM/yyyy")</td>
+                    <td>@string.Format(new System.Globalization.CultureInfo("vi-VN"), "{0:C0}", item.soTien)</td>
+                </tr>
+                count++;
+            }
+        </tbody>
+    </table>
+</body>
+</html>

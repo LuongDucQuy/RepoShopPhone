@@ -17,6 +17,7 @@ namespace projectShopLaptop.DAL
         public Tbl_Product()
         {
             this.Tbl_Cart = new HashSet<Tbl_Cart>();
+            this.Tbl_Bill = new HashSet<Tbl_Bill>();
         }
     
         public int ProductId { get; set; }
@@ -33,5 +34,6 @@ namespace projectShopLaptop.DAL
     
         public virtual ICollection<Tbl_Cart> Tbl_Cart { get; set; }
         public virtual Tbl_Category Tbl_Category { get; set; }
+        public virtual ICollection<Tbl_Bill> Tbl_Bill { get; set; }
     }
 }

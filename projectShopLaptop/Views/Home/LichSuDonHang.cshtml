@@ -1,86 +1,132 @@
-﻿    @model List<projectShopLaptop.DAL.Tbl_Bill>
-    @{
-        ViewBag.Title = "Lịch sử mua hàng";
-        Layout = "~/Views/Shared/_Layout.cshtml";
+﻿@model List<projectShopLaptop.DAL.Tbl_Bill>
+@{
+    ViewBag.Title = "Lịch sử mua hàng";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/Content/css/OrderHistory.css" rel="stylesheet" />
+<h1>Lịch sử đơn hàng</h1>
+@if (TempData["successMessage"] != null)
+{
+    <div class="toast toast-success">
+        @TempData["successMessage"]
+    </div>
+}
+<style>
+    .toast {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: #4CAF50; /* Màu xanh cho thông báo thành công */
+        color: white;
+        padding: 25px 50px; /* Thêm padding để thông báo lớn hơn */
+        border-radius: 10px; /* Làm tròn các góc */
+        font-size: 20px; /* Tăng kích thước font */
+        font-weight: bold; /* Làm cho chữ đậm */
+        text-align: center; /* Căn giữa chữ trong thông báo */
+        z-index: 9999;
+        opacity: 0;
+        transition: opacity 0.5s ease-in-out;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Thêm bóng đổ cho thông báo */
     }
-    <link href="~/Content/css/OrderHistory.css" rel="stylesheet" />
-    <h1>Lịch sử đơn hàng</h1>
-    @if (TempData["Message"] != null)
+
+    .toast-error {
+        background-color: #f44336; /* Màu đỏ cho thông báo lỗi */
+    }
+
+    .toast-success {
+        background-color: #4CAF50; /* Màu xanh cho thông báo thành công */
+    }
+
+    .toast.show {
+        opacity: 1;
+    }
+</style>
+<div class="all">
+    @if (Model != null)
     {
-        <div class="alert alert-info">
-            @TempData["Message"]
-        </div>
-    }
-    <div class="all">
-        @if (Model != null && Model.Any())
-        {
-            <table class="table">
-                <thead>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Họ tên</th>
+                    <th>Địa chỉ</th>
+                    <th>Số điện thoại</th>
+                    <th>Số tiền</th>
+                    <th>Trạng thái</th>
+                    <th>Ngày đặt</th>
+                    <th>Hành động</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var order in Model)
+                {
                     <tr>
-                        <th>Họ tên</th>
-                        <th>Địa chỉ</th>
-                        <th>Số điện thoại</th>
-                        <th>Số tiền</th>
-                        <th>Trạng thái</th>
-                        <th>Ngày đặt</th>
-                        <th>Hành động</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var order in Model)
-                    {
-                        <tr>
-                            <td>@order.HoTen</td>
-                            <td>@order.diaChi</td>
-                            <td>@order.dienThoai</td>
-                            <td>@string.Format(new System.Globalization.CultureInfo("vi-VN"), "{0:C0}", @order.soTien)</td>
-                            <td class="@(order.maTrangThai == 1 ? "status-processing" :
+                        <td>@order.HoTen</td>
+                        <td>@order.diaChi</td>
+                        <td>@order.dienThoai</td>
+                        <td>@string.Format(new System.Globalization.CultureInfo("vi-VN"), "{0:C0}", @order.soTien)</td>
+                        <td class="@(order.maTrangThai == 1 ? "status-processing" :
                                     order.maTrangThai == 2 ? "status-approved" :
                                     order.maTrangThai == 3 ? "status-delivery" :
                                     order.maTrangThai == 4 ? "status-delivered" :
                                     order.maTrangThai == 5 ? "status-cancelled" : "")">
-                                @switch (order.maTrangThai)
-                                {
-                                    case 1:
-                                        @:Đang xử lý
-                                        break;
-                                    case 2:
-                                        @:Đã duyệt
-                                        break;
-                                    case 3:
-                                        @:Đang giao
-                                        break;
-                                    case 4:
-                                        @:Đã giao
-                                        break;
-                                    case 5:
-                                        @:Đã hủy
-                                        break;
-                                    default:
-                                        @:Chưa xác định
-                                        break;
-                                }
-                            </td>
+                            @switch (order.maTrangThai)
+                            {
+                                case 1:
+                                    @:Đang xử lý
+                                    break;
+                                case 2:
+                                    @:Đã duyệt
+                                    break;
+                                case 3:
+                                    @:Đang giao
+                                    break;
+                                case 4:
+                                    @:Đã giao
+                                    break;
+                                case 5:
+                                    @:Đã hủy
+                                    break;
+                                default:
+                                    @:Chưa xác định
+                                    break;
+                            }
+                        </td>
 
-                            <td>@order.ngayDat</td>
-                            <td>
-                                @if (order.maTrangThai == 1 || order.maTrangThai == 2 || order.maTrangThai == 3)
-                                {
-                                    <form action="@Url.Action("CancelOrder", "Home")" method="post">
-                                        <input type="hidden" name="billId" value="@order.IDBill" />
-                                        <button type="submit" class="btn btn-danger btn-outline btn-xs m-r-5 tooltip-info">
-                                            Hủy đơn
-                                        </button>
-                                    </form>
-                                }
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
+                        <td>@order.ngayDat</td>
+                        <td>
+                            @if (order.maTrangThai == 1 || order.maTrangThai == 2 || order.maTrangThai == 3)
+                            {
+                                <form action="@Url.Action("CancelOrder", "Home")" method="post">
+                                    <input type="hidden" name="billId" value="@order.IDBill" />
+                                    <button type="submit" class="btn btn-danger btn-outline btn-xs m-r-5 tooltip-info">
+                                        Hủy đơn
+                                    </button>
+                                </form>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p>Không có đơn hàng nào trong lịch sử.</p>
+    }
+</div>
+<script>
+    // Kiểm tra xem có thông báo nào cần hiển thị
+    window.onload = function () {
+        var successToast = document.querySelector('.toast-success');
+        var errorToast = document.querySelector('.toast-error');
+
+        // Hiển thị thông báo thành công
+        if (successToast) {
+            successToast.classList.add('show');
+            setTimeout(function () {
+                successToast.classList.remove('show');
+            }, 3000); // 3 giây
         }
-        else
-        {
-            <p>Không có đơn hàng nào trong lịch sử.</p>
-        }
-    </div>
+    };
+</script>

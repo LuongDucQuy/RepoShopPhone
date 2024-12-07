@@ -25,6 +25,11 @@
     <!-- Customized Bootstrap Stylesheet -->
     <link href="~/Content/css/style.css" rel="stylesheet">
     <style>
+        body {
+            background: url(/img/bg-dt.png) !important;
+            background-size: cover;
+            height: 100vh;
+        }
         .navbar-nav .dropdown-menu {
             background-color: #f8f9fa; /* Màu nền nhẹ */
             border-radius: 5px;
@@ -164,7 +169,7 @@
                         <div class="navbar-nav ml-auto py-0 d-none d-lg-block">
                             <ul class="nav navbar-nav navbar-right">
                                 <li class="dropdown">
-                                    <a data-toggle="dropdown" class="fas fa-shopping-cart text-primary" href="#"><b class="caret"></b></a>
+                                    <a data-toggle="dropdown" class="fas fa-shopping-cart text-primary" href="#"><b class="caret"></b> Giỏ hàng</a>
                                     <ul class="dropdown-menu dropdown-menu-right" style="max-height: 300px; overflow-y: auto; width: 250px;">
                                         @if (Session["cart"] != null)
                                         {

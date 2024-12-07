@@ -1,6 +1,6 @@
 ﻿@model projectShopLaptop.Models.Home.HomeIndexViewModel
 @{
-    ViewBag.Title = "Shopping Cart";
+    ViewBag.Title = "Giỏ hàng";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -15,7 +15,7 @@
 @if (Model == null || !Model.items.Any())
 {
     <div class="alert alert-danger">
-        <strong>No product added to cart!</strong>
+        <strong>Không có sản phẩm nào trong giỏ hàng!</strong>
     </div>
 }
 else

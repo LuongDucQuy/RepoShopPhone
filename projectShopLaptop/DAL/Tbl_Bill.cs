@@ -27,7 +27,9 @@ namespace projectShopLaptop.DAL
         public Nullable<int> maTrangThai { get; set; }
         public string ghiChu { get; set; }
         public decimal soTien { get; set; }
+        public Nullable<int> ProductId { get; set; }
     
         public virtual Tbl_User Tbl_User { get; set; }
+        public virtual Tbl_Product Tbl_Product { get; set; }
     }
 }

@@ -1,6 +1,6 @@
 ﻿@model projectShopLaptop.Models.ProductDetail
 @{
-    ViewBag.Title = "shoppingCart";
+    ViewBag.Title = "Click Shop";
     Layout = "~/Views/Shared/productView.cshtml";
 }
 <!-- Shop Detail Start -->
@@ -10,16 +10,16 @@
             <div id="product-carousel" class="carousel slide" data-ride="carousel">
                 <div class="carousel-inner bg-light">
                     <div class="carousel-item active">
-                        <img class="w-100 h-100" src="~/img/proDetail-2.jpg" alt="Image">
+                        <img class="w-100 h-100" src="~/img/iphone-13-1.jpg" alt="Image">
                     </div>
                     <div class="carousel-item">
-                        <img class="w-100 h-100" src="~/img/proDetail-2.1.jpg" alt="Image">
+                        <img class="w-100 h-100" src="~/img/iphone-13-2.jpg" alt="Image">
                     </div>
                     <div class="carousel-item">
-                        <img class="w-100 h-100" src="~/img/proDetail-2.2.jpg" alt="Image">
+                        <img class="w-100 h-100" src="~/img/iphone-13-3.jpg" alt="Image">
                     </div>
                     <div class="carousel-item">
-                        <img class="w-100 h-100" src="~/img/proDetail-2.3.jpg" alt="Image">
+                        <img class="w-100 h-100" src="~/img/iphone-13-4.jpg" alt="Image">
                     </div>
                 </div>
                 <a class="carousel-control-prev" href="#product-carousel" data-slide="prev">
@@ -44,7 +44,6 @@
                         <small class="fa fa-star text-primary mr"></small>
                         <small class="fa fa-star text-primary mr"></small>
                     </div>
-                    <small class="pt-1">(@Model.Quantity)</small>
                 </div>
                 <div class="d-flex align-items-center  mt-2">
                     <h3>@string.Format(new System.Globalization.CultureInfo("vi-VN"), "{0:C0}", @Model.Price) (@Model.Quantity)</h3>
@@ -202,126 +201,3 @@
     </div>
 </div>
 <!-- Shop Detail End -->
-<!-- Products Start -->
-<div class="container-fluid py-5">
-    <h2 class="section-title position-relative text-uppercase mx-xl-5 mb-4"><span class="bg-secondary pr-3">Sản Phẩm Tương Tự</span></h2>
-    <div class="row px-xl-5">
-        <div class="col">
-            <div class="owl-carousel related-carousel">
-                <div class="product-item bg-light">
-                    <div class="product-img position-relative overflow-hidden">
-                        <img class="img-fluid w-100" src="~/img/ss-2.jpeg" alt="">
-                        <div class="product-action">
-                            <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-shopping-cart"></i></a>
-                            <a class="btn btn-outline-dark btn-square" href=""><i class="far fa-heart"></i></a>
-                            <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-sync-alt"></i></a>
-                            <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-search"></i></a>
-                        </div>
-                    </div>
-                    <div class="text-center py-4" style="padding-bottom:19px;">
-                        <a class="h6 text-decoration-none text-truncate" href="">
-                            Samsung Galaxy Z Fold6
-                        </a>
-                        <div class="d-flex align-items-center justify-content-center mt-2">
-                            <h5>
-
-                                41.990.000đ
-                            </h5><h6 class="text-muted ml-2"><del>43.990.000đ</del></h6>
-                        </div>
-                        <div class="d-flex align-items-center justify-content-center mb-1">
-                            <small class="fa fa-star text-primary mr-1"></small>
-                            <small class="fa fa-star text-primary mr-1"></small>
-                            <small class="fa fa-star text-primary mr-1"></small>
-                            <small class="fa fa-star text-primary mr-1"></small>
-                            <small class="fa fa-star text-primary mr-1"></small>
-                        </div>
-                    </div>
-                </div>
-                <div class="product-item bg-light" style="padding-bottom:2px;">
-                    <div class="product-img position-relative overflow-hidden">
-                        <img class="img-fluid w-100" src="~/img/ss-3.jpeg" alt="">
-                        <div class="product-action">
-                            <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-shopping-cart"></i></a>
-                            <a class="btn btn-outline-dark btn-square" href=""><i class="far fa-heart"></i></a>
-                            <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-sync-alt"></i></a>
-                            <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-search"></i></a>
-                        </div>
-                    </div>
-                    <div class="text-center py-4">
-                        <a class="h6 text-decoration-none text-truncate" href="">
-                            Samsung Galaxy Z Flip6
-                        </a>
-                        <div class="d-flex align-items-center justify-content-center mt-2">
-                            <h5>
-                                26.990.000đ
-                            </h5><h6 class="text-muted ml-2"><del>28.990.000đ</del></h6>
-                        </div>
-                        <div class="d-flex align-items-center justify-content-center mb-1">
-                            <small class="fa fa-star text-primary mr-1"></small>
-                            <small class="fa fa-star text-primary mr-1"></small>
-                            <small class="fa fa-star text-primary mr-1"></small>
-                            <small class="fa fa-star text-primary mr-1"></small>
-                            <small class="fa fa-star text-primary mr-1"></small>
-                        </div>
-                    </div>
-                </div>
-                <div class="product-item bg-light">
-                    <div class="product-img position-relative overflow-hidden">
-                        <img class="img-fluid w-100" src="~/img/ss-4.png" alt="">
-                        <div class="product-action">
-                            <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-shopping-cart"></i></a>
-                            <a class="btn btn-outline-dark btn-square" href=""><i class="far fa-heart"></i></a>
-                            <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-sync-alt"></i></a>
-                            <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-search"></i></a>
-                        </div>
-                    </div>
-                    <div class="text-center py-4">
-                        <a class="h6 text-decoration-none text-truncate" href="">
-                            Samsung Galaxy M55 (12GB 256GB)
-                        </a>
-                        <div class="d-flex align-items-center justify-content-center mt-2">
-                            <h5>
-                                10.490.000đ
-                            </h5><h6 class="text-muted ml-2"><del>12.690.000đ</del></h6>
-                        </div>
-                        <div class="d-flex align-items-center justify-content-center mb-1">
-                            <small class="fa fa-star text-primary mr-1"></small>
-                            <small class="fa fa-star text-primary mr-1"></small>
-                            <small class="fa fa-star text-primary mr-1"></small>
-                            <small class="fa fa-star text-primary mr-1"></small>
-                            <small class="fa fa-star text-primary mr-1"></small>
-                        </div>
-                    </div>
-                </div>
-                <div class="product-item bg-light" style="padding-bottom:4px;">
-                    <div class="product-img position-relative overflow-hidden">
-                        <img class="img-fluid w-100" src="~/img/ss-5.jpeg" alt="">
-                        <div class="product-action">
-                            <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-shopping-cart"></i></a>
-                            <a class="btn btn-outline-dark btn-square" href=""><i class="far fa-heart"></i></a>
-                            <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-sync-alt"></i></a>
-                            <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-search"></i></a>
-                        </div>
-                    </div>
-                    <div class="text-center py-4">
-                        <a class="h6 text-decoration-none text-truncate" href="">
-                            Samsung Galaxy Tab S9 FE Plus 12GB 256GB
-                        </a>
-                        <div class="d-flex align-items-center justify-content-center mt-2">
-                            <h5>
-                                14.290.000đ
-                            </h5><h6 class="text-muted ml-2"><del>15.990.000đ</del></h6>
-                        </div>
-                        <div class="d-flex align-items-center justify-content-center mb-1">
-                            <small class="fa fa-star text-primary mr-1"></small>
-                            <small class="fa fa-star text-primary mr-1"></small>
-                            <small class="fa fa-star text-primary mr-1"></small>
-                            <small class="fa fa-star text-primary mr-1"></small>
-                            <small class="fa fa-star text-primary mr-1"></small>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>

@@ -15,7 +15,7 @@
 else
 {
     var cart = (List<Item>)Session["cart"];
-    if (cart != null && cart.Any())
+    if (cart != null)
     {
         <section class="main-container col2-right-layout">
             <div class="main container">
@@ -54,6 +54,9 @@ else
                                                         <td>@string.Format(new System.Globalization.CultureInfo("vi-VN"), "{0:C0}", tienSP)</td>
                                                     </tr>
                                                 }
+                                                {
+                                                    ViewBag.TotalAmount = total;
+                                                }
                                             }
                                         </tbody>
                                         <tfoot>
@@ -83,14 +86,12 @@ else
                                         </li>
                                         <li class="row">
                                             <div class="col-sm-6">
-                                                <a href="~/Home/PaymentWithPayPal" class="btn btn-primary">PAY WITH CARD</a>
+                                                <a href="@Url.Action("VnPay", "Home", new { Tongtien = total, Name = ViewBag.Name, Address = ViewBag.Address, PhoneNumber = ViewBag.PhoneNumber })" class="btn btn-primary">PAY WITH CARD</a>
                                             </div>
                                         </li>
                                     </ul>
                                 </form>
                             </div>
-
-
                             <h6 class="checkout-sep">3. Thông tin giao hàng</h6>
                             <div class="box-border">
                                 <form action="@Url.Action("Checkout", "Home")" method="post">

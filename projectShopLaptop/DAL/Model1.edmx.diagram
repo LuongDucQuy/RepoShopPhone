@@ -20,6 +20,8 @@
         <EntityTypeShape EntityType="dbClickShopModel.Tbl_Bill" Width="1.5" PointX="3.125" PointY="9.875" />
         <AssociationConnector Association="dbClickShopModel.FK_User_Bill" />
         <EntityTypeShape EntityType="dbClickShopModel.sysdiagram" Width="1.5" PointX="8.375" PointY="6.75" />
+        <EntityTypeShape EntityType="dbClickShopModel.ChatMessage" Width="1.5" PointX="8.375" PointY="9.75" />
+        <AssociationConnector Association="dbClickShopModel.FK_Bill_Product" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

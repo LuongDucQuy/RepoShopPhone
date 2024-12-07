@@ -1,4 +1,7 @@
-﻿using PagedList;
+﻿
+using log4net;
+using Microsoft.Extensions.Logging;
+using PagedList;
 using PayPal.Api;
 using projectShopLaptop.DAL;
 using projectShopLaptop.Mail;
@@ -6,7 +9,10 @@ using projectShopLaptop.Models;
 using projectShopLaptop.Models.Home;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data.Entity;
+using System.Data.SqlClient;
+using System.Drawing.Printing;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
@@ -14,27 +20,83 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
+using WebGrease;
+
 
 namespace projectShopLaptop.Controllers
 {
     public class HomeController : Controller
     {
         dbClickShopEntities ctx = new dbClickShopEntities();
-        public ActionResult Index(string search, int? page)
+        public ActionResult Index(string search, int? priceRange, int? category, string sortOrder)
         {
-            //if (Session["user"] == null)
-            //{
-            //    return RedirectToAction("Login");
-            //}
-            //else
-            //{
-            HomeIndexViewModel model = new HomeIndexViewModel();
+            var products = ctx.Tbl_Product.AsQueryable();
 
-            // Lấy danh sách các danh mục từ cơ sở dữ liệu
+            // Filter by search keyword
+            if (!string.IsNullOrEmpty(search))
+            {
+                products = products.Where(p => p.ProductName.Contains(search));
+            }
+
+            // Filter by price range
+            if (priceRange.HasValue)
+            {
+                switch (priceRange.Value)
+                {
+                    case 1: // Under 1 million
+                        products = products.Where(p => p.Price < 1000000);
+                        break;
+                    case 2: // 1 million to 3 million
+                        products = products.Where(p => p.Price >= 1000000 && p.Price <= 3000000);
+                        break;
+                    case 3: // 3 million to 5 million
+                        products = products.Where(p => p.Price > 3000000 && p.Price <= 5000000);
+                        break;
+                    case 4: // Over 5 million
+                        products = products.Where(p => p.Price > 5000000);
+                        break;
+                }
+            }
+
+            // Filter by category
+            if (category.HasValue)
+            {
+                products = products.Where(p => p.CategoryId == category.Value);
+            }
+
+            // Sort by name or price
+            switch (sortOrder)
+            {
+                case "name_asc":
+                    products = products.OrderBy(p => p.ProductName);
+                    break;
+                case "name_desc":
+                    products = products.OrderByDescending(p => p.ProductName);
+                    break;
+                case "price_asc":
+                    products = products.OrderBy(p => p.Price);
+                    break;
+                case "price_desc":
+                    products = products.OrderByDescending(p => p.Price);
+                    break;
+                default:
+                    products = products.OrderBy(p => p.ProductName); // Default sort by name ascending
+                    break;
+            }
+
+            // Paginate results (Optional)
+            var pageNumber = Request.QueryString["page"] != null ? int.Parse(Request.QueryString["page"]) : 1;
+            var pageSize = 8; // Number of products per page
+            var model = new HomeIndexViewModel
+            {
+                ListOfProduct = products.ToPagedList(pageNumber, pageSize)
+            };
+
+            // Set the categories for dropdown
             ViewBag.Categories = ctx.Tbl_Category.ToList();
+            ViewBag.CurrentSort = sortOrder;
 
-            return View(model.CreateModel(search, 8, page));
-            //}
+            return View(model);
         }
         [HttpGet]
         public ActionResult ProductOfCategory(int id, int? page)
@@ -55,6 +117,11 @@ namespace projectShopLaptop.Controllers
 
         public ActionResult Login()
         {
+            // Khởi tạo đối tượng theo dõi số lần đăng nhập sai nếu chưa có
+            if (Session["FailedLoginAttempts"] == null)
+            {
+                Session["FailedLoginAttempts"] = new Dictionary<string, int>();
+            }
             return View();
         }
 
@@ -63,9 +130,11 @@ namespace projectShopLaptop.Controllers
         {
             using (var dbContext = new dbClickShopEntities())
             {
-                // Tìm người dùng theo tên đăng nhập
-                var existingUser = dbContext.Tbl_User
-                                    .FirstOrDefault(u => u.UserName.ToLower() == user.ToLower());
+                // Lấy danh sách số lần đăng nhập sai từ Session
+                var failedAttempts = Session["FailedLoginAttempts"] as Dictionary<string, int>;
+
+                // Tìm người dùng trong cơ sở dữ liệu
+                var existingUser = dbContext.Tbl_User.FirstOrDefault(u => u.UserName.ToLower() == user.ToLower());
 
                 if (existingUser != null)
                 {
@@ -78,42 +147,45 @@ namespace projectShopLaptop.Controllers
                         return View(existingUser); // Giữ người dùng lại trang Login 
                     }
 
-                    // Mã hóa mật khẩu người dùng nhập vào để so sánh
-                    var hashedPassword = HashPassword(password);
-
-                    // Kiểm tra mật khẩu đã mã hóa
-                    if (existingUser.Password == hashedPassword)
+                    // Kiểm tra số lần đăng nhập sai cho tài khoản hiện tại
+                    if (failedAttempts.ContainsKey(user) && failedAttempts[user] >= 3)
                     {
-                        // Đăng nhập thành công với mật khẩu đã mã hóa
-                        SetUserSession(existingUser);
-                        return RedirectBasedOnRole(existingUser.role);
-                    }
-                    // Kiểm tra mật khẩu chưa mã hóa (dành cho trường hợp dữ liệu cũ)
-                    else if (existingUser.Password == password)
-                    {
-                        // Nếu mật khẩu khớp, cập nhật mật khẩu đã mã hóa trong cơ sở dữ liệu
-                        existingUser.Password = hashedPassword;
-                        dbContext.SaveChanges();
-
-                        // Đăng nhập thành công với mật khẩu chưa mã hóa (sau khi cập nhật lại thành mã hóa)
-                        SetUserSession(existingUser);
-                        return RedirectBasedOnRole(existingUser.role);
-                    }
-                    else
-                    {
-                        // Sai mật khẩu
-                        TempData["error"] = "Mật khẩu không đúng.";
+                        ViewBag.ErrorMessage = "Tài khoản này đã nhập sai quá 3 lần. Vui lòng thử lại sau hoặc đặt lại mật khẩu.";
+                        ViewBag.ResetPasswordLink = Url.Action("ForgotPassword", "Home");
                         return View();
                     }
+
+                    // Kiểm tra mật khẩu chưa mã hóa trước
+                    if (existingUser.Password == password || existingUser.Password == HashPassword(password))
+                    {
+                        // Đặt lại số lần đăng nhập sai cho tài khoản này
+                        if (failedAttempts.ContainsKey(user))
+                        {
+                            failedAttempts.Remove(user);
+                        }
+
+                        // Thiết lập phiên người dùng và chuyển hướng
+                        SetUserSession(existingUser);
+                        return RedirectBasedOnRole(existingUser.role);
+                    }
+                }
+
+                // Xử lý trường hợp đăng nhập sai
+                if (failedAttempts.ContainsKey(user))
+                {
+                    failedAttempts[user]++;
                 }
                 else
                 {
-                    // Sai tài khoản
-                    TempData["error"] = "Tài khoản không tồn tại.";
-                    return View();
+                    failedAttempts[user] = 1;
                 }
+
+                ViewBag.ErrorMessage = "Tên đăng nhập hoặc mật khẩu không đúng.";
+                return View();
             }
         }
+
+
         [AllowAnonymous]
         public async Task<ActionResult> ResendConfirmationEmail(string email)
         {
@@ -175,6 +247,13 @@ namespace projectShopLaptop.Controllers
                 var existingUser = dbContext.Tbl_User.FirstOrDefault(u => u.UserName == user);
                 var existingEmail = dbContext.Tbl_User.FirstOrDefault(u => u.EmailId == email);
 
+                // Kiểm tra mật khẩu ít nhất 6 ký tự
+                if (password.Length < 6)
+                {
+                    ModelState.AddModelError("PasswordLength", "Mật khẩu phải có ít nhất 6 ký tự.");
+                    return View();
+                }
+
                 if (existingUser != null)
                 {
                     ModelState.AddModelError("UsernameExists", "Tên đăng nhập đã tồn tại.");
@@ -195,7 +274,6 @@ namespace projectShopLaptop.Controllers
 
                 if (!ModelState.IsValid)
                 {
-
                     return View();
                 }
 
@@ -313,7 +391,7 @@ namespace projectShopLaptop.Controllers
             {
                 user.ModifiedOn = DateTime.Now;
                 ctx.SaveChanges();
-                TempData["success"] = "Cập nhật thông tin thành công.";
+                TempData["successMessage"] = "Cập nhật thành công!";
             }
             else
             {
@@ -459,41 +537,51 @@ namespace projectShopLaptop.Controllers
                 // Lấy thông tin giỏ hàng từ session
                 var cart = Session["cart"] as List<Models.Home.Item>;
 
-                if (cart != null && cart.Any())
+                if (cart != null && cart.Count == 1) // Chỉ cho phép 1 sản phẩm trong giỏ
                 {
-                    // Tạo đối tượng Tbl_Bill
-                    var bill = new Tbl_Bill
+                    var item = cart.First(); // Lấy sản phẩm đầu tiên
+                    var product = ctx.Tbl_Product.FirstOrDefault(p => p.ProductId == item.Product.ProductId);
+
+                    if (product != null)
                     {
-                        user_id = user.user_id, // Giả sử ID người dùng là trường khóa chính
-                        ngayDat = DateTime.Now,
-                        HoTen = Name,
-                        diaChi = Address,
-                        dienThoai = PhoneNumber,
-                        soTien = (decimal)cart.Sum(item => item.Quantity * item.Product.Price),
-                        cachThanhToan = "COD", // Hoặc lấy từ form nếu có nhiều phương thức thanh toán
-                        cachVanChuyen = "Standard Shipping", // Hoặc lấy từ form
-                        maTrangThai = 1, // Ví dụ: 1 là trạng thái 'Đang xử lý'
-                        ghiChu = ""
-                    };
+                        // Tạo hóa đơn
+                        var bill = new Tbl_Bill
+                        {
+                            user_id = user.user_id,
+                            ngayDat = DateTime.Now,
+                            HoTen = Name,
+                            diaChi = Address,
+                            dienThoai = PhoneNumber,
+                            soTien = (decimal)cart.Sum(q => q.Quantity * item.Product.Price),
+                            cachThanhToan = "COD",
+                            cachVanChuyen = "Standard Shipping",
+                            maTrangThai = 1, // Ví dụ: 1 là trạng thái 'Đang xử lý'
+                            ghiChu = "",
+                            ProductId = product.ProductId // Ghi lại ProductId
+                        };
 
-                    // Lưu vào database
-                    ctx.Tbl_Bill.Add(bill);
-                    ctx.SaveChanges();
+                        // Giảm số lượng sản phẩm trong kho
+                        product.Quantity -= item.Quantity;
+                        if (product.Quantity < 0)
+                        {
+                            product.Quantity = 0;
+                        }
 
-                    // Lưu thay đổi
-                    ctx.SaveChanges();
+                        // Lưu vào database
+                        ctx.Tbl_Bill.Add(bill);
+                        ctx.SaveChanges();
 
-                    // Xóa giỏ hàng sau khi đặt hàng
-                    Session["cart"] = null;
-
-                    return RedirectToAction("Index");
+                        // Xóa giỏ hàng sau khi đặt hàng
+                        Session["cart"] = null;
+                        TempData["successMessage"] = "Đặt hàng thành công!";
+                        return RedirectToAction("Index");
+                    }
                 }
             }
 
             TempData["error"] = "Không thể hoàn thành đặt hàng.";
             return RedirectToAction("ShoppingCart");
         }
-
 
         public ActionResult Pay()
         {
@@ -511,9 +599,6 @@ namespace projectShopLaptop.Controllers
                     ViewBag.Name = user.Name;
                     ViewBag.Address = user.Address;
                     ViewBag.PhoneNumber = user.PhoneNumber;
-                    //ViewBag.Name = "Quy";
-                    //ViewBag.Address = "abc";
-                    //ViewBag.PhoneNumber = "123";
                 }
             }
 
@@ -616,7 +701,7 @@ namespace projectShopLaptop.Controllers
             }
             else if (item != null && item.Quantity == 1)
             {
-                cart.Remove(item);
+                item.Quantity = 1;
             }
             Session["cart"] = cart;
             return Redirect(url);
@@ -724,12 +809,24 @@ namespace projectShopLaptop.Controllers
                 // Kiểm tra trạng thái đơn hàng
                 if (bill.maTrangThai == 1 || bill.maTrangThai == 2 || bill.maTrangThai == 3)
                 {
+                    // Lấy danh sách sản phẩm trong hóa đơn
+                    var billDetails = ctx.Tbl_Bill.Where(d => d.IDBill == billId).ToList();
+
+                    // Cộng lại số lượng sản phẩm vào kho
+                    foreach (var detail in billDetails)
+                    {
+                        var product = ctx.Tbl_Product.FirstOrDefault(p => p.ProductId == detail.ProductId);
+                        if (product != null)
+                        {
+                            product.Quantity += 1; // Tăng số lượng tồn kho
+                        }
+                    }
+
                     // Cập nhật trạng thái đơn hàng thành "Đã hủy"
                     bill.maTrangThai = 5; // 5 = Đã hủy (mã trạng thái bạn tự định nghĩa)
                     ctx.SaveChanges();
-
                     // Thông báo hủy thành công
-                    TempData["Message"] = "Đơn hàng đã được hủy thành công.";
+                    TempData["successMessage"] = "Đơn hàng đã được hủy thành công.";
                 }
                 else
                 {
@@ -747,151 +844,91 @@ namespace projectShopLaptop.Controllers
             return RedirectToAction("LichSuDonHang");
         }
 
-        //public ActionResult FailureView()
-        //{
-        //    return View();
-        //}
 
-        //public ActionResult SuccessView()
-        //{
-        //    return View();
-        //}
+        private static readonly ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        public ActionResult VnPay(double Tongtien, string Name, string Address, string PhoneNumber)
+        {
+            // Kiểm tra nếu người dùng chưa đăng nhập
+            if (Session["user"] == null)
+            {
+                return RedirectToAction("Login");
+            }
 
-        //public ActionResult PaymentWithPaypal(string Cancel = null)
-        //{
-        //    //getting the apiContext  
-        //    APIContext apiContext = PaypalConfiguration.GetAPIContext();
-        //    try
-        //    {
-        //        //A resource representing a Payer that funds a payment Payment Method as paypal  
-        //        //Payer Id will be returned when payment proceeds or click to pay  
-        //        string payerId = Request.Params["PayerID"];
-        //        if (string.IsNullOrEmpty(payerId))
-        //        {
-        //            //this section will be executed first because PayerID doesn't exist  
-        //            //it is returned by the create function call of the payment class  
-        //            // Creating a payment  
-        //            // baseURL is the url on which paypal sendsback the data.  
-        //            string baseURI = Request.Url.Scheme + "://" + Request.Url.Authority + "/Home/PaymentWithPayPal?";
-        //            //here we are generating guid for storing the paymentID received in session  
-        //            //which will be used in the payment execution  
-        //            var guid = Convert.ToString((new Random()).Next(100000));
-        //            //CreatePayment function gives us the payment approval url  
-        //            //on which payer is redirected for paypal account payment  
-        //            var createdPayment = this.CreatePayment(apiContext, baseURI + "guid=" + guid);
-        //            //get links returned from paypal in response to Create function call  
-        //            var links = createdPayment.links.GetEnumerator();
-        //            string paypalRedirectUrl = null;
-        //            while (links.MoveNext())
-        //            {
-        //                Links lnk = links.Current;
-        //                if (lnk.rel.ToLower().Trim().Equals("approval_url"))
-        //                {
-        //                    //saving the payapalredirect URL to which user will be redirected for payment  
-        //                    paypalRedirectUrl = lnk.href;
-        //                }
-        //            }
-        //            // saving the paymentID in the key guid  
-        //            Session.Add(guid, createdPayment.id);
-        //            return Redirect(paypalRedirectUrl);
-        //        }
-        //        else
-        //        {
-        //            // This function exectues after receving all parameters for the payment  
-        //            var guid = Request.Params["guid"];
-        //            var executedPayment = ExecutePayment(apiContext, payerId, Session[guid] as string);
-        //            //If executed payment failed then we will show payment failure message to user  
-        //            if (executedPayment.state.ToLower() != "approved")
-        //            {
-        //                return View("FailureView");
-        //            }
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return View("FailureView");
-        //    }
-        //    //on successful payment, show success page to user.  
-        //    return View("SuccessView");
-        //}
-        //private PayPal.Api.Payment payment;
-        //private Payment ExecutePayment(APIContext apiContext, string payerId, string paymentId)
-        //{
-        //    var paymentExecution = new PaymentExecution()
-        //    {
-        //        payer_id = payerId
-        //    };
-        //    this.payment = new Payment()
-        //    {
-        //        id = paymentId
-        //    };
-        //    return this.payment.Execute(apiContext, paymentExecution);
-        //}
+            string username = Session["user"].ToString();
+            var user = ctx.Tbl_User.FirstOrDefault(u => u.UserName == username);
 
-        //private Payment CreatePayment(APIContext apiContext, string redirectUrl)
-        //{
-        //    var listSanPham = Session["cart"] as List<Models.Home.Item>;
-        //    //create itemlist and add item objects to it  
-        //    var itemList = new ItemList()
-        //    {
-        //        items = new List<PayPal.Api.Item>()
-        //    };
-        //    foreach (var item in listSanPham)
-        //    {
-        //        itemList.items.Add(new PayPal.Api.Item()
-        //        {
-        //            name = item.Product.ProductName,
-        //            currency = "USD",
-        //            price = "1",
-        //            quantity = item.Quantity.ToString(),
-        //            sku = "su",
-        //        });
-        //    }
-        //    //Adding Item Details like name, currency, price etc  
-        //    var payer = new Payer()
-        //    {
-        //        payment_method = "paypal"
-        //    };
-        //    // Configure Redirect Urls here with RedirectUrls object  
-        //    var redirUrls = new RedirectUrls()
-        //    {
-        //        cancel_url = redirectUrl + "&Cancel=true",
-        //        return_url = redirectUrl
-        //    };
-        //    // Adding Tax, shipping and Subtotal details  
-        //    var details = new Details()
-        //    {
-        //        tax = "0",
-        //        shipping = "0",
-        //        subtotal = "1"
-        //    };
-        //    //Final amount with details  
-        //    var amount = new Amount()
-        //    {
-        //        currency = "USD",
-        //        total = "3", // Total must be equal to sum of tax, shipping and subtotal.  
-        //        details = details
-        //    };
-        //    var transactionList = new List<Transaction>();
-        //    // Adding description about the transaction  
-        //    var paypalOrderId = DateTime.Now.Ticks;
-        //    transactionList.Add(new Transaction()
-        //    {
-        //        description = $"Invoice #{paypalOrderId}",
-        //        invoice_number = paypalOrderId.ToString(), //Generate an Invoice No    
-        //        amount = amount,
-        //        item_list = itemList
-        //    });
-        //    this.payment = new Payment()
-        //    {
-        //        intent = "sale",
-        //        payer = payer,
-        //        transactions = transactionList,
-        //        redirect_urls = redirUrls
-        //    };
-        //    // Create a payment using a APIContext  
-        //    return this.payment.Create(apiContext);
-        //}
+            if (user != null)
+            {
+                // Lấy thông tin giỏ hàng từ session
+                var cart = Session["cart"] as List<Models.Home.Item>;
 
+                if (cart != null && cart.Any())
+                {
+                    // Tạo đối tượng Tbl_Bill
+                    var bill = new Tbl_Bill
+                    {
+                        user_id = user.user_id, // Giả sử ID người dùng là trường khóa chính
+                        ngayDat = DateTime.Now,
+                        HoTen = Name,
+                        diaChi = Address,
+                        dienThoai = PhoneNumber,
+                        soTien = (decimal)cart.Sum(item => item.Quantity * item.Product.Price),
+                        cachThanhToan = "VNPay", // Phương thức thanh toán là VNPAY
+                        cachVanChuyen = "Standard Shipping", // Hoặc lấy từ form
+                        maTrangThai = 1, // Ví dụ: 1 là trạng thái 'Đang xử lý'
+                        ghiChu = "",
+                    };
+
+                    // Lưu vào database
+                    ctx.Tbl_Bill.Add(bill);
+                    ctx.SaveChanges();
+
+                    // Chuyển hướng tới trang thanh toán VNPAY
+                    string vnp_Returnurl = ConfigurationManager.AppSettings["vnp_Returnurl"];
+                    string vnp_Url = ConfigurationManager.AppSettings["vnp_Url"];
+                    string vnp_TmnCode = ConfigurationManager.AppSettings["vnp_TmnCode"];
+                    string vnp_HashSecret = ConfigurationManager.AppSettings["vnp_HashSecret"];
+
+                    if (string.IsNullOrEmpty(vnp_Returnurl) || string.IsNullOrEmpty(vnp_Url) ||
+                        string.IsNullOrEmpty(vnp_TmnCode) || string.IsNullOrEmpty(vnp_HashSecret))
+                    {
+                        throw new Exception("Cấu hình VNPAY không hợp lệ trong AppSettings.");
+                    }
+
+                    // Khởi tạo thông tin đơn hàng
+                    OrderInfo order = new OrderInfo
+                    {
+                        OrderId = DateTime.Now.Ticks, // Mã giao dịch giả lập
+                        Amount = (long)Tongtien,     // Số tiền thanh toán (VND)
+                        Status = "0",                // Trạng thái giao dịch
+                        CreatedDate = DateTime.Now   // Ngày tạo giao dịch
+                    };
+
+                    // Khởi tạo thư viện VNPAY
+                    VnPayLibrary vnpay = new VnPayLibrary();
+
+                    // Thêm các tham số bắt buộc
+                    vnpay.AddRequestData("vnp_Amount", (order.Amount * 100).ToString()); // Nhân 100 để chuyển sang đơn vị nhỏ nhất
+                    vnpay.AddRequestData("vnp_Command", "pay");
+                    vnpay.AddRequestData("vnp_CreateDate", order.CreatedDate.ToString("yyyyMMddHHmmss"));
+                    vnpay.AddRequestData("vnp_CurrCode", "VND");
+                    vnpay.AddRequestData("vnp_IpAddr", Utils.GetIpAddress());
+                    vnpay.AddRequestData("vnp_Locale", "vn");
+                    vnpay.AddRequestData("vnp_OrderInfo", $"Thanh toan don hang: {order.OrderId}");
+                    vnpay.AddRequestData("vnp_OrderType", "other"); // Loại giao dịch
+                    vnpay.AddRequestData("vnp_ReturnUrl", vnp_Returnurl);
+                    vnpay.AddRequestData("vnp_TmnCode", vnp_TmnCode);
+                    vnpay.AddRequestData("vnp_TxnRef", order.OrderId.ToString());
+                    vnpay.AddRequestData("vnp_Version", "2.1.0");
+
+                    // Tạo URL thanh toán
+                    string paymentUrl = vnpay.CreateRequestUrl(vnp_Url, vnp_HashSecret);
+                    TempData["successMessage"] = "Đặt hàng thành công!";
+                    // Chuyển hướng tới URL thanh toán
+                    Response.Redirect(paymentUrl);
+                }
+            }
+            return RedirectToAction("ShoppingCart");
+        }
     }
 }

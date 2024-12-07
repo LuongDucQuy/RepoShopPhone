@@ -2,8 +2,97 @@
 @using PagedList;
 @using PagedList.Mvc;
 @{
-    ViewBag.Title = "Home Page";
+    ViewBag.Title = "Trang chủ";
 }
+@if (TempData["successMessage"] != null)
+{
+    <div class="toast toast-success">
+        @TempData["successMessage"]
+    </div>
+}
+<style>
+    .toast {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: #4CAF50; /* Màu xanh cho thông báo thành công */
+        color: white;
+        padding: 25px 50px; /* Thêm padding để thông báo lớn hơn */
+        border-radius: 10px; /* Làm tròn các góc */
+        font-size: 20px; /* Tăng kích thước font */
+        font-weight: bold; /* Làm cho chữ đậm */
+        text-align: center; /* Căn giữa chữ trong thông báo */
+        z-index: 9999;
+        opacity: 0;
+        transition: opacity 0.5s ease-in-out;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Thêm bóng đổ cho thông báo */
+    }
+
+    .toast-error {
+        background-color: #f44336; /* Màu đỏ cho thông báo lỗi */
+    }
+
+    .toast-success {
+        background-color: #4CAF50; /* Màu xanh cho thông báo thành công */
+    }
+
+    .toast.show {
+        opacity: 1;
+    }
+
+    .fs-contain {
+        position: relative;
+        display: inline-block;
+        width: 200px; /* Có thể điều chỉnh kích thước */
+    }
+
+    .energy-bar {
+        width: 100%;
+        height: 30px; /* Chiều cao của thanh năng lượng */
+        background-color: #f1f1f1;
+        border-radius: 5px;
+        position: relative;
+    }
+
+    .energy-progress {
+        height: 100%;
+        border-radius: 5px;
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        transition: background 0.5s ease; /* Thêm hiệu ứng chuyển màu */
+    }
+
+    .rq_count {
+        font-size: 14px;
+        color: #fff;
+        font-weight: bold;
+        position: absolute;
+    }
+
+    .fs-iconfire {
+        margin-right: 5px;
+    }
+
+    .filter-form {
+        position: relative;
+    }
+
+    .form-images {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px; /* Điều chỉnh khoảng cách nếu cần */
+    }
+
+    .form-image-left, .form-image-right {
+        max-width: 100px; /* Kích thước tối đa của ảnh, có thể điều chỉnh */
+        height: auto;
+    }
+
+</style>
 <link href="~/AdminStyle/css/IndexHome.css" rel="stylesheet" />
 <!-- Carousel Start -->
 <div class="container-fluid mb-3">
@@ -168,20 +257,59 @@
     </div>
 </div>
 <!-- Categories End -->
-<!-- Products Start -->
+<!-- Filter Form Start -->
+<div class="col-lg-4 col-6 mx-auto text-left filter-form">
+    <div class="form-images">
+        <img src="~/img/label-left.png" alt="Left Image" class="form-image-left">
+        <img src="~/img/label-right.png" alt="Right Image" class="form-image-right">
+    </div>
+    <form method="get" action="@Url.Action("Index", "Home")">
+        <!-- Price Filter -->
+        <div class="mb-3">
+            <label for="priceRange" class="form-label">Giá</label>
+            <select name="priceRange" class="form-control" id="priceRange">
+                <option value="">Chọn khoảng giá</option>
+                <option value="1" @(Request.QueryString["priceRange"] == "1" ? "selected" : "")>Dưới 1 triệu</option>
+                <option value="2" @(Request.QueryString["priceRange"] == "2" ? "selected" : "")>1 triệu - 3 triệu</option>
+                <option value="3" @(Request.QueryString["priceRange"] == "3" ? "selected" : "")>3 triệu - 5 triệu</option>
+                <option value="4" @(Request.QueryString["priceRange"] == "4" ? "selected" : "")>Trên 5 triệu</option>
+            </select>
+        </div>
 
-<div class="col-lg-4 col-6 mx-auto text-left">
-    <form method="post">
-        <div class="input-group">
-            <input type="text" name="search" class="form-control" placeholder="Tìm kiếm sản phẩm">
-            <div class="input-group-append">
-                <button class="input-group-text bg-transparent text-primary">
-                    <i class="fa fa-search"></i>
-                </button>
-            </div>
+        <!-- Category Filter -->
+        <div class="mb-3">
+            <label for="category" class="form-label">Danh mục</label>
+            <select name="category" class="form-control" id="category">
+                <option value="">Chọn danh mục</option>
+                @if (ViewBag.Categories != null)
+                {
+                    foreach (var category in ViewBag.Categories)
+                    {
+                        <option value="@category.CategoryId" @(Request.QueryString["category"] == category.CategoryId.ToString() ? "selected" : "")>@category.CategoryName</option>
+                    }
+                }
+            </select>
+        </div>
+
+        <!-- Sort Order Filter -->
+        <div class="mb-3">
+            <label for="sortOrder" class="form-label">Sắp xếp</label>
+            <select name="sortOrder" class="form-control" id="sortOrder">
+                <option value="">Chọn sắp xếp</option>
+                <option value="name_asc" @(Request.QueryString["sortOrder"] == "name_asc" ? "selected" : "")>Tên A-Z</option>
+                <option value="name_desc" @(Request.QueryString["sortOrder"] == "name_desc" ? "selected" : "")>Tên Z-A</option>
+                <option value="price_asc" @(Request.QueryString["sortOrder"] == "price_asc" ? "selected" : "")>Giá tăng dần</option>
+                <option value="price_desc" @(Request.QueryString["sortOrder"] == "price_desc" ? "selected" : "")>Giá giảm dần</option>
+            </select>
+        </div>
+
+        <div class="text-center">
+            <button type="submit" class="btn">Áp dụng bộ lọc</button>
         </div>
     </form>
 </div>
+<!-- Filter Form End -->
+
 <div class="container-fluid pt-5 pb-3">
     <h2 class="section-title position-relative text-uppercase mx-xl-5 mb-4"><span class="bg-secondary pr-3">Sản Phẩm</span></h2>
     <div class="row px-xl-5">
@@ -189,16 +317,16 @@
         {
             if (item.IsActive == true)
             {
-            <div class="col-lg-3 col-md-4 col-sm-6 pb-1">
-                <div class="product-item bg-light mb-4">
-                    <div class="product-img position-relative overflow-hidden">
-                        <img class="img-fluid w-100" src="~/img/@item.ProductImage" alt="">
-                        <div class="product-action">
-                            @using (Html.BeginForm("proDetail", "detailProduct", FormMethod.Get))
-                            {
-                                @Html.Hidden("id", item.ProductId)
-                                <button class="btn btn-outline-dark btn-square"><i class="fa fa-search"></i></button>
-                            }
+                <div class="col-lg-3 col-md-4 col-sm-6 pb-1">
+                    <div class="product-item bg-light mb-4">
+                        <div class="product-img position-relative overflow-hidden">
+                            <img class="img-fluid w-100" src="~/img/@item.ProductImage" alt="">
+                            <div class="product-action">
+                                @using (Html.BeginForm("proDetail", "detailProduct", FormMethod.Get))
+                                {
+                                    @Html.Hidden("id", item.ProductId)
+                                    <button class="btn btn-outline-dark btn-square"><i class="fa fa-search"></i></button>
+                                }
                                 @if (item.Quantity > 0)
                                 {
                                     <button type="submit" class="btn btn-outline-dark btn-square addToCartBtn"
@@ -208,31 +336,43 @@
                                 }
                                 else
                                 {
-                                <p>Not Available</p>
+                                    <p>Not Available</p>
                                 }
+                            </div>
                         </div>
-                    </div>
-                    <div class="text-center py-4">
-                        <a class="h6 text-decoration-none text-truncate" href="">@item.ProductName</a>
-                        <div class="d-flex align-items-center justify-content-center mt-2">
-                            <h5>@string.Format(new System.Globalization.CultureInfo("vi-VN"), "{0:C0}", item.Price) (@item.Quantity)</h5>
-                        </div>
-                        <div class="d-flex align-items-center justify-content-center mb-1">
-                            <small class="fa fa-star text-primary mr-1"></small>
-                            <small class="fa fa-star text-primary mr-1"></small>
-                            <small class="fa fa-star text-primary mr-1"></small>
-                            <small class="fa fa-star text-primary mr-1"></small>
-                            <small class="fa fa-star text-primary mr-1"></small>
+                        <div class="text-center py-4">
+                            <a class="h6 text-decoration-none text-truncate" href="">@item.ProductName</a>
+                            <div class="d-flex align-items-center justify-content-center mt-2">
+                                <h5>@string.Format(new System.Globalization.CultureInfo("vi-VN"), "{0:C0}", item.Price)</h5>
+                            </div>
+                            <div class="d-flex align-items-center justify-content-center mb-1">
+                                <small class="fa fa-star text-primary mr-1"></small>
+                                <small class="fa fa-star text-primary mr-1"></small>
+                                <small class="fa fa-star text-primary mr-1"></small>
+                                <small class="fa fa-star text-primary mr-1"></small>
+                                <small class="fa fa-star text-primary mr-1"></small>
+                            </div>
+                            <div class="fs-contain">
+                                <div class="energy-bar">
+                                    <div class="energy-progress" style="width: 100%; background: linear-gradient(90deg, #ffecb3 0%, #ffb200 100%);">
+                                        <span class="rq_count fscount">
+                                            <img width="15" height="15" src="~/img/flash-sale.png" alt="icon flashsale">
+                                            <i class="fs-iconfire"></i>
+                                            <b>Còn @item.Quantity/200 suất</b>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
                         </div>
                     </div>
                 </div>
-            </div>
             }
         }
     </div>
 </div>
 <div class="phanTrang">
-    @Html.PagedListPager(Model.ListOfProduct, page => Url.Action("Index", new {page, search = Request.QueryString["search"]}), new PagedListRenderOptions() {Display = PagedListDisplayMode.IfNeeded, DisplayItemSliceAndTotal = true})
+    @Html.PagedListPager(Model.ListOfProduct, page => Url.Action("Index", new { page, search = Request.QueryString["search"] }), new PagedListRenderOptions() { Display = PagedListDisplayMode.IfNeeded, DisplayItemSliceAndTotal = true })
 </div>
 <!-- Products End -->
 <!-- Offer Start -->
@@ -466,4 +606,20 @@
             });
         });
     });
+</script>
+
+<script>
+    // Kiểm tra xem có thông báo nào cần hiển thị
+    window.onload = function () {
+        var successToast = document.querySelector('.toast-success');
+        var errorToast = document.querySelector('.toast-error');
+
+        // Hiển thị thông báo thành công
+        if (successToast) {
+            successToast.classList.add('show');
+            setTimeout(function () {
+                successToast.classList.remove('show');
+            }, 3000); // 3 giây
+        }
+    };
 </script>

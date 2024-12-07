@@ -6,6 +6,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using projectShopLaptop.Repository;
+using Rotativa;
 
 namespace projectShopLaptop.Controllers
 {
@@ -64,6 +65,22 @@ namespace projectShopLaptop.Controllers
             ViewBag.TopCustomerSpent = topCustomers.Select(c => c.TotalSpent).ToList();
 
             return View(filteredBills); // Truyền danh sách đơn hàng đã lọc tới View
+        }
+
+        public ActionResult ExportPdf()
+        {
+            // Lấy danh sách đơn hàng thành công (maTrangThai == 4)
+            var successfulBills = db.Tbl_Bill
+                .Where(b => b.maTrangThai == 4)
+                .ToList();
+
+            // Truyền dữ liệu qua View để hiển thị trong PDF
+            return new ViewAsPdf("ExportPdf", successfulBills)
+            {
+                FileName = "BaoCaoDonHang_ThanhCong.pdf",
+                PageOrientation = Rotativa.Options.Orientation.Landscape, // Định dạng ngang
+                PageSize = Rotativa.Options.Size.A4 // Kích thước A4
+            };
         }
 
     }

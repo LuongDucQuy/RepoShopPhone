@@ -93,13 +93,28 @@ namespace projectShopLaptop.Controllers
             // Kiểm tra xem người dùng đã tồn tại chưa
             var existingUser = _unitOfWork.GetRepositoryInstance<Tbl_User>()
                 .GetAllRecords()
-                .FirstOrDefault(u => u.UserName == tbl.UserName); // Giả sử `Username` là khóa duy nhất
+                .FirstOrDefault(u => u.UserName == tbl.UserName || u.EmailId == tbl.EmailId); // Giả sử `Username` là khóa duy nhất
 
             if (existingUser != null)
             {
-                ModelState.AddModelError("", "Tên người dùng đã tồn tại. Vui lòng chọn tên khác.");
+                if (existingUser.UserName == tbl.UserName)
+                {
+                    ModelState.AddModelError("", "Tên người dùng đã tồn tại. Vui lòng chọn tên khác.");
+                }
+                else if (existingUser.EmailId == tbl.EmailId)
+                {
+                    ModelState.AddModelError("", "Email đã được sử dụng. Vui lòng sử dụng email khác.");
+                }
+
                 ViewBag.CustomerList = GetCustomer();
                 return View(tbl); // Trả lại view với thông báo lỗi
+            }
+
+            if (tbl.Password.Length < 6)
+            {
+                ModelState.AddModelError("Password", "Mật khẩu phải có ít nhất 6 ký tự.");
+                ViewBag.CustomerList = GetCustomer();
+                return View(tbl);
             }
 
             tbl.role = "User";
@@ -119,8 +134,35 @@ namespace projectShopLaptop.Controllers
         [HttpPost]
         public ActionResult AdminAdd(Tbl_User tbl)
         {
+            // Kiểm tra xem người dùng đã tồn tại chưa
+            var existingUser = _unitOfWork.GetRepositoryInstance<Tbl_User>()
+                .GetAllRecords()
+                .FirstOrDefault(u => u.UserName == tbl.UserName || u.EmailId == tbl.EmailId); // Giả sử `Username` là khóa duy nhất
+
+            if (existingUser != null)
+            {
+                if (existingUser.UserName == tbl.UserName)
+                {
+                    ModelState.AddModelError("", "Tên người dùng đã tồn tại. Vui lòng chọn tên khác.");
+                }
+                else if (existingUser.EmailId == tbl.EmailId)
+                {
+                    ModelState.AddModelError("", "Email đã được sử dụng. Vui lòng sử dụng email khác.");
+                }
+
+                ViewBag.CustomerList = GetCustomer();
+                return View(tbl); // Trả lại view với thông báo lỗi
+            }
+
+            if (tbl.Password.Length < 6)
+            {
+                ModelState.AddModelError("Password", "Mật khẩu phải có ít nhất 6 ký tự.");
+                ViewBag.CustomerList = GetCustomer();
+                return View(tbl);
+            }
             tbl.role = "Admin";
             tbl.CreatedOn = DateTime.Now;
+            tbl.Password = HashPassword(tbl.Password);
             _unitOfWork.GetRepositoryInstance<Tbl_User>().Add(tbl);
             return RedirectToAction("adminAccount");
         }
@@ -494,73 +536,6 @@ namespace projectShopLaptop.Controllers
             return View(_unitOfWork.GetRepositoryInstance<Tbl_User>().GetProduct());
         }
 
-
-        //[HttpPost]
-        //public ActionResult customerEdit(int id)
-        //{
-        //    //var customer = ctx.Tbl_User.Where(c => c.user_id == id).FirstOrDefault();
-        //    //return View(customer);
-        //    ViewBag.CustomerList = GetCustomer();
-        //    return View(_unitOfWork.GetRepositoryInstance<Tbl_User>().GetFirstorDefault(id));
-        //}
-
-        //[HttpGet]
-        //public ActionResult CustomerEdit(int userId)
-        //{
-        //    // Retrieve the customer details using the userId
-        //    var customer = _unitOfWork.GetRepositoryInstance<Tbl_User>().GetAllRecords()
-        //                        .FirstOrDefault(u => u.user_id == userId);
-
-        //    if (customer == null)
-        //    {
-        //        TempData["Message"] = "Không tìm thấy khách hàng.";
-        //        return RedirectToAction("customerAccount");
-        //    }
-        //    return View(customer);
-        //}
-
-        //[HttpPost]
-        //public ActionResult CustomerEdit(Tbl_User updatedUser)
-        //{
-        //    if (!ModelState.IsValid)
-        //    {
-        //        ViewBag.CustomerList = GetCustomer();
-        //        return View(updatedUser); // Return the view with validation errors
-        //    }
-
-        //    // Retrieve the existing customer
-        //    var existingUser = _unitOfWork.GetRepositoryInstance<Tbl_User>()
-        //                        .GetAllRecords()
-        //                        .FirstOrDefault(u => u.user_id == updatedUser.user_id);
-
-        //    if (existingUser == null)
-        //    {
-        //        ModelState.AddModelError("", "Không tìm thấy khách hàng để cập nhật.");
-        //        return View(updatedUser); // Return the view with error
-        //    }
-
-        //    // Update customer details
-        //    existingUser.Name = updatedUser.Name; // Example of updating the name
-        //    existingUser.UserName = updatedUser.UserName; // Update the username if necessary
-        //                                                  // You can add more fields here to update as per your model
-
-        //    try
-        //    {
-        //        // Save changes to the database
-        //        _unitOfWork.GetRepositoryInstance<Tbl_User>().Update(existingUser);
-        //        ctx.SaveChanges();
-        //        TempData["Success"] = "Cập nhật khách hàng thành công.";
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        ModelState.AddModelError("", "Đã xảy ra lỗi khi cập nhật: " + ex.Message);
-        //        ViewBag.CustomerList = GetCustomer();
-        //        return View(updatedUser); // Return the view with error
-        //    }
-
-        //    return RedirectToAction("customerAccount");
-        //}
-
         [HttpGet]
         public ActionResult customerEdit(int id)
         {
@@ -573,7 +548,6 @@ namespace projectShopLaptop.Controllers
         }
 
 
-        // Cập nhật user
         [HttpPost]
         //[AllowAnonymous]
         //[ValidateAntiForgeryToken]
@@ -600,7 +574,7 @@ namespace projectShopLaptop.Controllers
                     existingUser.Name = Name;
                     existingUser.UserName = UserName;
                     existingUser.EmailId = EmailId;
-                    existingUser.Password = Password;
+                    existingUser.Password = HashPassword(Password);
                     existingUser.CreatedOn = DateTime.Now;
 
                     // Lưu thay đổi vào cơ sở dữ liệu

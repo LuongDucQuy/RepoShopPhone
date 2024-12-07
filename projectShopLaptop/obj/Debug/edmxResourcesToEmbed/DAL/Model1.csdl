@@ -128,6 +128,11 @@
       <Parameter Name="new_diagramname" Mode="In" Type="String" />
     </FunctionImport>
     <FunctionImport Name="sp_upgraddiagrams" />
+    <EntitySet Name="ChatMessages" EntityType="dbClickShopModel.ChatMessage" />
+    <AssociationSet Name="FK_Bill_Product" Association="dbClickShopModel.FK_Bill_Product">
+      <End Role="Tbl_Product" EntitySet="Tbl_Product" />
+      <End Role="Tbl_Bill" EntitySet="Tbl_Bill" />
+    </AssociationSet>
   </EntityContainer>
   <EntityType Name="Tbl_Product">
     <Key>
@@ -146,6 +151,7 @@
     <Property Name="Price" Type="Decimal" Precision="18" Scale="0" />
     <NavigationProperty Name="Tbl_Cart" Relationship="dbClickShopModel.FK__Tbl_Cart__Produc__5BE2A6F2" FromRole="Tbl_Product" ToRole="Tbl_Cart" />
     <NavigationProperty Name="Tbl_Category" Relationship="dbClickShopModel.FK__Tbl_Produ__Categ__4D94879B" FromRole="Tbl_Product" ToRole="Tbl_Category" />
+    <NavigationProperty Name="Tbl_Bill" Relationship="dbClickShopModel.FK_Bill_Product" FromRole="Tbl_Product" ToRole="Tbl_Bill" />
   </EntityType>
   <Association Name="FK__Tbl_Cart__Produc__5BE2A6F2">
     <End Type="dbClickShopModel.Tbl_Product" Role="Tbl_Product" Multiplicity="0..1" />
@@ -176,7 +182,7 @@
       <PropertyRef Name="user_id" />
     </Key>
     <Property Name="user_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-    <Property Name="Name" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+    <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
     <Property Name="UserName" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
     <Property Name="EmailId" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
     <Property Name="Password" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
@@ -221,6 +227,8 @@
     <Property Name="ghiChu" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
     <NavigationProperty Name="Tbl_User" Relationship="dbClickShopModel.FK_User_Bill" FromRole="Tbl_Bill" ToRole="Tbl_User" />
     <Property Name="soTien" Type="Decimal" Nullable="false" Precision="18" Scale="0" />
+    <Property Name="ProductId" Type="Int32" />
+    <NavigationProperty Name="Tbl_Product" Relationship="dbClickShopModel.FK_Bill_Product" FromRole="Tbl_Bill" ToRole="Tbl_Product" />
   </EntityType>
   <Association Name="FK_User_Bill">
     <End Type="dbClickShopModel.Tbl_User" Role="Tbl_User" Multiplicity="1" />
@@ -272,4 +280,26 @@
     <Property Type="String" Name="Owner" Nullable="true" MaxLength="128" />
     <Property Type="Int32" Name="OwnerID" Nullable="false" />
   </ComplexType>
+  <EntityType Name="ChatMessage">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Sender" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Message" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="SentTime" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="IsRead" Type="Boolean" Nullable="false" />
+  </EntityType>
+  <Association Name="FK_Bill_Product">
+    <End Type="dbClickShopModel.Tbl_Product" Role="Tbl_Product" Multiplicity="0..1" />
+    <End Type="dbClickShopModel.Tbl_Bill" Role="Tbl_Bill" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Tbl_Product">
+        <PropertyRef Name="ProductId" />
+      </Principal>
+      <Dependent Role="Tbl_Bill">
+        <PropertyRef Name="ProductId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
 </Schema>

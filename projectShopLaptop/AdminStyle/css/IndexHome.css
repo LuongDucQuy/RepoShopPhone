@@ -43,3 +43,77 @@
 .not-available {
     color: #888; /* Màu sắc cho thông báo "Not Available" */
 }
+
+
+/* General Styles for Forms */
+.form-label {
+    font-weight: bold;
+    font-size: 14px;
+    color: #333;
+}
+
+/* Form Container Styles */
+.filter-form {
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin: 15px 0;
+}
+
+/* Select dropdown styling */
+.form-control {
+    height: 40px;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+}
+/* Styling for Category and Price Filters */
+.filter-form select {
+    width: 100%;
+    margin-bottom: 15px;
+}
+
+/* Adjusting the carousel image to cover the area better */
+.carousel-inner .carousel-item img {
+    object-fit: cover;
+    height: 100%;
+    width: 100%;
+}
+
+/* Category section */
+.cat-item {
+    transition: transform 0.3s ease;
+}
+
+    .cat-item:hover {
+        transform: scale(1.05);
+    }
+
+    .cat-item img {
+        width: 100px;
+        height: 100px;
+        object-fit: cover;
+    }
+
+/* Product Card Styles */
+.product-card {
+    transition: box-shadow 0.3s ease;
+}
+
+    .product-card:hover {
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+/* Section Title */
+.section-title {
+    font-size: 22px;
+    font-weight: bold;
+    color: #333;
+}
+
+    .section-title span {
+        background-color: #ffc107;
+        padding: 5px 15px;
+    }

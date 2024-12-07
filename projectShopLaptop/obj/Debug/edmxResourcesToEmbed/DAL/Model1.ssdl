@@ -1,5 +1,15 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Schema Namespace="dbClickShopModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="ChatMessages">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Sender" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="Message" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="SentTime" Type="datetime" Nullable="false" />
+    <Property Name="IsRead" Type="bit" Nullable="false" />
+  </EntityType>
   <EntityType Name="sysdiagrams">
     <Key>
       <PropertyRef Name="diagram_id" />
@@ -27,6 +37,7 @@
     <Property Name="maTrangThai" Type="int" />
     <Property Name="ghiChu" Type="nvarchar(max)" />
     <Property Name="soTien" Type="decimal" Precision="18" Scale="0" Nullable="false" />
+    <Property Name="ProductId" Type="int" />
   </EntityType>
   <EntityType Name="Tbl_Cart">
     <Key>
@@ -113,7 +124,7 @@
       <PropertyRef Name="user_id" />
     </Key>
     <Property Name="user_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-    <Property Name="Name" Type="varchar" MaxLength="200" />
+    <Property Name="Name" Type="nvarchar" MaxLength="50" />
     <Property Name="UserName" Type="varchar" MaxLength="200" />
     <Property Name="EmailId" Type="varchar" MaxLength="200" />
     <Property Name="Password" Type="varchar" MaxLength="200" />
@@ -159,6 +170,18 @@
       </Principal>
       <Dependent Role="Tbl_ShippingDetails">
         <PropertyRef Name="MemberId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Bill_Product">
+    <End Role="Tbl_Product" Type="Self.Tbl_Product" Multiplicity="0..1" />
+    <End Role="Tbl_Bill" Type="Self.Tbl_Bill" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Tbl_Product">
+        <PropertyRef Name="ProductId" />
+      </Principal>
+      <Dependent Role="Tbl_Bill">
+        <PropertyRef Name="ProductId" />
       </Dependent>
     </ReferentialConstraint>
   </Association>
@@ -209,6 +232,7 @@
   </Function>
   <Function Name="sp_upgraddiagrams" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
   <EntityContainer Name="dbClickShopModelStoreContainer">
+    <EntitySet Name="ChatMessages" EntityType="Self.ChatMessages" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Tbl_Bill" EntityType="Self.Tbl_Bill" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Tbl_Cart" EntityType="Self.Tbl_Cart" Schema="dbo" store:Type="Tables" />
@@ -231,6 +255,10 @@
     <AssociationSet Name="FK__Tbl_Shipp__Membe__5629CD9C" Association="Self.FK__Tbl_Shipp__Membe__5629CD9C">
       <End Role="Tbl_User" EntitySet="Tbl_User" />
       <End Role="Tbl_ShippingDetails" EntitySet="Tbl_ShippingDetails" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Bill_Product" Association="Self.FK_Bill_Product">
+      <End Role="Tbl_Product" EntitySet="Tbl_Product" />
+      <End Role="Tbl_Bill" EntitySet="Tbl_Bill" />
     </AssociationSet>
     <AssociationSet Name="FK_User_Bill" Association="Self.FK_User_Bill">
       <End Role="Tbl_User" EntitySet="Tbl_User" />

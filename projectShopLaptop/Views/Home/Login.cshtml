@@ -132,9 +132,18 @@
                     <label style="display: flex; align-items:center">Nhập mật khẩu<span>*</span></label>
                     <input class="form-control" placeholder="Password" name="password" type="password" required>
                 </p>
-                <p class="text-danger">
-                    @TempData["error"]
-                </p>
+
+                @if (ViewBag.ErrorMessage != null)
+                {
+                    <p style="color: red;">@ViewBag.ErrorMessage</p>
+                }
+
+                @if (ViewBag.ResetPasswordLink != null)
+                {
+                    <p style="color: red;">
+                        <a href="@ViewBag.ResetPasswordLink">Quên mật khẩu? Nhấn vào đây để đặt lại.</a>
+                    </p>
+                }
                 <p>
                     <label style="display: flex; align-items: center;">
                         <a href="@Url.Action("Registe", "Home")">Tạo tài khoản mới</a>

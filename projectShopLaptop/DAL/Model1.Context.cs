@@ -39,6 +39,7 @@ namespace projectShopLaptop.DAL
         public DbSet<Tbl_User> Tbl_User { get; set; }
         public DbSet<Tbl_Bill> Tbl_Bill { get; set; }
         public DbSet<sysdiagram> sysdiagrams { get; set; }
+        public DbSet<ChatMessage> ChatMessages { get; set; }
     
         public virtual ObjectResult<GetBySearch_Result> GetBySearch(string search)
         {
