@@ -3,10 +3,6 @@
   "WorkspaceRootPath": "C:\\project\\projectShopLaptop\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{4E42688B-8F7F-4CB1-B7CB-952ED302BC36}|projectShopLaptop\\projectShopLaptop.csproj|c:\\project\\projectshoplaptop\\projectshoplaptop\\controllers\\admincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{4E42688B-8F7F-4CB1-B7CB-952ED302BC36}|projectShopLaptop\\projectShopLaptop.csproj|solutionrelative:projectshoplaptop\\controllers\\admincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{4E42688B-8F7F-4CB1-B7CB-952ED302BC36}|projectShopLaptop\\projectShopLaptop.csproj|c:\\project\\projectshoplaptop\\projectshoplaptop\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{4E42688B-8F7F-4CB1-B7CB-952ED302BC36}|projectShopLaptop\\projectShopLaptop.csproj|solutionrelative:projectshoplaptop\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
@@ -23,27 +19,14 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "AdminController.cs",
-              "DocumentMoniker": "C:\\project\\projectShopLaptop\\projectShopLaptop\\Controllers\\AdminController.cs",
-              "RelativeDocumentMoniker": "projectShopLaptop\\Controllers\\AdminController.cs",
-              "ToolTip": "C:\\project\\projectShopLaptop\\projectShopLaptop\\Controllers\\AdminController.cs",
-              "RelativeToolTip": "projectShopLaptop\\Controllers\\AdminController.cs",
-              "ViewState": "AgIAAAYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-12-08T14:24:45.624Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
               "Title": "HomeController.cs",
               "DocumentMoniker": "C:\\project\\projectShopLaptop\\projectShopLaptop\\Controllers\\HomeController.cs",
               "RelativeDocumentMoniker": "projectShopLaptop\\Controllers\\HomeController.cs",
               "ToolTip": "C:\\project\\projectShopLaptop\\projectShopLaptop\\Controllers\\HomeController.cs",
               "RelativeToolTip": "projectShopLaptop\\Controllers\\HomeController.cs",
-              "ViewState": "AgIAABIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAACADAAAAAAAAAAAqwCEDAAAzAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-12-08T14:24:39.932Z",
+              "WhenOpened": "2024-12-11T13:24:03.14Z",
               "EditorCaption": ""
             }
           ]
