@@ -1,4 +1,4 @@
-Web bán điện thoại
+# Web bán điện thoại
 
 # 1. Mô tả
 Đề tài này tập trung vào việc phát triển một hệ thống quản lý bán điện thoại hiệu quả. Hệ thống sẽ cho phép người dùng tìm kiếm và xem thông tin chi tiết các sản phẩm điện thoại, đặt hàng trực tuyến, quản lý giỏ hàng, theo dõi trạng thái đơn hàng, và thanh toán trực tuyến. Đồng thời, hệ thống cung cấp các tính năng quản lý hàng hóa, kho hàng, doanh thu, và báo cáo dành cho các nhà quản trị. Mục tiêu là mang lại trải nghiệm mua sắm dễ dàng và tiện lợi cho khách hàng, đồng thời giúp doanh nghiệp quản lý hoạt động bán hàng hiệu quả hơn.
@@ -48,13 +48,13 @@ Ngôn ngữ lập trình: JavaScript, T-SQL, C#.
 
 Thư viện và Framework: .NET Framework, Entity Framework.
 # 4. Hướng dẫn cài đặt
-Đối với người dùng:
+## Đối với người dùng:
 
 Truy cập website từ trình duyệt.
 Đăng ký tài khoản để sử dụng đầy đủ các tính năng.
 Tìm kiếm và đặt hàng điện thoại trực tuyến.
 
-Đối với nhà phát triển:
+## Đối với nhà phát triển:
 
 Clone mã nguồn từ GitHub.
 Cấu hình cơ sở dữ liệu trên SQLServer.
