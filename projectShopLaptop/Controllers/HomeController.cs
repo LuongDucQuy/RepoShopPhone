@@ -148,8 +148,10 @@ namespace projectShopLaptop.Controllers
                     }
 
                     // Kiểm tra số lần đăng nhập sai cho tài khoản hiện tại
-                    if (failedAttempts.ContainsKey(user) && failedAttempts[user] >= 3)
+                    if (failedAttempts.ContainsKey(user) && failedAttempts[user] >= 3 || existingUser.IsActive == false)
                     {
+                        existingUser.IsActive = false;
+                        dbContext.SaveChanges();
                         ViewBag.ErrorMessage = "Tài khoản này đã nhập sai quá 3 lần. Vui lòng thử lại sau hoặc đặt lại mật khẩu.";
                         ViewBag.ResetPasswordLink = Url.Action("ForgotPassword", "Home");
                         return View();
@@ -501,6 +503,7 @@ namespace projectShopLaptop.Controllers
 
                 // Cập nhật mật khẩu
                 user.Password = HashPassword(password);  // Giả sử bạn có phương thức hash mật khẩu
+                user.IsActive = true;
                 await dbContext.SaveChangesAsync();
 
                 return RedirectToAction("Login", "Home");

@@ -163,6 +163,7 @@ namespace projectShopLaptop.Controllers
             tbl.role = "Admin";
             tbl.CreatedOn = DateTime.Now;
             tbl.Password = HashPassword(tbl.Password);
+            tbl.IsActive = true;
             _unitOfWork.GetRepositoryInstance<Tbl_User>().Add(tbl);
             return RedirectToAction("adminAccount");
         }
@@ -549,9 +550,7 @@ namespace projectShopLaptop.Controllers
 
 
         [HttpPost]
-        //[AllowAnonymous]
-        //[ValidateAntiForgeryToken]
-        public ActionResult customerEdit(int user_id, string Name, string UserName, string EmailId, string Password)
+        public ActionResult customerEdit(int user_id, string Name, string UserName, string EmailId, string Password, bool IsActive)
         {
             TempData["Message"] = "";
 
@@ -567,7 +566,7 @@ namespace projectShopLaptop.Controllers
                 // Truy vấn người dùng theo user_id
                 Tbl_User existingUser = ctx.Tbl_User.Find(user_id);
 
-                // Không rỗng và không phải là null
+                // Kiểm tra nếu người dùng tồn tại
                 if (existingUser != null)
                 {
                     // Cập nhật thông tin người dùng
@@ -575,6 +574,7 @@ namespace projectShopLaptop.Controllers
                     existingUser.UserName = UserName;
                     existingUser.EmailId = EmailId;
                     existingUser.Password = HashPassword(Password);
+                    existingUser.IsActive = IsActive;  // Cập nhật trạng thái IsActive
                     existingUser.CreatedOn = DateTime.Now;
 
                     // Lưu thay đổi vào cơ sở dữ liệu
@@ -592,6 +592,7 @@ namespace projectShopLaptop.Controllers
             // Nếu kiểm tra model thất bại hoặc có bất kỳ lỗi nào khác, trở về view chỉnh sửa
             return View();
         }
+
 
 
         public ActionResult Product()
@@ -638,6 +639,7 @@ namespace projectShopLaptop.Controllers
             }
             tbl.ProductImage = pic;
             tbl.CreateDate = DateTime.Now;
+            tbl.IsActive = true;
             _unitOfWork.GetRepositoryInstance<Tbl_Product>().Add(tbl);
             return RedirectToAction("Product");
         }

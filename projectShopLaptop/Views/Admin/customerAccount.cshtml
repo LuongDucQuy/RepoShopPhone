@@ -29,6 +29,7 @@
                         <th scope="col">Email</th>
                         <th scope="col">Mật Khẩu</th>
                         <th scope="col">Ngày Tạo</th>
+                        <th>Hoạt động</th>
                         <th style="width: 200px">Thao tác</th>
                     </tr>
                 </thead>
@@ -46,6 +47,16 @@
                             <td>@item.EmailId</td>
                             <td>@item.Password</td>
                             <td>@item.CreatedOn</td>
+                            <td>
+                                @if (item.IsActive == true)
+                                {
+                                    <span class="text-success">Đang hoạt động</span>
+                                }
+                                else
+                                {
+                                    <span class="text-danger">Ngừng hoạt động</span>
+                                }
+                            </td>
                             <td>
                                 <div class="btn-group">
                                     <!-- Cập nhật -->
