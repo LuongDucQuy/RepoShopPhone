@@ -42,4 +42,12 @@ namespace projectShopLaptop.Models
         public Nullable<decimal> Price { get; set; }
         public SelectList Categories { get; set; }
     }
+    public class ReviewViewModel
+    {
+        public string UserName { get; set; }
+        public string Avatar { get; set; }
+        public byte? Rating { get; set; }
+        public string Comment { get; set; }
+        public DateTime? ReviewDate { get; set; }
+    }
 }

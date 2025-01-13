@@ -12,10 +12,11 @@ namespace projectShopLaptop.DAL
     using System;
     using System.Collections.Generic;
     
-    public partial class Tbl_SlideImage
+    public partial class Tbl_Providers
     {
-        public int SlideId { get; set; }
-        public string SlideTitle { get; set; }
-        public string SlideImage { get; set; }
+        public int ProductId { get; set; }
+        public string ProvidersName { get; set; }
+    
+        public virtual Tbl_Product Tbl_Product { get; set; }
     }
 }

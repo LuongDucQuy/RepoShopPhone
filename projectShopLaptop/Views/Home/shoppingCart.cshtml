@@ -11,6 +11,19 @@
         text-overflow: ellipsis;
     }
 </style>
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">
+        <strong>@TempData["Error"]</strong>
+    </div>
+}
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">
+        <strong>@TempData["Success"]</strong>
+    </div>
+}
 
 @if (Model == null || !Model.items.Any())
 {

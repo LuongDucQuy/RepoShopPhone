@@ -12,9 +12,12 @@ namespace projectShopLaptop.DAL
     using System;
     using System.Collections.Generic;
     
-    public partial class Tbl_CartStatus
+    public partial class Tbl_KhuyenMai
     {
-        public int CartStatusId { get; set; }
-        public string CartStatus { get; set; }
+        public int KhuyenMaiID { get; set; }
+        public string VoucherCode { get; set; }
+        public Nullable<int> SoLuong { get; set; }
+        public Nullable<System.DateTime> DateStart { get; set; }
+        public Nullable<System.DateTime> DateEnd { get; set; }
     }
 }

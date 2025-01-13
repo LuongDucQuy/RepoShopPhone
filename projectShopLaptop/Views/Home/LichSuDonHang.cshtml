@@ -16,7 +16,7 @@
         position: fixed;
         top: 50%;
         left: 50%;
-        transform: translate(-50%, -50%);
+        transform: translate(-50%, 50%);
         background-color: #4CAF50; /* Màu xanh cho thông báo thành công */
         color: white;
         padding: 25px 50px; /* Thêm padding để thông báo lớn hơn */
@@ -41,6 +41,148 @@
     .toast.show {
         opacity: 1;
     }
+
+    .form-select {
+        width: 50%; /* Chiếm toàn bộ chiều rộng của container */
+        padding: 8px; /* Khoảng cách bên trong */
+        font-size: 14px; /* Kích thước chữ */
+        border: 1px solid #ccc; /* Viền nhẹ */
+        border-radius: 4px; /* Bo góc */
+        background-color: #f9f9f9; /* Màu nền nhạt */
+        color: #333; /* Màu chữ */
+        margin-bottom: 10px; /* Khoảng cách dưới */
+        transition: border-color 0.3s, box-shadow 0.3s; /* Hiệu ứng khi hover */
+    }
+
+        /* Hiệu ứng khi hover và focus vào dropdown */
+        .form-select:focus {
+            border-color: #007bff; /* Đổi màu viền */
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Hiệu ứng đổ bóng */
+            background-color: #fff; /* Đổi màu nền */
+            outline: none; /* Loại bỏ viền outline mặc định */
+        }
+
+    .btn-danger {
+        background-color: #dc3545; /* Màu đỏ */
+        color: #fff; /* Màu chữ */
+        padding: 6px 12px; /* Khoảng cách bên trong */
+        font-size: 14px; /* Kích thước chữ */
+        border: none; /* Loại bỏ viền */
+        border-radius: 4px; /* Bo góc */
+        cursor: pointer; /* Đổi con trỏ thành hình tay */
+        transition: background-color 0.3s, box-shadow 0.3s; /* Hiệu ứng hover */
+        margin-bottom: 6px
+    }
+
+        /* Hiệu ứng khi hover vào nút "Hủy đơn" */
+        .btn-danger:hover {
+            background-color: #c82333; /* Đổi màu nền */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Hiệu ứng đổ bóng */
+        }
+    /* Modal styling */
+    .modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+    }
+
+    .modal-content {
+        background-color: white;
+        padding: 20px;
+        border-radius: 5px;
+        width: 50%;
+        max-width: 600px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        animation: fadeIn 0.3s ease-in-out;
+    }
+
+    /* Animation for fading in */
+    keyframes fadeIn {
+        from
+
+    {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+
+    }
+
+    /* Improved button styles */
+    .btn-primary {
+        background-color: #007bff;
+        color: white;
+        padding: 10px 20px;
+        font-size: 16px;
+        border-radius: 4px;
+        border: none;
+        cursor: pointer;
+    }
+
+    .btn-secondary {
+        background-color: #6c757d;
+        color: white;
+        padding: 10px 20px;
+        font-size: 16px;
+        border-radius: 4px;
+        border: none;
+        cursor: pointer;
+    }
+
+        .btn-primary:hover, .btn-secondary:hover {
+            opacity: 0.8;
+        }
+
+    /* Styling for the review form */
+    #reviewForm {
+        display: flex;
+        flex-direction: column;
+    }
+
+        #reviewForm label {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        #reviewForm select, #reviewForm textarea {
+            padding: 10px;
+            font-size: 14px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            resize: vertical; /* Allow resizing for textarea */
+        }
+
+    /* Styling for the toast messages */
+    .toast {
+        position: fixed;
+        top: 10px;
+        right: 10px;
+        background-color: #4CAF50;
+        color: white;
+        padding: 15px;
+        border-radius: 5px;
+        font-size: 16px;
+        display: none;
+        z-index: 9999;
+    }
+
+    .toast-success {
+        background-color: #4CAF50;
+    }
+
+    .toast-error {
+        background-color: #f44336;
+    }
 </style>
 <div class="all">
     @if (Model != null)
@@ -55,6 +197,9 @@
                     <th>Trạng thái</th>
                     <th>Ngày đặt</th>
                     <th>Hành động</th>
+                    <th>Đánh giá</th>
+                    <th>Xóa đánh giá</th>
+                    <th>Xem đánh giá</th>
                 </tr>
             </thead>
             <tbody>
@@ -95,13 +240,49 @@
 
                         <td>@order.ngayDat</td>
                         <td>
-                            @if (order.maTrangThai == 1 || order.maTrangThai == 2 || order.maTrangThai == 3)
+                            @if (order.maTrangThai == 1 || order.maTrangThai == 2)
                             {
                                 <form action="@Url.Action("CancelOrder", "Home")" method="post">
                                     <input type="hidden" name="billId" value="@order.IDBill" />
+
+                                    <!-- Dropdown chọn lý do hủy -->
+                                    <select name="cancelReason" class="form-select" required>
+                                        <option value="" disabled selected>Chọn lý do hủy</option>
+                                        <option value="Không còn nhu cầu">Không còn nhu cầu</option>
+                                        <option value="Thời gian giao hàng quá lâu">Thời gian giao hàng quá lâu</option>
+                                        <option value="Nhầm sản phẩm">Nhầm sản phẩm</option>
+                                        <option value="Lý do khác">Lý do khác</option>
+                                    </select>
+
                                     <button type="submit" class="btn btn-danger btn-outline btn-xs m-r-5 tooltip-info">
                                         Hủy đơn
                                     </button>
+                                </form>
+                            }
+                        </td>
+                        <td>
+                            @if (order.maTrangThai == 4)
+                            {
+                                <button class="btn btn-primary btn-danh-gia" data-bill-id="@order.ProductId">
+                                    Đánh giá
+                                </button>
+                            }
+                        </td>
+                        <td>
+                            @if (order.maTrangThai == 4) // Chỉ hiển thị nút "Xóa Đánh giá" khi trạng thái là "Đã giao"
+                            {
+                                <form action="@Url.Action("DeleteReview", "Home")" method="post">
+                                    <input type="hidden" name="billId" value="@order.IDBill" />
+                                    <button type="submit" class="btn btn-danger btn-outline btn-warning">Xóa đánh giá</button>
+                                </form>
+                            }
+                        </td>
+                        <td>
+                            @if (order.maTrangThai == 4) // Chỉ hiển thị nút "Xóa Đánh giá" khi trạng thái là "Đã giao"
+                            {
+                                <form action="@Url.Action("proDetail", "detailProduct")" method="get">
+                                    <input type="hidden" name="id" value="@order.ProductId" />
+                                    <button type="submit" class="btn btn-primary btn-xem">Xem đánh giá</button>
                                 </form>
                             }
                         </td>
@@ -115,6 +296,98 @@
         <p>Không có đơn hàng nào trong lịch sử.</p>
     }
 </div>
+<div class="modal" id="reviewModal" style="display:none;">
+    <div class="modal-content">
+        <h3>Đánh giá sản phẩm</h3>
+        <form id="reviewForm">
+            <input type="hidden" name="ProductId" id="ProductId" />
+            <label for="Rating">Đánh giá:</label>
+            <select name="Rating" id="Rating" class="form-select" required>
+                <option value="" disabled selected>Đánh giá sao</option>
+                <option value="1">1 sao</option>
+                <option value="2">2 sao</option>
+                <option value="3">3 sao</option>
+                <option value="4">4 sao</option>
+                <option value="5">5 sao</option>
+            </select>
+            <label for="Comment">Bình luận:</label>
+            <textarea name="Comment" id="Comment" class="form-select" required></textarea>
+            <button type="submit" class="btn btn-primary">Gửi đánh giá</button>
+            <button type="button" class="btn btn-secondary" onclick="closeModal()">Đóng</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    // Show the modal with smooth transition
+    function showModal(productId) {
+        document.getElementById('ProductId').value = productId;
+        document.getElementById('reviewModal').style.display = 'flex'; // Use flex for centering
+        setTimeout(() => {
+            document.getElementById('reviewModal').classList.add('show'); // Add show class after displaying
+        }, 10);
+    }
+
+    // Close the modal
+    function closeModal() {
+        document.getElementById('reviewModal').classList.remove('show'); // Remove show class
+        setTimeout(() => {
+            document.getElementById('reviewModal').style.display = 'none';
+        }, 300); // Timeout should match the transition time
+    }
+
+    // Handle click event on "Đánh giá" button
+    document.querySelectorAll('.btn-danh-gia').forEach(button => {
+        button.addEventListener('click', function() {
+            const productId = this.getAttribute('data-bill-id');
+            showModal(productId);
+        });
+    });
+    document.getElementById('reviewForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const formData = new FormData(this);
+
+        fetch('@Url.Action("SubmitReview", "Home")', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert("Đánh giá thành công!");
+                closeModal();
+                // You may update the UI here, such as showing the new review in the list or refreshing the page
+            } else {
+                alert("Bạn đã đánh giá sản phẩm này rồi.");
+            }
+        })
+        .catch(error => {
+            alert("Có lỗi xảy ra. Vui lòng thử lại.");
+        });
+    });
+        window.onload = function () {
+            var successToast = document.querySelector('.toast-success');
+            var errorToast = document.querySelector('.toast-error');
+
+            // Display success toast
+            if (successToast) {
+                successToast.style.display = 'block';
+                setTimeout(function () {
+                    successToast.style.display = 'none';
+                }, 3000); // Hide after 3 seconds
+            }
+
+            // Display error toast
+            if (errorToast) {
+                errorToast.style.display = 'block';
+                setTimeout(function () {
+                    errorToast.style.display = 'none';
+                }, 3000); // Hide after 3 seconds
+            }
+        };
+
+</script>
 <script>
     // Kiểm tra xem có thông báo nào cần hiển thị
     window.onload = function () {
@@ -129,4 +402,15 @@
             }, 3000); // 3 giây
         }
     };
+</script>
+<script>
+    // Confirm before submitting the delete form
+    document.querySelectorAll('.btn-danger').forEach(button => {
+        button.addEventListener('click', function (event) {
+            const confirmDelete = confirm("Bạn có chắc chắn muốn xóa đánh giá này không?");
+            if (!confirmDelete) {
+                event.preventDefault(); // Ngăn việc submit form nếu người dùng chọn 'Hủy'
+            }
+        });
+    });
 </script>

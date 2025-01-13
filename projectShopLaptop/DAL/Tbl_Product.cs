@@ -18,6 +18,7 @@ namespace projectShopLaptop.DAL
         {
             this.Tbl_Cart = new HashSet<Tbl_Cart>();
             this.Tbl_Bill = new HashSet<Tbl_Bill>();
+            this.Reviews = new HashSet<Review>();
         }
     
         public int ProductId { get; set; }
@@ -35,5 +36,9 @@ namespace projectShopLaptop.DAL
         public virtual ICollection<Tbl_Cart> Tbl_Cart { get; set; }
         public virtual Tbl_Category Tbl_Category { get; set; }
         public virtual ICollection<Tbl_Bill> Tbl_Bill { get; set; }
+        public virtual ICollection<Review> Reviews { get; set; }
+        public virtual Tbl_ProducTypes Tbl_ProducTypes { get; set; }
+        public virtual Tbl_Providers Tbl_Providers { get; set; }
+        public virtual Tbl_ThongKe Tbl_ThongKe { get; set; }
     }
 }

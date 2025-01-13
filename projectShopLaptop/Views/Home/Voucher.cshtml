@@ -1,0 +1,181 @@
+﻿@{
+    ViewBag.Title = "Voucher";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Voucher</title>
+    <style>
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1030;
+        }
+
+        .modal-content {
+            background-color: #ffffff;
+            padding: 20px 30px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            width: 90%;
+            max-width: 400px;
+        }
+
+            .modal-content h2 {
+                font-size: 24px;
+                margin-bottom: 15px;
+                color: #333333;
+            }
+
+            .modal-content p {
+                font-size: 16px;
+                margin: 10px 0;
+                color: #666666;
+            }
+
+        .timer {
+            font-size: 24px;
+            font-weight: bold;
+            margin: 10px 0;
+            color: #d9534f;
+        }
+
+        #email {
+            width: 100%;
+            padding: 10px;
+            margin: 15px 0;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        .claim-btn,
+        .close-btn {
+            padding: 10px 20px;
+            margin-top: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .claim-btn {
+            background-color: #5cb85c;
+        }
+
+            .claim-btn:hover {
+                background-color: #4cae4c;
+            }
+
+        .close-btn {
+            background-color: #d9534f;
+        }
+
+            .close-btn:hover {
+                background-color: #c9302c;
+            }
+
+        #voucher-status {
+            margin-top: 10px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+    </style>
+
+</head>
+<body>
+    <div class="modal-overlay hidden" id="modal-overlay">
+        <div class="modal-content">
+            <h2>ƯU ĐÃI DÀNH RIÊNG CHO BẠN</h2>
+            <p><strong>Nhanh tay lên chỉ còn:</strong></p>
+            <div class="timer">
+                <span id="minutes">05</span>:<span id="seconds">00</span>
+            </div>
+            <p>Giảm 5% tới 200.000đ</p>
+            <p>Chỉ áp dụng mua hàng tại website</p>
+            <input type="text" id="email" placeholder="Nhập email của bạn">
+            <button class="claim-btn" onclick="claimVoucher()">Nhận ngay</button>
+            <button id="close-modal" class="close-btn">Về trang chủ</button>
+            <p id="voucher-status" style="color: green; font-weight: bold; margin-top: 10px;"></p>
+        </div>
+    </div>
+
+</body>
+</html>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const modalOverlay = document.getElementById('modal-overlay');
+        const closeModalBtn = document.getElementById('close-modal');
+        const minutesSpan = document.getElementById('minutes');
+        const secondsSpan = document.getElementById('seconds');
+
+        // Hiển thị modal khi truy cập trang Voucher
+        modalOverlay.classList.remove('hidden');
+
+        // Đóng modal và quay lại trang chủ
+        closeModalBtn.addEventListener('click', () => {
+            window.location.href = "/Home/Index"; // Đường dẫn về trang chủ
+        });
+
+        // Đếm ngược thời gian
+        let countdownMinutes = 4;
+        let countdownSeconds = 59;
+        const timerInterval = setInterval(() => {
+            secondsSpan.textContent = countdownSeconds < 10 ? '0' + countdownSeconds : countdownSeconds;
+            minutesSpan.textContent = countdownMinutes < 10 ? '0' + countdownMinutes : countdownMinutes;
+
+            if (countdownSeconds === 0) {
+                if (countdownMinutes === 0) {
+                    clearInterval(timerInterval);
+                    return;
+                }
+                countdownMinutes--;
+                countdownSeconds = 59;
+            } else {
+                countdownSeconds--;
+            }
+        }, 1000);
+
+        // Xử lý nhận voucher
+        window.claimVoucher = () => {
+            const email = document.getElementById('email').value;
+            fetch('/Home/ClaimVoucher', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email }),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    const statusElement = document.getElementById('voucher-status');
+                    if (data.success) {
+                        statusElement.textContent = data.message;
+                        statusElement.style.color = 'green';
+                    } else {
+                        statusElement.textContent = data.message;
+                        statusElement.style.color = 'red';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        };
+    });
+</script>

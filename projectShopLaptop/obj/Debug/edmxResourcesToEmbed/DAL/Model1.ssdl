@@ -1,14 +1,15 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Schema Namespace="dbClickShopModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
-  <EntityType Name="ChatMessages">
+  <EntityType Name="Review">
     <Key>
-      <PropertyRef Name="Id" />
+      <PropertyRef Name="ReviewId" />
     </Key>
-    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-    <Property Name="Sender" Type="nvarchar" MaxLength="50" Nullable="false" />
-    <Property Name="Message" Type="nvarchar(max)" Nullable="false" />
-    <Property Name="SentTime" Type="datetime" Nullable="false" />
-    <Property Name="IsRead" Type="bit" Nullable="false" />
+    <Property Name="ReviewId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="ProductId" Type="int" Nullable="false" />
+    <Property Name="user_id" Type="int" Nullable="false" />
+    <Property Name="Rating" Type="tinyint" />
+    <Property Name="Comment" Type="nvarchar(max)" />
+    <Property Name="ReviewDate" Type="datetime" />
   </EntityType>
   <EntityType Name="sysdiagrams">
     <Key>
@@ -48,13 +49,6 @@
     <Property Name="MemberId" Type="int" />
     <Property Name="CartStatusId" Type="int" />
   </EntityType>
-  <EntityType Name="Tbl_CartStatus">
-    <Key>
-      <PropertyRef Name="CartStatusId" />
-    </Key>
-    <Property Name="CartStatusId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-    <Property Name="CartStatus" Type="varchar" MaxLength="500" />
-  </EntityType>
   <EntityType Name="Tbl_Category">
     <Key>
       <PropertyRef Name="CategoryId" />
@@ -65,13 +59,24 @@
     <Property Name="IsDelete" Type="bit" />
     <Property Name="CategoryImage" Type="varchar(max)" />
   </EntityType>
-  <EntityType Name="Tbl_MemberRole">
+  <EntityType Name="Tbl_KhuyenMai">
     <Key>
-      <PropertyRef Name="MemberRoleId" />
+      <PropertyRef Name="KhuyenMaiID" />
     </Key>
-    <Property Name="MemberRoleId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-    <Property Name="memberId" Type="int" />
-    <Property Name="RoleId" Type="int" />
+    <Property Name="KhuyenMaiID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="VoucherCode" Type="nvarchar" MaxLength="50" />
+    <Property Name="SoLuong" Type="int" />
+    <Property Name="DateStart" Type="datetime" />
+    <Property Name="DateEnd" Type="datetime" />
+  </EntityType>
+  <EntityType Name="Tbl_OTPs">
+    <Key>
+      <PropertyRef Name="user_id" />
+      <PropertyRef Name="keys" />
+    </Key>
+    <Property Name="id" Type="int" />
+    <Property Name="user_id" Type="int" Nullable="false" />
+    <Property Name="keys" Type="int" Nullable="false" />
   </EntityType>
   <EntityType Name="Tbl_Product">
     <Key>
@@ -89,12 +94,19 @@
     <Property Name="Quantity" Type="int" />
     <Property Name="Price" Type="decimal" Precision="18" Scale="0" />
   </EntityType>
-  <EntityType Name="Tbl_Roles">
+  <EntityType Name="Tbl_ProducTypes">
     <Key>
-      <PropertyRef Name="RoleId" />
+      <PropertyRef Name="ProductId" />
     </Key>
-    <Property Name="RoleId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-    <Property Name="RoleName" Type="varchar" MaxLength="200" />
+    <Property Name="ProductId" Type="int" Nullable="false" />
+    <Property Name="ProductTypeName" Type="nvarchar" MaxLength="50" />
+  </EntityType>
+  <EntityType Name="Tbl_Providers">
+    <Key>
+      <PropertyRef Name="ProductId" />
+    </Key>
+    <Property Name="ProductId" Type="int" Nullable="false" />
+    <Property Name="ProvidersName" Type="nvarchar" MaxLength="50" />
   </EntityType>
   <EntityType Name="Tbl_ShippingDetails">
     <Key>
@@ -111,13 +123,15 @@
     <Property Name="AmountPaid" Type="decimal" Precision="18" Scale="0" />
     <Property Name="PaymentType" Type="varchar" MaxLength="50" />
   </EntityType>
-  <EntityType Name="Tbl_SlideImage">
+  <EntityType Name="Tbl_ThongKe">
     <Key>
-      <PropertyRef Name="SlideId" />
+      <PropertyRef Name="ProductId" />
     </Key>
-    <Property Name="SlideId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-    <Property Name="SlideTitle" Type="varchar" MaxLength="500" />
-    <Property Name="SlideImage" Type="varchar(max)" />
+    <Property Name="ProductId" Type="int" Nullable="false" />
+    <Property Name="soPhieu" Type="nvarchar" MaxLength="50" />
+    <Property Name="doanhThu" Type="nvarchar" MaxLength="50" />
+    <Property Name="Thu" Type="decimal" Precision="18" Scale="2" />
+    <Property Name="Chi" Type="decimal" Precision="18" Scale="2" />
   </EntityType>
   <EntityType Name="Tbl_User">
     <Key>
@@ -136,6 +150,7 @@
     <Property Name="Address" Type="nvarchar" MaxLength="50" />
     <Property Name="PhoneNumber" Type="nvarchar" MaxLength="50" />
     <Property Name="confirmEmail" Type="bit" Nullable="false" />
+    <Property Name="avartar" Type="varchar(max)" />
   </EntityType>
   <Association Name="FK__Tbl_Cart__Produc__5BE2A6F2">
     <End Role="Tbl_Product" Type="Self.Tbl_Product" Multiplicity="0..1" />
@@ -146,6 +161,18 @@
       </Principal>
       <Dependent Role="Tbl_Cart">
         <PropertyRef Name="ProductId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__Tbl_OTPs__user_i__1975C517">
+    <End Role="Tbl_User" Type="Self.Tbl_User" Multiplicity="1" />
+    <End Role="Tbl_OTPs" Type="Self.Tbl_OTPs" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Tbl_User">
+        <PropertyRef Name="user_id" />
+      </Principal>
+      <Dependent Role="Tbl_OTPs">
+        <PropertyRef Name="user_id" />
       </Dependent>
     </ReferentialConstraint>
   </Association>
@@ -161,6 +188,30 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
+  <Association Name="FK__Tbl_Produ__Produ__1699586C">
+    <End Role="Tbl_Product" Type="Self.Tbl_Product" Multiplicity="1" />
+    <End Role="Tbl_ProducTypes" Type="Self.Tbl_ProducTypes" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="Tbl_Product">
+        <PropertyRef Name="ProductId" />
+      </Principal>
+      <Dependent Role="Tbl_ProducTypes">
+        <PropertyRef Name="ProductId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__Tbl_Provi__Produ__13BCEBC1">
+    <End Role="Tbl_Product" Type="Self.Tbl_Product" Multiplicity="1" />
+    <End Role="Tbl_Providers" Type="Self.Tbl_Providers" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="Tbl_Product">
+        <PropertyRef Name="ProductId" />
+      </Principal>
+      <Dependent Role="Tbl_Providers">
+        <PropertyRef Name="ProductId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
   <Association Name="FK__Tbl_Shipp__Membe__5629CD9C">
     <End Role="Tbl_User" Type="Self.Tbl_User" Multiplicity="0..1" />
     <End Role="Tbl_ShippingDetails" Type="Self.Tbl_ShippingDetails" Multiplicity="*" />
@@ -173,6 +224,18 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
+  <Association Name="FK__Tbl_Thong__Produ__0E04126B">
+    <End Role="Tbl_Product" Type="Self.Tbl_Product" Multiplicity="1" />
+    <End Role="Tbl_ThongKe" Type="Self.Tbl_ThongKe" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="Tbl_Product">
+        <PropertyRef Name="ProductId" />
+      </Principal>
+      <Dependent Role="Tbl_ThongKe">
+        <PropertyRef Name="ProductId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
   <Association Name="FK_Bill_Product">
     <End Role="Tbl_Product" Type="Self.Tbl_Product" Multiplicity="0..1" />
     <End Role="Tbl_Bill" Type="Self.Tbl_Bill" Multiplicity="*" />
@@ -182,6 +245,34 @@
       </Principal>
       <Dependent Role="Tbl_Bill">
         <PropertyRef Name="ProductId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Review_Product">
+    <End Role="Tbl_Product" Type="Self.Tbl_Product" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Review" Type="Self.Review" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Tbl_Product">
+        <PropertyRef Name="ProductId" />
+      </Principal>
+      <Dependent Role="Review">
+        <PropertyRef Name="ProductId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Review_User">
+    <End Role="Tbl_User" Type="Self.Tbl_User" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Review" Type="Self.Review" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Tbl_User">
+        <PropertyRef Name="user_id" />
+      </Principal>
+      <Dependent Role="Review">
+        <PropertyRef Name="user_id" />
       </Dependent>
     </ReferentialConstraint>
   </Association>
@@ -232,33 +323,58 @@
   </Function>
   <Function Name="sp_upgraddiagrams" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
   <EntityContainer Name="dbClickShopModelStoreContainer">
-    <EntitySet Name="ChatMessages" EntityType="Self.ChatMessages" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Review" EntityType="Self.Review" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Tbl_Bill" EntityType="Self.Tbl_Bill" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Tbl_Cart" EntityType="Self.Tbl_Cart" Schema="dbo" store:Type="Tables" />
-    <EntitySet Name="Tbl_CartStatus" EntityType="Self.Tbl_CartStatus" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Tbl_Category" EntityType="Self.Tbl_Category" Schema="dbo" store:Type="Tables" />
-    <EntitySet Name="Tbl_MemberRole" EntityType="Self.Tbl_MemberRole" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Tbl_KhuyenMai" EntityType="Self.Tbl_KhuyenMai" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Tbl_OTPs" EntityType="Self.Tbl_OTPs" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Tbl_Product" EntityType="Self.Tbl_Product" Schema="dbo" store:Type="Tables" />
-    <EntitySet Name="Tbl_Roles" EntityType="Self.Tbl_Roles" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Tbl_ProducTypes" EntityType="Self.Tbl_ProducTypes" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Tbl_Providers" EntityType="Self.Tbl_Providers" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Tbl_ShippingDetails" EntityType="Self.Tbl_ShippingDetails" Schema="dbo" store:Type="Tables" />
-    <EntitySet Name="Tbl_SlideImage" EntityType="Self.Tbl_SlideImage" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Tbl_ThongKe" EntityType="Self.Tbl_ThongKe" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Tbl_User" EntityType="Self.Tbl_User" Schema="dbo" store:Type="Tables" />
     <AssociationSet Name="FK__Tbl_Cart__Produc__5BE2A6F2" Association="Self.FK__Tbl_Cart__Produc__5BE2A6F2">
       <End Role="Tbl_Product" EntitySet="Tbl_Product" />
       <End Role="Tbl_Cart" EntitySet="Tbl_Cart" />
     </AssociationSet>
+    <AssociationSet Name="FK__Tbl_OTPs__user_i__1975C517" Association="Self.FK__Tbl_OTPs__user_i__1975C517">
+      <End Role="Tbl_User" EntitySet="Tbl_User" />
+      <End Role="Tbl_OTPs" EntitySet="Tbl_OTPs" />
+    </AssociationSet>
     <AssociationSet Name="FK__Tbl_Produ__Categ__4D94879B" Association="Self.FK__Tbl_Produ__Categ__4D94879B">
       <End Role="Tbl_Category" EntitySet="Tbl_Category" />
       <End Role="Tbl_Product" EntitySet="Tbl_Product" />
+    </AssociationSet>
+    <AssociationSet Name="FK__Tbl_Produ__Produ__1699586C" Association="Self.FK__Tbl_Produ__Produ__1699586C">
+      <End Role="Tbl_Product" EntitySet="Tbl_Product" />
+      <End Role="Tbl_ProducTypes" EntitySet="Tbl_ProducTypes" />
+    </AssociationSet>
+    <AssociationSet Name="FK__Tbl_Provi__Produ__13BCEBC1" Association="Self.FK__Tbl_Provi__Produ__13BCEBC1">
+      <End Role="Tbl_Product" EntitySet="Tbl_Product" />
+      <End Role="Tbl_Providers" EntitySet="Tbl_Providers" />
     </AssociationSet>
     <AssociationSet Name="FK__Tbl_Shipp__Membe__5629CD9C" Association="Self.FK__Tbl_Shipp__Membe__5629CD9C">
       <End Role="Tbl_User" EntitySet="Tbl_User" />
       <End Role="Tbl_ShippingDetails" EntitySet="Tbl_ShippingDetails" />
     </AssociationSet>
+    <AssociationSet Name="FK__Tbl_Thong__Produ__0E04126B" Association="Self.FK__Tbl_Thong__Produ__0E04126B">
+      <End Role="Tbl_Product" EntitySet="Tbl_Product" />
+      <End Role="Tbl_ThongKe" EntitySet="Tbl_ThongKe" />
+    </AssociationSet>
     <AssociationSet Name="FK_Bill_Product" Association="Self.FK_Bill_Product">
       <End Role="Tbl_Product" EntitySet="Tbl_Product" />
       <End Role="Tbl_Bill" EntitySet="Tbl_Bill" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Review_Product" Association="Self.FK_Review_Product">
+      <End Role="Tbl_Product" EntitySet="Tbl_Product" />
+      <End Role="Review" EntitySet="Review" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Review_User" Association="Self.FK_Review_User">
+      <End Role="Tbl_User" EntitySet="Tbl_User" />
+      <End Role="Review" EntitySet="Review" />
     </AssociationSet>
     <AssociationSet Name="FK_User_Bill" Association="Self.FK_User_Bill">
       <End Role="Tbl_User" EntitySet="Tbl_User" />

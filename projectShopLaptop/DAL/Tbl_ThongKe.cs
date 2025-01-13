@@ -12,12 +12,14 @@ namespace projectShopLaptop.DAL
     using System;
     using System.Collections.Generic;
     
-    public partial class ChatMessage
+    public partial class Tbl_ThongKe
     {
-        public int Id { get; set; }
-        public string Sender { get; set; }
-        public string Message { get; set; }
-        public System.DateTime SentTime { get; set; }
-        public bool IsRead { get; set; }
+        public int ProductId { get; set; }
+        public string soPhieu { get; set; }
+        public string doanhThu { get; set; }
+        public Nullable<decimal> Thu { get; set; }
+        public Nullable<decimal> Chi { get; set; }
+    
+        public virtual Tbl_Product Tbl_Product { get; set; }
     }
 }

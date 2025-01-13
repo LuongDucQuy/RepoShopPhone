@@ -6,6 +6,81 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <link href="~/AdminStyle/css/Pay.css" rel="stylesheet" />
+<style>
+    .promo-code-form {
+        margin: 20px 0;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 20px;
+        background-color: #fdfdfd;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+    }
+
+        .promo-code-form:hover {
+            box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .promo-code-form input[type="text"] {
+            flex: 1;
+            margin-right: 10px;
+            padding: 12px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: inset 0px 1px 3px rgba(0, 0, 0, 0.1);
+            transition: border-color 0.3s ease;
+        }
+
+            .promo-code-form input[type="text"]:focus {
+                border-color: #007bff;
+                box-shadow: 0px 0px 5px rgba(0, 123, 255, 0.5);
+                outline: none;
+            }
+
+        .promo-code-form button {
+            padding: 10px 25px;
+            font-size: 16px;
+            background-color: #28a745;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+            .promo-code-form button:hover {
+                background-color: #218838;
+            }
+    #PromoMessage {
+        margin-top: 10px;
+        font-size: 16px;
+        font-weight: bold;
+        padding: 10px;
+        border-radius: 5px;
+        display: none; /* Ẩn thông báo ban đầu */
+        transition: all 0.3s ease-in-out;
+    }
+
+        /* Màu xanh cho thành công */
+        #PromoMessage.success {
+            color: #155724;
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+        }
+
+        /* Màu đỏ cho lỗi */
+        #PromoMessage.error {
+            color: #721c24;
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+        }
+
+</style>
 @if (Session["cart"] == null)
 {
     <div class="alert alert-danger">
@@ -68,8 +143,15 @@ else
                                         </tfoot>
                                     </table>
                                 </div>
-                            </div>
+                                <div class="promo-code-form">
+                                    <input type="text" id="PromoCode" name="PromoCode" placeholder="Nhập mã giảm giá tại đây" />
+                                    <button type="button" id="ApplyPromoCode" onclick="applyPromoCode()">Áp dụng</button>
+                                </div>
+                                <div>
+                                    <span id="PromoMessage"></span>
+                                </div>
 
+                            </div>
                             <h6 class="checkout-sep">2. Phương thức thanh toán</h6>
                             <div class="box-border">
                                 <form>
@@ -94,7 +176,7 @@ else
                             </div>
                             <h6 class="checkout-sep">3. Thông tin giao hàng</h6>
                             <div class="box-border">
-                                <form action="@Url.Action("Checkout", "Home")" method="post">
+                                <form action="@Url.Action("Checkout", "Home")" method="post" onsubmit="confirmOrder(event)">
                                     <ul>
                                         <li class="row">
                                             <div class="col-sm-6">
@@ -125,3 +207,63 @@ else
         </section>
     }
 }
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script type="text/javascript">
+    // Hàm xác nhận việc đặt hàng
+    function confirmOrder(event) {
+        // Hiển thị hộp thoại xác nhận
+        var isConfirmed = confirm("Bạn chắc chắn muốn đặt hàng?");
+
+        // Nếu người dùng chọn "OK", form sẽ được gửi đi
+        if (!isConfirmed) {
+            event.preventDefault(); // Ngừng hành động submit nếu người dùng chọn "Cancel"
+        }
+    }</script>
+<script>
+    function applyPromoCode() {
+    var promoCode = document.getElementById("PromoCode").value;
+
+    // Kiểm tra mã giảm giá trống
+    if (!promoCode) {
+        showPromoMessage("Vui lòng nhập mã giảm giá.", "error");
+        return;
+    }
+
+    // Gửi mã giảm giá qua AJAX
+    $.ajax({
+        url: '@Url.Action("ApplyPromoCode", "Home")',
+        type: 'POST',
+        data: { promoCode: promoCode },
+        success: function (response) {
+            if (response.success) {
+                // Cập nhật tổng tiền sau giảm giá
+                $('#tbl_cart tfoot tr:last-child td:last-child').text(response.totalAfterDiscount);
+
+                // Hiển thị thông báo thành công
+                showPromoMessage(response.message, "success");
+            } else {
+                // Hiển thị thông báo lỗi
+                showPromoMessage(response.message, "error");
+            }
+        },
+        error: function () {
+            showPromoMessage("Đã xảy ra lỗi. Vui lòng thử lại.", "error");
+        }
+    });
+}
+
+// Hàm hiển thị thông báo
+function showPromoMessage(message, type) {
+    var promoMessage = document.getElementById("PromoMessage");
+    promoMessage.innerText = message;
+    promoMessage.className = ""; // Xóa class cũ
+    promoMessage.classList.add(type); // Thêm class theo loại (success/error)
+    promoMessage.style.display = "block"; // Hiển thị
+
+    // Ẩn thông báo sau 5 giây
+    setTimeout(function () {
+        promoMessage.style.display = "none";
+    }, 5000);
+}
+
+</script>

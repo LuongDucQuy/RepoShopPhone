@@ -4,14 +4,10 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="48f8d096e42c4b43ab211343f6763b35" Name="Diagram1">
+      <Diagram DiagramId="48f8d096e42c4b43ab211343f6763b35" Name="Diagram1" ZoomLevel="81">
         <EntityTypeShape EntityType="dbClickShopModel.Tbl_Cart" Width="1.5" PointX="5.25" PointY="1.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="dbClickShopModel.Tbl_CartStatus" Width="1.5" PointX="5.75" PointY="4.75" IsExpanded="true" />
         <EntityTypeShape EntityType="dbClickShopModel.Tbl_Category" Width="1.5" PointX="0.75" PointY="1.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="dbClickShopModel.Tbl_MemberRole" Width="1.5" PointX="7.75" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="dbClickShopModel.Tbl_Roles" Width="1.5" PointX="7.75" PointY="3.75" IsExpanded="true" />
         <EntityTypeShape EntityType="dbClickShopModel.Tbl_ShippingDetails" Width="1.5" PointX="3" PointY="6" IsExpanded="true" />
-        <EntityTypeShape EntityType="dbClickShopModel.Tbl_SlideImage" Width="1.5" PointX="5.75" PointY="7.75" IsExpanded="true" />
         <EntityTypeShape EntityType="dbClickShopModel.Tbl_Product" Width="1.5" PointX="3" PointY="1" />
         <AssociationConnector Association="dbClickShopModel.FK__Tbl_Cart__Produc__5BE2A6F2" />
         <AssociationConnector Association="dbClickShopModel.FK__Tbl_Produ__Categ__4D94879B" />
@@ -20,8 +16,19 @@
         <EntityTypeShape EntityType="dbClickShopModel.Tbl_Bill" Width="1.5" PointX="3.125" PointY="9.875" />
         <AssociationConnector Association="dbClickShopModel.FK_User_Bill" />
         <EntityTypeShape EntityType="dbClickShopModel.sysdiagram" Width="1.5" PointX="8.375" PointY="6.75" />
-        <EntityTypeShape EntityType="dbClickShopModel.ChatMessage" Width="1.5" PointX="8.375" PointY="9.75" />
         <AssociationConnector Association="dbClickShopModel.FK_Bill_Product" />
+        <EntityTypeShape EntityType="dbClickShopModel.Review" Width="1.5" PointX="10.25" PointY="3.375" />
+        <AssociationConnector Association="dbClickShopModel.FK_Review_Product" />
+        <AssociationConnector Association="dbClickShopModel.FK_Review_User" />
+        <EntityTypeShape EntityType="dbClickShopModel.Tbl_OTPs" Width="1.5" PointX="3.125" PointY="23.375" />
+        <EntityTypeShape EntityType="dbClickShopModel.Tbl_ProducTypes" Width="1.5" PointX="5.25" PointY="20.25" />
+        <EntityTypeShape EntityType="dbClickShopModel.Tbl_Providers" Width="1.5" PointX="5.25" PointY="15" />
+        <EntityTypeShape EntityType="dbClickShopModel.Tbl_ThongKe" Width="1.5" PointX="5.25" PointY="17.375" />
+        <EntityTypeShape EntityType="dbClickShopModel.Tbl_KhuyenMai" Width="1.5" PointX="5.375" PointY="10.75" />
+        <AssociationConnector Association="dbClickShopModel.FK__Tbl_OTPs__user_i__1975C517" />
+        <AssociationConnector Association="dbClickShopModel.FK__Tbl_Produ__Produ__1699586C" />
+        <AssociationConnector Association="dbClickShopModel.FK__Tbl_Provi__Produ__13BCEBC1" />
+        <AssociationConnector Association="dbClickShopModel.FK__Tbl_Thong__Produ__0E04126B" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

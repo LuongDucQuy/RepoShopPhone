@@ -12,9 +12,16 @@ namespace projectShopLaptop.DAL
     using System;
     using System.Collections.Generic;
     
-    public partial class Tbl_Roles
+    public partial class Review
     {
-        public int RoleId { get; set; }
-        public string RoleName { get; set; }
+        public int ReviewId { get; set; }
+        public int ProductId { get; set; }
+        public int user_id { get; set; }
+        public Nullable<byte> Rating { get; set; }
+        public string Comment { get; set; }
+        public Nullable<System.DateTime> ReviewDate { get; set; }
+    
+        public virtual Tbl_Product Tbl_Product { get; set; }
+        public virtual Tbl_User Tbl_User { get; set; }
     }
 }

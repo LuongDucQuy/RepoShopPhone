@@ -12,10 +12,12 @@ namespace projectShopLaptop.DAL
     using System;
     using System.Collections.Generic;
     
-    public partial class Tbl_MemberRole
+    public partial class Tbl_OTPs
     {
-        public int MemberRoleId { get; set; }
-        public Nullable<int> memberId { get; set; }
-        public Nullable<int> RoleId { get; set; }
+        public Nullable<int> id { get; set; }
+        public int user_id { get; set; }
+        public int keys { get; set; }
+    
+        public virtual Tbl_User Tbl_User { get; set; }
     }
 }

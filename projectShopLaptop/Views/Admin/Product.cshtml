@@ -4,6 +4,12 @@
     ViewBag.Title = "Sản phẩm";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
+@if (TempData["mess"] != null)
+{
+    <div class="toast toast-success">
+        @TempData["mess"]
+    </div>
+}
 <link href="~/AdminStyle/css/Product.css" rel="stylesheet" />
 <div class="container-fluid px-4">
     <h2 class="mt-4">Sản phẩm</h2>
@@ -43,13 +49,13 @@
                                 <img src="@Url.Content("~/img/" + item.ProductImage)" class="img-thumbnail" width="50" />
                             </td>
                             <td>
-                                @if (item.IsActive==true)
+                                @if (item.IsActive == true)
                                 {
                                     <span class="text-success">Đang hoạt động</span>
                                 }
                                 else
                                 {
-                                    <span class="text-danger">Ngừng hoạt động</span> 
+                                    <span class="text-danger">Ngừng hoạt động</span>
                                 }
                             </td>
                             <td>

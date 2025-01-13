@@ -5,15 +5,16 @@
     <!-- SSDL content -->
     <edmx:StorageModels>
     <Schema Namespace="dbClickShopModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
-        <EntityType Name="ChatMessages">
+        <EntityType Name="Review">
           <Key>
-            <PropertyRef Name="Id" />
+            <PropertyRef Name="ReviewId" />
           </Key>
-          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="Sender" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="Message" Type="nvarchar(max)" Nullable="false" />
-          <Property Name="SentTime" Type="datetime" Nullable="false" />
-          <Property Name="IsRead" Type="bit" Nullable="false" />
+          <Property Name="ReviewId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ProductId" Type="int" Nullable="false" />
+          <Property Name="user_id" Type="int" Nullable="false" />
+          <Property Name="Rating" Type="tinyint" />
+          <Property Name="Comment" Type="nvarchar(max)" />
+          <Property Name="ReviewDate" Type="datetime" />
         </EntityType>
         <EntityType Name="sysdiagrams">
           <Key>
@@ -53,13 +54,6 @@
           <Property Name="MemberId" Type="int" />
           <Property Name="CartStatusId" Type="int" />
         </EntityType>
-        <EntityType Name="Tbl_CartStatus">
-          <Key>
-            <PropertyRef Name="CartStatusId" />
-          </Key>
-          <Property Name="CartStatusId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="CartStatus" Type="varchar" MaxLength="500" />
-        </EntityType>
         <EntityType Name="Tbl_Category">
           <Key>
             <PropertyRef Name="CategoryId" />
@@ -70,13 +64,24 @@
           <Property Name="IsDelete" Type="bit" />
           <Property Name="CategoryImage" Type="varchar(max)" />
         </EntityType>
-        <EntityType Name="Tbl_MemberRole">
+        <EntityType Name="Tbl_KhuyenMai">
           <Key>
-            <PropertyRef Name="MemberRoleId" />
+            <PropertyRef Name="KhuyenMaiID" />
           </Key>
-          <Property Name="MemberRoleId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="memberId" Type="int" />
-          <Property Name="RoleId" Type="int" />
+          <Property Name="KhuyenMaiID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="VoucherCode" Type="nvarchar" MaxLength="50" />
+          <Property Name="SoLuong" Type="int" />
+          <Property Name="DateStart" Type="datetime" />
+          <Property Name="DateEnd" Type="datetime" />
+        </EntityType>
+        <EntityType Name="Tbl_OTPs">
+          <Key>
+            <PropertyRef Name="user_id" />
+            <PropertyRef Name="keys" />
+          </Key>
+          <Property Name="id" Type="int" />
+          <Property Name="user_id" Type="int" Nullable="false" />
+          <Property Name="keys" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="Tbl_Product">
           <Key>
@@ -94,12 +99,19 @@
           <Property Name="Quantity" Type="int" />
           <Property Name="Price" Type="decimal" Precision="18" Scale="0" />
         </EntityType>
-        <EntityType Name="Tbl_Roles">
+        <EntityType Name="Tbl_ProducTypes">
           <Key>
-            <PropertyRef Name="RoleId" />
+            <PropertyRef Name="ProductId" />
           </Key>
-          <Property Name="RoleId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="RoleName" Type="varchar" MaxLength="200" />
+          <Property Name="ProductId" Type="int" Nullable="false" />
+          <Property Name="ProductTypeName" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="Tbl_Providers">
+          <Key>
+            <PropertyRef Name="ProductId" />
+          </Key>
+          <Property Name="ProductId" Type="int" Nullable="false" />
+          <Property Name="ProvidersName" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="Tbl_ShippingDetails">
           <Key>
@@ -116,13 +128,15 @@
           <Property Name="AmountPaid" Type="decimal" Precision="18" Scale="0" />
           <Property Name="PaymentType" Type="varchar" MaxLength="50" />
         </EntityType>
-        <EntityType Name="Tbl_SlideImage">
+        <EntityType Name="Tbl_ThongKe">
           <Key>
-            <PropertyRef Name="SlideId" />
+            <PropertyRef Name="ProductId" />
           </Key>
-          <Property Name="SlideId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="SlideTitle" Type="varchar" MaxLength="500" />
-          <Property Name="SlideImage" Type="varchar(max)" />
+          <Property Name="ProductId" Type="int" Nullable="false" />
+          <Property Name="soPhieu" Type="nvarchar" MaxLength="50" />
+          <Property Name="doanhThu" Type="nvarchar" MaxLength="50" />
+          <Property Name="Thu" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="Chi" Type="decimal" Precision="18" Scale="2" />
         </EntityType>
         <EntityType Name="Tbl_User">
           <Key>
@@ -141,6 +155,7 @@
           <Property Name="Address" Type="nvarchar" MaxLength="50" />
           <Property Name="PhoneNumber" Type="nvarchar" MaxLength="50" />
           <Property Name="confirmEmail" Type="bit" Nullable="false" />
+          <Property Name="avartar" Type="varchar(max)" />
         </EntityType>
         <Association Name="FK__Tbl_Cart__Produc__5BE2A6F2">
           <End Role="Tbl_Product" Type="Self.Tbl_Product" Multiplicity="0..1" />
@@ -151,6 +166,18 @@
             </Principal>
             <Dependent Role="Tbl_Cart">
               <PropertyRef Name="ProductId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Tbl_OTPs__user_i__1975C517">
+          <End Role="Tbl_User" Type="Self.Tbl_User" Multiplicity="1" />
+          <End Role="Tbl_OTPs" Type="Self.Tbl_OTPs" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tbl_User">
+              <PropertyRef Name="user_id" />
+            </Principal>
+            <Dependent Role="Tbl_OTPs">
+              <PropertyRef Name="user_id" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -166,6 +193,30 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK__Tbl_Produ__Produ__1699586C">
+          <End Role="Tbl_Product" Type="Self.Tbl_Product" Multiplicity="1" />
+          <End Role="Tbl_ProducTypes" Type="Self.Tbl_ProducTypes" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="Tbl_Product">
+              <PropertyRef Name="ProductId" />
+            </Principal>
+            <Dependent Role="Tbl_ProducTypes">
+              <PropertyRef Name="ProductId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Tbl_Provi__Produ__13BCEBC1">
+          <End Role="Tbl_Product" Type="Self.Tbl_Product" Multiplicity="1" />
+          <End Role="Tbl_Providers" Type="Self.Tbl_Providers" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="Tbl_Product">
+              <PropertyRef Name="ProductId" />
+            </Principal>
+            <Dependent Role="Tbl_Providers">
+              <PropertyRef Name="ProductId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK__Tbl_Shipp__Membe__5629CD9C">
           <End Role="Tbl_User" Type="Self.Tbl_User" Multiplicity="0..1" />
           <End Role="Tbl_ShippingDetails" Type="Self.Tbl_ShippingDetails" Multiplicity="*" />
@@ -178,6 +229,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK__Tbl_Thong__Produ__0E04126B">
+          <End Role="Tbl_Product" Type="Self.Tbl_Product" Multiplicity="1" />
+          <End Role="Tbl_ThongKe" Type="Self.Tbl_ThongKe" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="Tbl_Product">
+              <PropertyRef Name="ProductId" />
+            </Principal>
+            <Dependent Role="Tbl_ThongKe">
+              <PropertyRef Name="ProductId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Bill_Product">
           <End Role="Tbl_Product" Type="Self.Tbl_Product" Multiplicity="0..1" />
           <End Role="Tbl_Bill" Type="Self.Tbl_Bill" Multiplicity="*" />
@@ -187,6 +250,34 @@
             </Principal>
             <Dependent Role="Tbl_Bill">
               <PropertyRef Name="ProductId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Review_Product">
+          <End Role="Tbl_Product" Type="Self.Tbl_Product" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Review" Type="Self.Review" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tbl_Product">
+              <PropertyRef Name="ProductId" />
+            </Principal>
+            <Dependent Role="Review">
+              <PropertyRef Name="ProductId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Review_User">
+          <End Role="Tbl_User" Type="Self.Tbl_User" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Review" Type="Self.Review" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tbl_User">
+              <PropertyRef Name="user_id" />
+            </Principal>
+            <Dependent Role="Review">
+              <PropertyRef Name="user_id" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -237,33 +328,58 @@
         </Function>
         <Function Name="sp_upgraddiagrams" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
         <EntityContainer Name="dbClickShopModelStoreContainer">
-          <EntitySet Name="ChatMessages" EntityType="Self.ChatMessages" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Review" EntityType="Self.Review" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Tbl_Bill" EntityType="Self.Tbl_Bill" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Tbl_Cart" EntityType="Self.Tbl_Cart" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Tbl_CartStatus" EntityType="Self.Tbl_CartStatus" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Tbl_Category" EntityType="Self.Tbl_Category" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Tbl_MemberRole" EntityType="Self.Tbl_MemberRole" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Tbl_KhuyenMai" EntityType="Self.Tbl_KhuyenMai" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Tbl_OTPs" EntityType="Self.Tbl_OTPs" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Tbl_Product" EntityType="Self.Tbl_Product" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Tbl_Roles" EntityType="Self.Tbl_Roles" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Tbl_ProducTypes" EntityType="Self.Tbl_ProducTypes" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Tbl_Providers" EntityType="Self.Tbl_Providers" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Tbl_ShippingDetails" EntityType="Self.Tbl_ShippingDetails" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Tbl_SlideImage" EntityType="Self.Tbl_SlideImage" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Tbl_ThongKe" EntityType="Self.Tbl_ThongKe" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Tbl_User" EntityType="Self.Tbl_User" Schema="dbo" store:Type="Tables" />
           <AssociationSet Name="FK__Tbl_Cart__Produc__5BE2A6F2" Association="Self.FK__Tbl_Cart__Produc__5BE2A6F2">
             <End Role="Tbl_Product" EntitySet="Tbl_Product" />
             <End Role="Tbl_Cart" EntitySet="Tbl_Cart" />
           </AssociationSet>
+          <AssociationSet Name="FK__Tbl_OTPs__user_i__1975C517" Association="Self.FK__Tbl_OTPs__user_i__1975C517">
+            <End Role="Tbl_User" EntitySet="Tbl_User" />
+            <End Role="Tbl_OTPs" EntitySet="Tbl_OTPs" />
+          </AssociationSet>
           <AssociationSet Name="FK__Tbl_Produ__Categ__4D94879B" Association="Self.FK__Tbl_Produ__Categ__4D94879B">
             <End Role="Tbl_Category" EntitySet="Tbl_Category" />
             <End Role="Tbl_Product" EntitySet="Tbl_Product" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Tbl_Produ__Produ__1699586C" Association="Self.FK__Tbl_Produ__Produ__1699586C">
+            <End Role="Tbl_Product" EntitySet="Tbl_Product" />
+            <End Role="Tbl_ProducTypes" EntitySet="Tbl_ProducTypes" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Tbl_Provi__Produ__13BCEBC1" Association="Self.FK__Tbl_Provi__Produ__13BCEBC1">
+            <End Role="Tbl_Product" EntitySet="Tbl_Product" />
+            <End Role="Tbl_Providers" EntitySet="Tbl_Providers" />
           </AssociationSet>
           <AssociationSet Name="FK__Tbl_Shipp__Membe__5629CD9C" Association="Self.FK__Tbl_Shipp__Membe__5629CD9C">
             <End Role="Tbl_User" EntitySet="Tbl_User" />
             <End Role="Tbl_ShippingDetails" EntitySet="Tbl_ShippingDetails" />
           </AssociationSet>
+          <AssociationSet Name="FK__Tbl_Thong__Produ__0E04126B" Association="Self.FK__Tbl_Thong__Produ__0E04126B">
+            <End Role="Tbl_Product" EntitySet="Tbl_Product" />
+            <End Role="Tbl_ThongKe" EntitySet="Tbl_ThongKe" />
+          </AssociationSet>
           <AssociationSet Name="FK_Bill_Product" Association="Self.FK_Bill_Product">
             <End Role="Tbl_Product" EntitySet="Tbl_Product" />
             <End Role="Tbl_Bill" EntitySet="Tbl_Bill" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Review_Product" Association="Self.FK_Review_Product">
+            <End Role="Tbl_Product" EntitySet="Tbl_Product" />
+            <End Role="Review" EntitySet="Review" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Review_User" Association="Self.FK_Review_User">
+            <End Role="Tbl_User" EntitySet="Tbl_User" />
+            <End Role="Review" EntitySet="Review" />
           </AssociationSet>
           <AssociationSet Name="FK_User_Bill" Association="Self.FK_User_Bill">
             <End Role="Tbl_User" EntitySet="Tbl_User" />
@@ -284,13 +400,6 @@
           <Property Name="CartStatusId" Type="Int32" />
           <NavigationProperty Name="Tbl_Product" Relationship="dbClickShopModel.FK__Tbl_Cart__Produc__5BE2A6F2" FromRole="Tbl_Cart" ToRole="Tbl_Product" />
         </EntityType>
-        <EntityType Name="Tbl_CartStatus">
-          <Key>
-            <PropertyRef Name="CartStatusId" />
-          </Key>
-          <Property Name="CartStatusId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="CartStatus" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
-        </EntityType>
         <EntityType Name="Tbl_Category">
           <Key>
             <PropertyRef Name="CategoryId" />
@@ -301,21 +410,6 @@
           <Property Name="IsDelete" Type="Boolean" />
           <NavigationProperty Name="Tbl_Product" Relationship="dbClickShopModel.FK__Tbl_Produ__Categ__4D94879B" FromRole="Tbl_Category" ToRole="Tbl_Product" />
           <Property Name="CategoryImage" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-        </EntityType>
-        <EntityType Name="Tbl_MemberRole">
-          <Key>
-            <PropertyRef Name="MemberRoleId" />
-          </Key>
-          <Property Name="MemberRoleId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="memberId" Type="Int32" />
-          <Property Name="RoleId" Type="Int32" />
-        </EntityType>
-        <EntityType Name="Tbl_Roles">
-          <Key>
-            <PropertyRef Name="RoleId" />
-          </Key>
-          <Property Name="RoleId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="RoleName" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="Tbl_ShippingDetails">
           <Key>
@@ -333,22 +427,10 @@
           <Property Name="PaymentType" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="Tbl_User" Relationship="dbClickShopModel.FK__Tbl_Shipp__Membe__5629CD9C1" FromRole="Tbl_ShippingDetails" ToRole="Tbl_User" />
         </EntityType>
-        <EntityType Name="Tbl_SlideImage">
-          <Key>
-            <PropertyRef Name="SlideId" />
-          </Key>
-          <Property Name="SlideId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="SlideTitle" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
-          <Property Name="SlideImage" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-        </EntityType>
         <EntityContainer Name="dbClickShopEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="Tbl_Cart" EntityType="Self.Tbl_Cart" />
-          <EntitySet Name="Tbl_CartStatus" EntityType="Self.Tbl_CartStatus" />
           <EntitySet Name="Tbl_Category" EntityType="Self.Tbl_Category" />
-          <EntitySet Name="Tbl_MemberRole" EntityType="Self.Tbl_MemberRole" />
-          <EntitySet Name="Tbl_Roles" EntityType="Self.Tbl_Roles" />
           <EntitySet Name="Tbl_ShippingDetails" EntityType="Self.Tbl_ShippingDetails" />
-          <EntitySet Name="Tbl_SlideImage" EntityType="Self.Tbl_SlideImage" />
           <EntitySet Name="Tbl_Product" EntityType="dbClickShopModel.Tbl_Product" />
           <AssociationSet Name="FK__Tbl_Cart__Produc__5BE2A6F2" Association="dbClickShopModel.FK__Tbl_Cart__Produc__5BE2A6F2">
             <End Role="Tbl_Product" EntitySet="Tbl_Product" />
@@ -402,10 +484,39 @@
             <Parameter Name="new_diagramname" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="sp_upgraddiagrams" />
-          <EntitySet Name="ChatMessages" EntityType="dbClickShopModel.ChatMessage" />
           <AssociationSet Name="FK_Bill_Product" Association="dbClickShopModel.FK_Bill_Product">
             <End Role="Tbl_Product" EntitySet="Tbl_Product" />
             <End Role="Tbl_Bill" EntitySet="Tbl_Bill" />
+          </AssociationSet>
+          <EntitySet Name="Reviews" EntityType="dbClickShopModel.Review" />
+          <AssociationSet Name="FK_Review_Product" Association="dbClickShopModel.FK_Review_Product">
+            <End Role="Tbl_Product" EntitySet="Tbl_Product" />
+            <End Role="Review" EntitySet="Reviews" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Review_User" Association="dbClickShopModel.FK_Review_User">
+            <End Role="Tbl_User" EntitySet="Tbl_User" />
+            <End Role="Review" EntitySet="Reviews" />
+          </AssociationSet>
+          <EntitySet Name="Tbl_OTPs" EntityType="dbClickShopModel.Tbl_OTPs" />
+          <EntitySet Name="Tbl_ProducTypes" EntityType="dbClickShopModel.Tbl_ProducTypes" />
+          <EntitySet Name="Tbl_Providers" EntityType="dbClickShopModel.Tbl_Providers" />
+          <EntitySet Name="Tbl_ThongKe" EntityType="dbClickShopModel.Tbl_ThongKe" />
+          <EntitySet Name="Tbl_KhuyenMai" EntityType="dbClickShopModel.Tbl_KhuyenMai" />
+          <AssociationSet Name="FK__Tbl_OTPs__user_i__1975C517" Association="dbClickShopModel.FK__Tbl_OTPs__user_i__1975C517">
+            <End Role="Tbl_User" EntitySet="Tbl_User" />
+            <End Role="Tbl_OTPs" EntitySet="Tbl_OTPs" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Tbl_Produ__Produ__1699586C" Association="dbClickShopModel.FK__Tbl_Produ__Produ__1699586C">
+            <End Role="Tbl_Product" EntitySet="Tbl_Product" />
+            <End Role="Tbl_ProducTypes" EntitySet="Tbl_ProducTypes" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Tbl_Provi__Produ__13BCEBC1" Association="dbClickShopModel.FK__Tbl_Provi__Produ__13BCEBC1">
+            <End Role="Tbl_Product" EntitySet="Tbl_Product" />
+            <End Role="Tbl_Providers" EntitySet="Tbl_Providers" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Tbl_Thong__Produ__0E04126B" Association="dbClickShopModel.FK__Tbl_Thong__Produ__0E04126B">
+            <End Role="Tbl_Product" EntitySet="Tbl_Product" />
+            <End Role="Tbl_ThongKe" EntitySet="Tbl_ThongKe" />
           </AssociationSet>
         </EntityContainer>
         <EntityType Name="Tbl_Product">
@@ -426,6 +537,10 @@
           <NavigationProperty Name="Tbl_Cart" Relationship="dbClickShopModel.FK__Tbl_Cart__Produc__5BE2A6F2" FromRole="Tbl_Product" ToRole="Tbl_Cart" />
           <NavigationProperty Name="Tbl_Category" Relationship="dbClickShopModel.FK__Tbl_Produ__Categ__4D94879B" FromRole="Tbl_Product" ToRole="Tbl_Category" />
           <NavigationProperty Name="Tbl_Bill" Relationship="dbClickShopModel.FK_Bill_Product" FromRole="Tbl_Product" ToRole="Tbl_Bill" />
+          <NavigationProperty Name="Reviews" Relationship="dbClickShopModel.FK_Review_Product" FromRole="Tbl_Product" ToRole="Review" />
+          <NavigationProperty Name="Tbl_ProducTypes" Relationship="dbClickShopModel.FK__Tbl_Produ__Produ__1699586C" FromRole="Tbl_Product" ToRole="Tbl_ProducTypes" />
+          <NavigationProperty Name="Tbl_Providers" Relationship="dbClickShopModel.FK__Tbl_Provi__Produ__13BCEBC1" FromRole="Tbl_Product" ToRole="Tbl_Providers" />
+          <NavigationProperty Name="Tbl_ThongKe" Relationship="dbClickShopModel.FK__Tbl_Thong__Produ__0E04126B" FromRole="Tbl_Product" ToRole="Tbl_ThongKe" />
         </EntityType>
         <Association Name="FK__Tbl_Cart__Produc__5BE2A6F2">
           <End Type="dbClickShopModel.Tbl_Product" Role="Tbl_Product" Multiplicity="0..1" />
@@ -470,6 +585,9 @@
           <Property Name="Address" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="PhoneNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="confirmEmail" Type="Boolean" Nullable="false" />
+          <Property Name="avartar" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Reviews" Relationship="dbClickShopModel.FK_Review_User" FromRole="Tbl_User" ToRole="Review" />
+          <NavigationProperty Name="Tbl_OTPs" Relationship="dbClickShopModel.FK__Tbl_OTPs__user_i__1975C517" FromRole="Tbl_User" ToRole="Tbl_OTPs" />
         </EntityType>
         <Association Name="FK__Tbl_Shipp__Membe__5629CD9C1">
           <End Type="dbClickShopModel.Tbl_User" Role="Tbl_User" Multiplicity="0..1" />
@@ -554,16 +672,6 @@
           <Property Type="String" Name="Owner" Nullable="true" MaxLength="128" />
           <Property Type="Int32" Name="OwnerID" Nullable="false" />
         </ComplexType>
-        <EntityType Name="ChatMessage">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Sender" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Message" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="SentTime" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="IsRead" Type="Boolean" Nullable="false" />
-        </EntityType>
         <Association Name="FK_Bill_Product">
           <End Type="dbClickShopModel.Tbl_Product" Role="Tbl_Product" Multiplicity="0..1" />
           <End Type="dbClickShopModel.Tbl_Bill" Role="Tbl_Bill" Multiplicity="*" />
@@ -572,6 +680,142 @@
               <PropertyRef Name="ProductId" />
             </Principal>
             <Dependent Role="Tbl_Bill">
+              <PropertyRef Name="ProductId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="Review">
+          <Key>
+            <PropertyRef Name="ReviewId" />
+          </Key>
+          <Property Name="ReviewId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ProductId" Type="Int32" Nullable="false" />
+          <Property Name="user_id" Type="Int32" Nullable="false" />
+          <Property Name="Rating" Type="Byte" />
+          <Property Name="Comment" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ReviewDate" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="Tbl_Product" Relationship="dbClickShopModel.FK_Review_Product" FromRole="Review" ToRole="Tbl_Product" />
+          <NavigationProperty Name="Tbl_User" Relationship="dbClickShopModel.FK_Review_User" FromRole="Review" ToRole="Tbl_User" />
+        </EntityType>
+        <Association Name="FK_Review_Product">
+          <End Type="dbClickShopModel.Tbl_Product" Role="Tbl_Product" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="dbClickShopModel.Review" Role="Review" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tbl_Product">
+              <PropertyRef Name="ProductId" />
+            </Principal>
+            <Dependent Role="Review">
+              <PropertyRef Name="ProductId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Review_User">
+          <End Type="dbClickShopModel.Tbl_User" Role="Tbl_User" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="dbClickShopModel.Review" Role="Review" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tbl_User">
+              <PropertyRef Name="user_id" />
+            </Principal>
+            <Dependent Role="Review">
+              <PropertyRef Name="user_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="Tbl_OTPs">
+          <Key>
+            <PropertyRef Name="user_id" />
+            <PropertyRef Name="keys" />
+          </Key>
+          <Property Name="id" Type="Int32" />
+          <Property Name="user_id" Type="Int32" Nullable="false" />
+          <Property Name="keys" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Tbl_User" Relationship="dbClickShopModel.FK__Tbl_OTPs__user_i__1975C517" FromRole="Tbl_OTPs" ToRole="Tbl_User" />
+        </EntityType>
+        <EntityType Name="Tbl_ProducTypes">
+          <Key>
+            <PropertyRef Name="ProductId" />
+          </Key>
+          <Property Name="ProductId" Type="Int32" Nullable="false" />
+          <Property Name="ProductTypeName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Tbl_Product" Relationship="dbClickShopModel.FK__Tbl_Produ__Produ__1699586C" FromRole="Tbl_ProducTypes" ToRole="Tbl_Product" />
+        </EntityType>
+        <EntityType Name="Tbl_Providers">
+          <Key>
+            <PropertyRef Name="ProductId" />
+          </Key>
+          <Property Name="ProductId" Type="Int32" Nullable="false" />
+          <Property Name="ProvidersName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Tbl_Product" Relationship="dbClickShopModel.FK__Tbl_Provi__Produ__13BCEBC1" FromRole="Tbl_Providers" ToRole="Tbl_Product" />
+        </EntityType>
+        <EntityType Name="Tbl_ThongKe">
+          <Key>
+            <PropertyRef Name="ProductId" />
+          </Key>
+          <Property Name="ProductId" Type="Int32" Nullable="false" />
+          <Property Name="soPhieu" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="doanhThu" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Thu" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="Chi" Type="Decimal" Precision="18" Scale="2" />
+          <NavigationProperty Name="Tbl_Product" Relationship="dbClickShopModel.FK__Tbl_Thong__Produ__0E04126B" FromRole="Tbl_ThongKe" ToRole="Tbl_Product" />
+        </EntityType>
+        <EntityType Name="Tbl_KhuyenMai">
+          <Key>
+            <PropertyRef Name="KhuyenMaiID" />
+          </Key>
+          <Property Name="KhuyenMaiID" Type="Int32" Nullable="false" />
+          <Property Name="VoucherCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="SoLuong" Type="Int32" />
+          <Property Name="DateStart" Type="DateTime" Precision="3" />
+          <Property Name="DateEnd" Type="DateTime" Precision="3" />
+        </EntityType>
+        <Association Name="FK__Tbl_OTPs__user_i__1975C517">
+          <End Type="dbClickShopModel.Tbl_User" Role="Tbl_User" Multiplicity="1" />
+          <End Type="dbClickShopModel.Tbl_OTPs" Role="Tbl_OTPs" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tbl_User">
+              <PropertyRef Name="user_id" />
+            </Principal>
+            <Dependent Role="Tbl_OTPs">
+              <PropertyRef Name="user_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Tbl_Produ__Produ__1699586C">
+          <End Type="dbClickShopModel.Tbl_Product" Role="Tbl_Product" Multiplicity="1" />
+          <End Type="dbClickShopModel.Tbl_ProducTypes" Role="Tbl_ProducTypes" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="Tbl_Product">
+              <PropertyRef Name="ProductId" />
+            </Principal>
+            <Dependent Role="Tbl_ProducTypes">
+              <PropertyRef Name="ProductId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Tbl_Provi__Produ__13BCEBC1">
+          <End Type="dbClickShopModel.Tbl_Product" Role="Tbl_Product" Multiplicity="1" />
+          <End Type="dbClickShopModel.Tbl_Providers" Role="Tbl_Providers" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="Tbl_Product">
+              <PropertyRef Name="ProductId" />
+            </Principal>
+            <Dependent Role="Tbl_Providers">
+              <PropertyRef Name="ProductId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Tbl_Thong__Produ__0E04126B">
+          <End Type="dbClickShopModel.Tbl_Product" Role="Tbl_Product" Multiplicity="1" />
+          <End Type="dbClickShopModel.Tbl_ThongKe" Role="Tbl_ThongKe" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="Tbl_Product">
+              <PropertyRef Name="ProductId" />
+            </Principal>
+            <Dependent Role="Tbl_ThongKe">
               <PropertyRef Name="ProductId" />
             </Dependent>
           </ReferentialConstraint>
@@ -592,14 +836,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Tbl_CartStatus">
-            <EntityTypeMapping TypeName="dbClickShopModel.Tbl_CartStatus">
-              <MappingFragment StoreEntitySet="Tbl_CartStatus">
-                <ScalarProperty Name="CartStatusId" ColumnName="CartStatusId" />
-                <ScalarProperty Name="CartStatus" ColumnName="CartStatus" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="Tbl_Category">
             <EntityTypeMapping TypeName="dbClickShopModel.Tbl_Category">
               <MappingFragment StoreEntitySet="Tbl_Category">
@@ -608,23 +844,6 @@
                 <ScalarProperty Name="CategoryName" ColumnName="CategoryName" />
                 <ScalarProperty Name="IsActive" ColumnName="IsActive" />
                 <ScalarProperty Name="IsDelete" ColumnName="IsDelete" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Tbl_MemberRole">
-            <EntityTypeMapping TypeName="dbClickShopModel.Tbl_MemberRole">
-              <MappingFragment StoreEntitySet="Tbl_MemberRole">
-                <ScalarProperty Name="MemberRoleId" ColumnName="MemberRoleId" />
-                <ScalarProperty Name="memberId" ColumnName="memberId" />
-                <ScalarProperty Name="RoleId" ColumnName="RoleId" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Tbl_Roles">
-            <EntityTypeMapping TypeName="dbClickShopModel.Tbl_Roles">
-              <MappingFragment StoreEntitySet="Tbl_Roles">
-                <ScalarProperty Name="RoleId" ColumnName="RoleId" />
-                <ScalarProperty Name="RoleName" ColumnName="RoleName" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -641,15 +860,6 @@
                 <ScalarProperty Name="OrderId" ColumnName="OrderId" />
                 <ScalarProperty Name="AmountPaid" ColumnName="AmountPaid" />
                 <ScalarProperty Name="PaymentType" ColumnName="PaymentType" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Tbl_SlideImage">
-            <EntityTypeMapping TypeName="dbClickShopModel.Tbl_SlideImage">
-              <MappingFragment StoreEntitySet="Tbl_SlideImage">
-                <ScalarProperty Name="SlideId" ColumnName="SlideId" />
-                <ScalarProperty Name="SlideTitle" ColumnName="SlideTitle" />
-                <ScalarProperty Name="SlideImage" ColumnName="SlideImage" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -673,6 +883,7 @@
           <EntitySetMapping Name="Tbl_User">
             <EntityTypeMapping TypeName="dbClickShopModel.Tbl_User">
               <MappingFragment StoreEntitySet="Tbl_User">
+                <ScalarProperty Name="avartar" ColumnName="avartar" />
                 <ScalarProperty Name="confirmEmail" ColumnName="confirmEmail" />
                 <ScalarProperty Name="PhoneNumber" ColumnName="PhoneNumber" />
                 <ScalarProperty Name="Address" ColumnName="Address" />
@@ -765,14 +976,62 @@
           </FunctionImportMapping>
           <FunctionImportMapping FunctionImportName="sp_renamediagram" FunctionName="dbClickShopModel.Store.sp_renamediagram" />
           <FunctionImportMapping FunctionImportName="sp_upgraddiagrams" FunctionName="dbClickShopModel.Store.sp_upgraddiagrams" />
-          <EntitySetMapping Name="ChatMessages">
-            <EntityTypeMapping TypeName="dbClickShopModel.ChatMessage">
-              <MappingFragment StoreEntitySet="ChatMessages">
-                <ScalarProperty Name="IsRead" ColumnName="IsRead" />
-                <ScalarProperty Name="SentTime" ColumnName="SentTime" />
-                <ScalarProperty Name="Message" ColumnName="Message" />
-                <ScalarProperty Name="Sender" ColumnName="Sender" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
+          <EntitySetMapping Name="Reviews">
+            <EntityTypeMapping TypeName="dbClickShopModel.Review">
+              <MappingFragment StoreEntitySet="Review">
+                <ScalarProperty Name="ReviewDate" ColumnName="ReviewDate" />
+                <ScalarProperty Name="Comment" ColumnName="Comment" />
+                <ScalarProperty Name="Rating" ColumnName="Rating" />
+                <ScalarProperty Name="user_id" ColumnName="user_id" />
+                <ScalarProperty Name="ProductId" ColumnName="ProductId" />
+                <ScalarProperty Name="ReviewId" ColumnName="ReviewId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Tbl_OTPs">
+            <EntityTypeMapping TypeName="dbClickShopModel.Tbl_OTPs">
+              <MappingFragment StoreEntitySet="Tbl_OTPs">
+                <ScalarProperty Name="keys" ColumnName="keys" />
+                <ScalarProperty Name="user_id" ColumnName="user_id" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Tbl_ProducTypes">
+            <EntityTypeMapping TypeName="dbClickShopModel.Tbl_ProducTypes">
+              <MappingFragment StoreEntitySet="Tbl_ProducTypes">
+                <ScalarProperty Name="ProductTypeName" ColumnName="ProductTypeName" />
+                <ScalarProperty Name="ProductId" ColumnName="ProductId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Tbl_Providers">
+            <EntityTypeMapping TypeName="dbClickShopModel.Tbl_Providers">
+              <MappingFragment StoreEntitySet="Tbl_Providers">
+                <ScalarProperty Name="ProvidersName" ColumnName="ProvidersName" />
+                <ScalarProperty Name="ProductId" ColumnName="ProductId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Tbl_ThongKe">
+            <EntityTypeMapping TypeName="dbClickShopModel.Tbl_ThongKe">
+              <MappingFragment StoreEntitySet="Tbl_ThongKe">
+                <ScalarProperty Name="Chi" ColumnName="Chi" />
+                <ScalarProperty Name="Thu" ColumnName="Thu" />
+                <ScalarProperty Name="doanhThu" ColumnName="doanhThu" />
+                <ScalarProperty Name="soPhieu" ColumnName="soPhieu" />
+                <ScalarProperty Name="ProductId" ColumnName="ProductId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Tbl_KhuyenMai">
+            <EntityTypeMapping TypeName="dbClickShopModel.Tbl_KhuyenMai">
+              <MappingFragment StoreEntitySet="Tbl_KhuyenMai">
+                <ScalarProperty Name="DateEnd" ColumnName="DateEnd" />
+                <ScalarProperty Name="DateStart" ColumnName="DateStart" />
+                <ScalarProperty Name="SoLuong" ColumnName="SoLuong" />
+                <ScalarProperty Name="VoucherCode" ColumnName="VoucherCode" />
+                <ScalarProperty Name="KhuyenMaiID" ColumnName="KhuyenMaiID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

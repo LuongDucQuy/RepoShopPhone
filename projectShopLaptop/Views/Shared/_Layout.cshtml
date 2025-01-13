@@ -73,35 +73,6 @@
                     <span class="h1 text-uppercase text-dark bg-primary px-2 ml-n1">Shop</span>
                 </a>
             </div>
-            <div class="d-inline-flex align-items-center ml-auto">
-                <div class="btn-group">
-                    <button type="button" class="btn btn-sm btn-light dropdown-toggle" data-toggle="dropdown">
-                        <i class="fa fa-user fa-fw"></i>
-                        <span class="d-none d-sm-inline">
-                            <!-- Hiển thị tên người dùng -->
-                            @{
-                                var user = HttpContext.Current.Session["user"]?.ToString() ?? "";
-                                <span>@user</span>
-                            }
-                        </span>
-                    </button>
-                    <div class="dropdown-menu dropdown-menu-right" style="z-index: 1050;">
-                        @if (Session["user"] != null)
-                        {
-                            <!-- Nếu đã đăng nhập, hiển thị Đăng xuất và Hồ sơ -->
-                            <a href="@Url.Action("Profile", "Home", new { id = ViewBag.UserId })" class="dropdown-item" type="button">Thông tin cá nhân</a>
-                            <a href="@Url.Action("LichSuDonHang", "Home")" class="dropdown-item" type="button">Lịch sử đơn hàng</a>
-                            <a href="@Url.Action("Logout", "Home")" class="dropdown-item" type="button">Đăng xuất</a>
-                        }
-                        else
-                        {
-                            <!-- Nếu chưa đăng nhập, hiển thị Đăng nhập và Đăng ký -->
-                            <a href="@Url.Action("Login", "Home")" class="dropdown-item" type="button">Đăng nhập</a>
-                            <a href="@Url.Action("Registe", "Home")" class="dropdown-item" type="button">Đăng ký</a>
-                        }
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
     <!-- Topbar End -->
@@ -165,6 +136,7 @@
                             <a href="detail.html" class="nav-item nav-link">TUYỂN DỤNG</a>
                             <a href="contact.html" class="nav-item nav-link">LIÊN HỆ</a>
                             <a href="shop.html" class="nav-item nav-link">HỎI ĐÁP</a>
+                            <a href="@Url.Action("Voucher", "Home")" class="nav-item nav-link">VOUCHER</a>
                         </div>
                         <div class="navbar-nav ml-auto py-0 d-none d-lg-block">
                             <ul class="nav navbar-nav navbar-right">
@@ -195,7 +167,35 @@
                                 </li>
                             </ul>
                         </div>
-
+                        <div class="d-inline-flex align-items-center ml-4">
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-sm btn-light dropdown-toggle" data-toggle="dropdown">
+                                    <i class="fa fa-user fa-fw"></i>
+                                    <span class="d-none d-sm-inline">
+                                        <!-- Hiển thị tên người dùng -->
+                                        @{
+                                            var user = HttpContext.Current.Session["user"]?.ToString() ?? "";
+                                            <span>@user</span>
+                                        }
+                                    </span>
+                                </button>
+                                <div class="dropdown-menu dropdown-menu-right" style="z-index: 1050;">
+                                    @if (Session["user"] != null)
+                                    {
+                                        <!-- Nếu đã đăng nhập, hiển thị Đăng xuất và Hồ sơ -->
+                                        <a href="@Url.Action("Profile", "Home", new { id = ViewBag.UserId })" class="dropdown-item" type="button">Thông tin cá nhân</a>
+                                        <a href="@Url.Action("LichSuDonHang", "Home")" class="dropdown-item" type="button">Lịch sử đơn hàng</a>
+                                        <a href="@Url.Action("Logout", "Home")" class="dropdown-item" type="button">Đăng xuất</a>
+                                    }
+                                    else
+                                    {
+                                        <!-- Nếu chưa đăng nhập, hiển thị Đăng nhập và Đăng ký -->
+                                        <a href="@Url.Action("Login", "Home")" class="dropdown-item" type="button">Đăng nhập</a>
+                                        <a href="@Url.Action("Registe", "Home")" class="dropdown-item" type="button">Đăng ký</a>
+                                    }
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </nav>
             </div>

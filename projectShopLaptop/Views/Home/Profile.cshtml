@@ -29,7 +29,7 @@
         input.form-control {
             border: 1px solid #ccc;
             border-radius: 5px;
-            padding: 8px;
+            padding: 4px;
             width: 100%;
             box-sizing: border-box;
         }
@@ -67,57 +67,67 @@
     {
         @Html.AntiForgeryToken()
 
-    <div class="form-horizontal">
-        <h2 class="text-center">Thông tin cá nhân</h2>
-        <hr />
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        @Html.HiddenFor(model => model.User.user_id)
+<div class="form-horizontal">
+    <h2 class="text-center">Thông tin cá nhân</h2>
+    <hr />
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    @Html.HiddenFor(model => model.User.user_id)
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.User.Name, "Tên hiển thị", htmlAttributes: new { @class = "control-label col-md-4" })
-            <div class="col-md-12">
-                <input type="text" name="Name" value="@Model.User.Name" class="form-control" />
-                @Html.ValidationMessageFor(model => model.User.Name, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.User.EmailId, "Email", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-12">
-                <input type="email" name="EmailId" value="@Model.User.EmailId" class="form-control" />
-                @Html.ValidationMessageFor(model => model.User.EmailId, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.User.Password, "Mật khẩu mới", htmlAttributes: new { @class = "control-label col-md-4" })
-            <div class="col-md-12">
-                <input type="password" name="Password" value="" class="form-control" />
-                @Html.ValidationMessageFor(model => model.User.Password, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.User.Address, "Địa chỉ", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-12">
-                <input type="text" name="Address" value="@Model.User.Address" class="form-control" />
-                @Html.ValidationMessageFor(model => model.User.Address, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.User.PhoneNumber, "Số điện thoại", htmlAttributes: new { @class = "control-label col-md-4" })
-            <div class="col-md-12">
-                <input type="text" name="PhoneNumber" value="@Model.User.PhoneNumber" class="form-control" />
-                @Html.ValidationMessageFor(model => model.User.PhoneNumber, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-3; text-center">
-                <input type="submit" value="Cập nhật" class="btn btn-default" />
-            </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.User.Name, "Tên hiển thị", htmlAttributes: new { @class = "control-label col-md-4" })
+        <div class="col-md-12">
+            <input type="text" name="Name" value="@Model.User.Name" class="form-control" />
+            @Html.ValidationMessageFor(model => model.User.Name, "", new { @class = "text-danger" })
         </div>
     </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.User.EmailId, "Email", htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-12">
+            <input type="email" name="EmailId" value="@Model.User.EmailId" class="form-control" />
+            @Html.ValidationMessageFor(model => model.User.EmailId, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.User.Address, "Địa chỉ", htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-12">
+            <input type="text" name="Address" value="@Model.User.Address" class="form-control" />
+            @Html.ValidationMessageFor(model => model.User.Address, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.User.PhoneNumber, "Số điện thoại", htmlAttributes: new { @class = "control-label col-md-4" })
+        <div class="col-md-12">
+            <input type="text" name="PhoneNumber" value="@Model.User.PhoneNumber" class="form-control" />
+            @Html.ValidationMessageFor(model => model.User.PhoneNumber, "", new { @class = "text-danger" })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.User.avartar, "Ảnh đại diện", htmlAttributes: new { @class = "control-label col-md-4" })
+        <div class="col-md-12">
+            <input type="file" name="Avatar" class="form-control" style="padding-bottom: 10px" />
+            @if (!string.IsNullOrEmpty(Model.User.avartar))
+            {
+                <img src="@Url.Content(Model.User.avartar)" alt="Avatar" style="width: 100px; height: 100px; margin-top: 10px;" />
+            }
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.User.Password, "Mật khẩu mới", htmlAttributes: new { @class = "control-label col-md-4" })
+        <div class="col-md-12">
+            <input type="password" name="Password" value="" class="form-control" />
+            @Html.ValidationMessageFor(model => model.User.Password, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-3; text-center">
+            <input type="submit" value="Cập nhật" class="btn btn-default" />
+        </div>
+    </div>
+</div>
     }
 

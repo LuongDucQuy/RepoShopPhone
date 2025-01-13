@@ -1,0 +1,99 @@
+﻿@model IEnumerable<projectShopLaptop.DAL.Tbl_KhuyenMai>
+
+@{
+    ViewBag.Title = "Voucher";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+@if (TempData["mess"] != null)
+{
+    <div class="toast toast-success">
+        @TempData["mess"]
+    </div>
+}
+<link href="~/AdminStyle/css/Product.css" rel="stylesheet" />
+<div class="container-fluid px-4">
+    <h2 class="mt-4">Voucher</h2>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item">Trang chủ</li>
+        <li class="breadcrumb-item active">Voucher</li>
+    </ol>
+    <div class="card mb-4">
+        <div class="card-body">
+            <table id="datatablesSimple">
+                <thead>
+                    <tr>
+                        <th>Mã voucher</th>
+                        <th>Số lượng</th>
+                        <th>Ngày bắt đầu</th>
+                        <th>Ngày kết thúc</th>
+                        <th>Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var voucher in Model)
+                    {
+                        <tr>
+                            <td>@voucher.VoucherCode</td>
+                            <td>@voucher.SoLuong</td>
+                            <td>@voucher.DateStart</td>
+                            <td>@voucher.DateEnd</td>
+                            <td>
+                                <button class="btn btn-danger delete-voucher" data-id="@voucher.KhuyenMaiID">Xóa</button>
+                            </td>
+
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+    $(document).on('click', '.delete-voucher', function () {
+        var voucherId = $(this).data('id'); // Lấy ID voucher từ data-id của nút
+
+        if (confirm('Bạn có chắc chắn muốn xóa voucher này?')) {
+            $.ajax({
+                url: '@Url.Action("DeleteVoucher", "Admin")', // Đường dẫn đến phương thức xóa
+                type: 'POST',
+                data: JSON.stringify({ voucherId: voucherId }), // Gửi ID voucher
+                contentType: 'application/json; charset=utf-8',
+                success: function (response) {
+                    if (response.success) {
+                        // Cập nhật lại bảng với danh sách voucher mới
+                        var newRows = '';
+                        $.each(response.vouchers, function (index, voucher) {
+                            newRows += `
+                                <tr>
+                                    <td>${voucher.VoucherCode}</td>
+                                    <td>${voucher.SoLuong}</td>
+                                    <td>${voucher.DateStart}</td>
+                                    <td>${voucher.DateEnd}</td>
+                                    <td>
+                                        <button class="btn btn-danger delete-voucher" data-id="${voucher.KhuyenMaiID}">Xóa</button>
+                                    </td>
+                                </tr>
+                            `;
+                        });
+
+                        // Cập nhật lại nội dung bảng
+                        $('#datatablesSimple tbody').html(newRows);
+
+                        // Hiển thị thông báo thành công
+                        alert("Xóa voucher thành công!");
+                    } else {
+                        alert(response.message);
+                    }
+                },
+                error: function () {
+                    alert('Đã xảy ra lỗi khi xóa voucher.');
+                }
+            });
+        }
+    });
+});
+
+</script>

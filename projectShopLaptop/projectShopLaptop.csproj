@@ -527,9 +527,6 @@
     <Compile Include="Controllers\OrderInfo.cs" />
     <Compile Include="Controllers\StatisticalController.cs" />
     <Compile Include="Controllers\VnpayLibrary.cs" />
-    <Compile Include="DAL\ChatMessage.cs">
-      <DependentUpon>Model1.tt</DependentUpon>
-    </Compile>
     <Compile Include="DAL\GetBySearch_Result.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
@@ -548,6 +545,9 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Model1.edmx</DependentUpon>
     </Compile>
+    <Compile Include="DAL\Review.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
     <Compile Include="DAL\sp_helpdiagramdefinition_Result.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
@@ -563,25 +563,28 @@
     <Compile Include="DAL\Tbl_Cart.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
-    <Compile Include="DAL\Tbl_CartStatus.cs">
-      <DependentUpon>Model1.tt</DependentUpon>
-    </Compile>
     <Compile Include="DAL\Tbl_Category.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
-    <Compile Include="DAL\Tbl_MemberRole.cs">
+    <Compile Include="DAL\Tbl_KhuyenMai.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DAL\Tbl_OTPs.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
     <Compile Include="DAL\Tbl_Product.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
-    <Compile Include="DAL\Tbl_Roles.cs">
+    <Compile Include="DAL\Tbl_ProducTypes.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DAL\Tbl_Providers.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
     <Compile Include="DAL\Tbl_ShippingDetails.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
-    <Compile Include="DAL\Tbl_SlideImage.cs">
+    <Compile Include="DAL\Tbl_ThongKe.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
     <Compile Include="DAL\Tbl_User.cs">
@@ -995,6 +998,9 @@
     <Content Include="Views\Home\ResetPassword.cshtml" />
     <Content Include="Views\Statistical\ThongKeSach.cshtml" />
     <Content Include="Views\Statistical\ExportPdf.cshtml" />
+    <Content Include="Views\Admin\Evaluate.cshtml" />
+    <Content Include="Views\Admin\Voucher.cshtml" />
+    <Content Include="Views\Home\Voucher.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

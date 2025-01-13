@@ -77,13 +77,13 @@
                                     <form action="@Url.Action("ConfirmPayment", "Admin")" method="post">
                                         <input type="hidden" name="billId" value="@item.IDBill" />
                                         <button type="submit" class="btn btn-success btn-outline btn-xs m-r-5 tooltip-info">
-                                            <i class="fa-solid fa-check"></i> Xác nhận thanh toán
+                                            <i class="fa-solid fa-check"></i> Giao hàng thành công
                                         </button>
                                     </form>
                                 }
                                 @if (item.maTrangThai < 3) // Chỉ cho phép hủy khi trạng thái là 1, 2
                                 {
-                                    <form action="@Url.Action("CancelOrder", "Admin")" method="post">
+                                    <form action="@Url.Action("CancelOrder", "Admin")" method="post" onsubmit="return confirmCancel()">
                                         <input type="hidden" name="billId" value="@item.IDBill" />
                                         <button type="submit" class="btn btn-danger btn-outline btn-xs m-r-5 tooltip-info">
                                             <i class="fa-solid fa-trash"></i> Hủy đơn
@@ -101,3 +101,8 @@
     </div>
 </div>
 
+<script>
+    function confirmCancel() {
+        return confirm("Bạn có chắc chắn muốn hủy đơn này không?");
+    }
+</script>

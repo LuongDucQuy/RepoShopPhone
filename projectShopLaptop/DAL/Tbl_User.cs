@@ -18,6 +18,8 @@ namespace projectShopLaptop.DAL
         {
             this.Tbl_ShippingDetails = new HashSet<Tbl_ShippingDetails>();
             this.Tbl_Bill = new HashSet<Tbl_Bill>();
+            this.Reviews = new HashSet<Review>();
+            this.Tbl_OTPs = new HashSet<Tbl_OTPs>();
         }
     
         public int user_id { get; set; }
@@ -33,8 +35,11 @@ namespace projectShopLaptop.DAL
         public string Address { get; set; }
         public string PhoneNumber { get; set; }
         public bool confirmEmail { get; set; }
+        public string avartar { get; set; }
     
         public virtual ICollection<Tbl_ShippingDetails> Tbl_ShippingDetails { get; set; }
         public virtual ICollection<Tbl_Bill> Tbl_Bill { get; set; }
+        public virtual ICollection<Review> Reviews { get; set; }
+        public virtual ICollection<Tbl_OTPs> Tbl_OTPs { get; set; }
     }
 }

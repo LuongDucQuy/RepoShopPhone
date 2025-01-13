@@ -1,0 +1,57 @@
+﻿@model IEnumerable<projectShopLaptop.DAL.Review>
+
+@{
+    ViewBag.Title = "Đánh giá";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+@if (TempData["mess"] != null)
+{
+    <div class="toast toast-success">
+        @TempData["mess"]
+    </div>
+}
+<link href="~/AdminStyle/css/Product.css" rel="stylesheet" />
+<div class="container-fluid px-4">
+    <h2 class="mt-4">Đánh giá</h2>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item">Trang chủ</li>
+        <li class="breadcrumb-item active">Đánh giá</li>
+    </ol>
+    <div class="card mb-4">
+        <div class="card-body">
+            <table id="datatablesSimple">
+                <thead>
+                    <tr>
+                        <th>Review ID</th>
+                        <th>Product ID</th>
+                        <th>User ID</th>
+                        <th>Rating</th>
+                        <th>Comment</th>
+                        <th>Review Date</th>
+                        <th>Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var review in Model)
+                    {
+                        <tr>
+                            <td>@review.ReviewId</td>
+                            <td>@review.ProductId</td>
+                            <td>@review.user_id</td>
+                            <td>@review.Rating</td>
+                            <td>@review.Comment</td>
+                            <td>@review.ReviewDate</td>
+                            <td>
+                                <!-- Thêm nút xóa -->
+                                <form action="@Url.Action("DeleteReview", "Admin")" method="post" onsubmit="return confirm('Bạn có chắc chắn muốn xóa đánh giá này không?')">
+                                    <input type="hidden" name="reviewId" value="@review.ReviewId" />
+                                    <button type="submit" class="btn btn-danger">Xóa</button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

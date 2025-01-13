@@ -15,7 +15,6 @@ namespace projectShopLaptop.Controllers
         // GET: detailProduct
         public ActionResult proDetail(int id)
         {
-            
             Debug.WriteLine("ID nhận được: " + id);
             var data = ctx.Tbl_Product.SingleOrDefault(p => p.ProductId == id);
             if (data == null)
@@ -41,7 +40,22 @@ namespace projectShopLaptop.Controllers
 
             result.Categories = new SelectList(categories, "CategoryId", "CategoryName");
 
+            // Retrieve reviews for the product
+            var reviews = ctx.Reviews.Where(r => r.ProductId == id)
+                                     .Select(r => new ReviewViewModel
+                                     {
+                                         Avatar = r.Tbl_User.avartar,
+                                         UserName = r.Tbl_User.UserName,
+                                         Rating = r.Rating,
+                                         Comment = r.Comment,
+                                         ReviewDate = r.ReviewDate
+                                     }).ToList();
+
+            // Pass reviews to the view
+            ViewBag.Reviews = reviews;
+
             return View(result);
         }
+
     }
 }

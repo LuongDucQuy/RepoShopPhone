@@ -29,17 +29,18 @@ namespace projectShopLaptop.DAL
         }
     
         public DbSet<Tbl_Cart> Tbl_Cart { get; set; }
-        public DbSet<Tbl_CartStatus> Tbl_CartStatus { get; set; }
         public DbSet<Tbl_Category> Tbl_Category { get; set; }
-        public DbSet<Tbl_MemberRole> Tbl_MemberRole { get; set; }
-        public DbSet<Tbl_Roles> Tbl_Roles { get; set; }
         public DbSet<Tbl_ShippingDetails> Tbl_ShippingDetails { get; set; }
-        public DbSet<Tbl_SlideImage> Tbl_SlideImage { get; set; }
         public DbSet<Tbl_Product> Tbl_Product { get; set; }
         public DbSet<Tbl_User> Tbl_User { get; set; }
         public DbSet<Tbl_Bill> Tbl_Bill { get; set; }
         public DbSet<sysdiagram> sysdiagrams { get; set; }
-        public DbSet<ChatMessage> ChatMessages { get; set; }
+        public DbSet<Review> Reviews { get; set; }
+        public DbSet<Tbl_OTPs> Tbl_OTPs { get; set; }
+        public DbSet<Tbl_ProducTypes> Tbl_ProducTypes { get; set; }
+        public DbSet<Tbl_Providers> Tbl_Providers { get; set; }
+        public DbSet<Tbl_ThongKe> Tbl_ThongKe { get; set; }
+        public DbSet<Tbl_KhuyenMai> Tbl_KhuyenMai { get; set; }
     
         public virtual ObjectResult<GetBySearch_Result> GetBySearch(string search)
         {

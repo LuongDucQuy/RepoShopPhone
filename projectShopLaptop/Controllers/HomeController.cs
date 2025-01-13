@@ -13,6 +13,7 @@ using System.Configuration;
 using System.Data.Entity;
 using System.Data.SqlClient;
 using System.Drawing.Printing;
+using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
@@ -92,7 +93,6 @@ namespace projectShopLaptop.Controllers
                 ListOfProduct = products.ToPagedList(pageNumber, pageSize)
             };
 
-            // Set the categories for dropdown
             ViewBag.Categories = ctx.Tbl_Category.ToList();
             ViewBag.CurrentSort = sortOrder;
 
@@ -339,7 +339,7 @@ namespace projectShopLaptop.Controllers
 
 
         [HttpPost]
-        public ActionResult Profile(Tbl_User updatedUser)
+        public ActionResult Profile(Tbl_User updatedUser, HttpPostedFileBase Avatar)
         {
             if (Session["user"] == null)
             {
@@ -388,6 +388,16 @@ namespace projectShopLaptop.Controllers
                 isUpdated = true;
             }
 
+            // Xử lý upload Avatar
+            if (Avatar != null && Avatar.ContentLength > 0)
+            {
+                string fileName = Path.GetFileName(Avatar.FileName);
+                string path = Path.Combine(Server.MapPath("~/img"), fileName);
+                Avatar.SaveAs(path);
+                user.avartar = "~/img/" + fileName;
+                isUpdated = true;
+            }
+
             // Nếu có thay đổi, cập nhật và lưu vào cơ sở dữ liệu
             if (isUpdated)
             {
@@ -402,6 +412,7 @@ namespace projectShopLaptop.Controllers
 
             return RedirectToAction("Index");
         }
+
 
 
         // Hàm mã hóa mật khẩu
@@ -540,51 +551,93 @@ namespace projectShopLaptop.Controllers
                 // Lấy thông tin giỏ hàng từ session
                 var cart = Session["cart"] as List<Models.Home.Item>;
 
-                if (cart != null && cart.Count == 1) // Chỉ cho phép 1 sản phẩm trong giỏ
+                if (cart != null && cart.Any())
                 {
-                    var item = cart.First(); // Lấy sản phẩm đầu tiên
-                    var product = ctx.Tbl_Product.FirstOrDefault(p => p.ProductId == item.Product.ProductId);
+                    decimal totalAmount = 0;
 
-                    if (product != null)
+                    // Kiểm tra xem tổng tiền sau giảm giá có trong session không
+                    if (Session["discountedTotal"] != null)
                     {
-                        // Tạo hóa đơn
-                        var bill = new Tbl_Bill
+                        // Sử dụng tổng tiền đã giảm giá
+                        totalAmount = (decimal)Session["discountedTotal"];
+                    }
+                    else
+                    {
+                        // Tính tổng tiền từ sản phẩm trong giỏ nếu không có giảm giá
+                        foreach (var item in cart)
                         {
-                            user_id = user.user_id,
-                            ngayDat = DateTime.Now,
-                            HoTen = Name,
-                            diaChi = Address,
-                            dienThoai = PhoneNumber,
-                            soTien = (decimal)cart.Sum(q => q.Quantity * item.Product.Price),
-                            cachThanhToan = "COD",
-                            cachVanChuyen = "Standard Shipping",
-                            maTrangThai = 1, // Ví dụ: 1 là trạng thái 'Đang xử lý'
-                            ghiChu = "",
-                            ProductId = product.ProductId // Ghi lại ProductId
-                        };
+                            var product = ctx.Tbl_Product.FirstOrDefault(p => p.ProductId == item.Product.ProductId);
+
+                            if (product == null || product.Quantity < item.Quantity)
+                            {
+                                TempData["error"] = $"Sản phẩm '{item.Product.ProductName}' không đủ số lượng trong kho.";
+                                return RedirectToAction("ShoppingCart");
+                            }
+
+                            // Tính tổng tiền
+                            totalAmount += item.Quantity * (product.Price ?? 0);
+                        }
+                    }
+
+                    // Tạo hóa đơn
+                    var bill = new Tbl_Bill
+                    {
+                        user_id = user.user_id,
+                        ngayDat = DateTime.Now,
+                        HoTen = Name,
+                        diaChi = Address,
+                        dienThoai = PhoneNumber,
+                        soTien = totalAmount, // Lưu tổng tiền sau khi áp dụng giảm giá
+                        cachThanhToan = "COD",
+                        cachVanChuyen = "Standard Shipping",
+                        maTrangThai = 1, // Ví dụ: 1 là trạng thái 'Đang xử lý'
+                        ghiChu = ""
+                    };
+
+                    // Lưu hóa đơn và cập nhật kho
+                    foreach (var item in cart)
+                    {
+                        var product = ctx.Tbl_Product.FirstOrDefault(p => p.ProductId == item.Product.ProductId);
+
+                        if (product == null || product.Quantity < item.Quantity)
+                        {
+                            TempData["error"] = $"Sản phẩm '{item.Product.ProductName}' không đủ số lượng trong kho.";
+                            return RedirectToAction("ShoppingCart");
+                        }
 
                         // Giảm số lượng sản phẩm trong kho
                         product.Quantity -= item.Quantity;
-                        if (product.Quantity < 0)
+                        if (product.Quantity == 0)
                         {
-                            product.Quantity = 0;
+                            product.IsActive = false; // Cập nhật trạng thái nếu hết hàng
                         }
-
-                        // Lưu vào database
-                        ctx.Tbl_Bill.Add(bill);
-                        ctx.SaveChanges();
-
-                        // Xóa giỏ hàng sau khi đặt hàng
-                        Session["cart"] = null;
-                        TempData["successMessage"] = "Đặt hàng thành công!";
-                        return RedirectToAction("Index");
                     }
+
+                    // Lưu hóa đơn vào database
+                    ctx.Tbl_Bill.Add(bill);
+                    ctx.SaveChanges();
+
+                    // Xóa giỏ hàng và thông tin giảm giá
+                    Session["cart"] = null;
+                    Session["discountedTotal"] = null;
+
+                    TempData["successMessage"] = "Đặt hàng thành công!";
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+                    TempData["error"] = "Giỏ hàng trống.";
                 }
             }
+            else
+            {
+                TempData["error"] = "Không thể tìm thấy thông tin người dùng.";
+            }
 
-            TempData["error"] = "Không thể hoàn thành đặt hàng.";
             return RedirectToAction("ShoppingCart");
         }
+
+
 
         public ActionResult Pay()
         {
@@ -620,10 +673,30 @@ namespace projectShopLaptop.Controllers
 
                 if (existingItem != null)
                 {
+                    // Kiểm tra số lượng tồn kho
+                    if (existingItem.Quantity + 1 > product.Quantity)
+                    {
+                        return Json(new
+                        {
+                            success = false,
+                            message = "Số lượng sản phẩm vượt quá số lượng tồn kho."
+                        });
+                    }
+
                     existingItem.Quantity++;
                 }
                 else
                 {
+                    // Kiểm tra tồn kho trước khi thêm mới
+                    if (product.Quantity <= 0)
+                    {
+                        return Json(new
+                        {
+                            success = false,
+                            message = "Sản phẩm đã hết hàng."
+                        });
+                    }
+
                     cart.Add(new Models.Home.Item()
                     {
                         Product = product,
@@ -647,50 +720,53 @@ namespace projectShopLaptop.Controllers
                 });
             }
 
-            return Json(new { success = false });
+            return Json(new { success = false, message = "Sản phẩm không tồn tại." });
         }
-
 
         public ActionResult AddToCart(int productId, string url)
         {
-            if (Session["cart"] == null)
+            var product = ctx.Tbl_Product.Find(productId);
+
+            if (product == null)
             {
-                List<Models.Home.Item> cart = new List<Models.Home.Item>();
-                var product = ctx.Tbl_Product.Find(productId);
+                TempData["Error"] = "Sản phẩm không tồn tại.";
+                return Redirect(string.IsNullOrEmpty(url) ? Url.Action("Index", "Home") : url);
+            }
+
+            var cart = Session["cart"] as List<Models.Home.Item> ?? new List<Models.Home.Item>();
+            var existingItem = cart.FirstOrDefault(item => item.Product.ProductId == productId);
+
+            if (existingItem != null)
+            {
+                // Kiểm tra số lượng tồn kho
+                if (existingItem.Quantity + 1 > product.Quantity)
+                {
+                    TempData["Error"] = "Số lượng sản phẩm vượt quá số lượng tồn kho.";
+                    return Redirect(string.IsNullOrEmpty(url) ? Url.Action("Index", "Home") : url);
+                }
+
+                existingItem.Quantity++;
+            }
+            else
+            {
+                // Kiểm tra tồn kho trước khi thêm mới
+                if (product.Quantity <= 0)
+                {
+                    TempData["Error"] = "Sản phẩm đã hết hàng.";
+                    return Redirect(string.IsNullOrEmpty(url) ? Url.Action("Index", "Home") : url);
+                }
+
                 cart.Add(new Models.Home.Item()
                 {
                     Product = product,
                     Quantity = 1
                 });
-                Session["cart"] = cart;
-            }
-            else
-            {
-                List<Models.Home.Item> cart = (List<Models.Home.Item>)Session["cart"];
-                var product = ctx.Tbl_Product.Find(productId);
-                var existingItem = cart.FirstOrDefault(item => item.Product.ProductId == productId);
-
-                if (existingItem != null)
-                {
-                    existingItem.Quantity += 1;
-                }
-                else
-                {
-                    cart.Add(new Models.Home.Item()
-                    {
-                        Product = product,
-                        Quantity = 1
-                    });
-                }
-                Session["cart"] = cart;
             }
 
-            if (string.IsNullOrEmpty(url))
-            {
-                return RedirectToAction("Index", "Home");
-            }
+            Session["cart"] = cart;
 
-            return Redirect(url);
+            TempData["Success"] = "Thêm sản phẩm vào giỏ hàng thành công!";
+            return Redirect(string.IsNullOrEmpty(url) ? Url.Action("Index", "Home") : url);
         }
 
 
@@ -932,6 +1008,197 @@ namespace projectShopLaptop.Controllers
                 }
             }
             return RedirectToAction("ShoppingCart");
+        }
+
+        [HttpPost]
+        public JsonResult SubmitReview(int ProductId, int Rating, string Comment)
+        {
+            try
+            {
+                // Kiểm tra nếu người dùng đã đăng nhập
+                if (Session["user"] == null)
+                {
+                    return Json(new { success = false, message = "Vui lòng đăng nhập trước khi đánh giá." });
+                }
+
+                // Lấy tên người dùng từ session
+                string username = Session["user"].ToString();
+
+                using (var dbContext = new dbClickShopEntities())
+                {
+                    // Lấy thông tin người dùng từ cơ sở dữ liệu
+                    var user = dbContext.Tbl_User.FirstOrDefault(u => u.UserName == username);
+
+                    if (user != null)
+                    {
+                        // Lấy user_id từ đối tượng người dùng
+                        int userId = user.user_id;
+
+                        // Kiểm tra xem sản phẩm có tồn tại hay không
+                        var product = dbContext.Tbl_Product.FirstOrDefault(p => p.ProductId == ProductId);
+
+                        if (product == null)
+                        {
+                            return Json(new { success = false, message = "Sản phẩm không tồn tại." });
+                        }
+
+                        // Kiểm tra phạm vi Rating (nếu cần)
+                        if (Rating < 1 || Rating > 5)
+                        {
+                            return Json(new { success = false, message = "Đánh giá phải trong phạm vi từ 1 đến 5" });
+                        }
+
+                        // Kiểm tra xem người dùng đã đánh giá sản phẩm này chưa
+                        var existingReview = dbContext.Reviews
+                            .FirstOrDefault(r => r.ProductId == ProductId && r.user_id == userId);
+
+                        if (existingReview != null)
+                        {
+                            return Json(new { success = false });
+                        }
+
+                        // Tạo đối tượng Review mới
+                        var review = new Review
+                        {
+                            ProductId = ProductId,
+                            user_id = userId,
+                            Rating = (byte)Rating,  // Chuyển Rating thành byte
+                            Comment = Comment,
+                            ReviewDate = DateTime.Now
+                        };
+
+                        // Thêm đánh giá vào cơ sở dữ liệu
+                        dbContext.Reviews.Add(review);
+                        dbContext.SaveChanges();
+
+                        // Trả về kết quả thành công
+                        return Json(new { success = true });
+                    }
+                    else
+                    {
+                        return Json(new { success = false, message = "Không tìm thấy thông tin người dùng." });
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Trả về kết quả lỗi nếu có
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+
+        [HttpPost]
+        public ActionResult DeleteReview(int billId)
+        {
+            var order = ctx.Tbl_Bill.FirstOrDefault(o => o.IDBill == billId);
+
+                // Kiểm tra nếu đơn hàng đã có đánh giá
+                var review = ctx.Reviews.FirstOrDefault(r => r.ProductId == order.ProductId);
+
+                if (review != null)
+                {
+                    ctx.Reviews.Remove(review);  // Xóa đánh giá
+                    ctx.SaveChanges();
+                    TempData["successMessage"] = "Đánh giá đã được xóa thành công!";
+                }
+                else
+                {
+                    TempData["successMessage"] = "Đơn hàng chưa có đánh giá để xóa.";
+                }
+
+            return RedirectToAction("LichSuDonHang"); // Quay lại trang lịch sử đơn hàng
+        }
+
+        public ActionResult Voucher()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public JsonResult ClaimVoucher(string email)
+        {
+            using (var dbContext = new dbClickShopEntities())
+            {
+                // Kiểm tra email tồn tại
+                var existingUser = dbContext.Tbl_User.FirstOrDefault(u => u.EmailId == email);
+                if (existingUser == null)
+                {
+                    return Json(new { success = false, message = "Email này chưa được đăng ký." });
+                }
+
+                // Lấy voucher còn hiệu lực
+                var currentDate = DateTime.Now;
+                var voucher = dbContext.Tbl_KhuyenMai
+                                       .FirstOrDefault(v => v.DateStart <= currentDate &&
+                                                            v.DateEnd >= currentDate &&
+                                                            v.SoLuong > 0);
+
+                if (voucher == null)
+                {
+                    return Json(new { success = false, message = "Hiện tại không có voucher nào khả dụng." });
+                }
+
+                // Gửi email chứa mã voucher
+                string voucherCode = voucher.VoucherCode;
+                string subject = "Mã Voucher của bạn";
+                string body = $"Chào bạn, <br/> Mã voucher của bạn là: <strong>{voucherCode}</strong><br/>" +
+                              "Hãy sử dụng mã này để được giảm giá tại cửa hàng của chúng tôi.";
+                bool emailSent = SendMail.SendEmail(email, subject, body, "");
+
+                if (emailSent)
+                {
+                    // Giảm số lượng voucher trong cơ sở dữ liệu
+                    voucher.SoLuong--;
+                    dbContext.SaveChanges();
+
+                    return Json(new { success = true, message = "Mã voucher đã được gửi đến email của bạn!" });
+                }
+                else
+                {
+                    return Json(new { success = false, message = "Có lỗi xảy ra khi gửi email. Vui lòng thử lại." });
+                }
+            }
+        }
+
+        [HttpPost]
+        public JsonResult ApplyPromoCode(string promoCode)
+        {
+            using (var dbContext = new dbClickShopEntities())
+            {
+                // Kiểm tra mã giảm giá có tồn tại và còn hiệu lực
+                var currentDate = DateTime.Now;
+                var voucher = dbContext.Tbl_KhuyenMai
+                                       .FirstOrDefault(v => v.VoucherCode == promoCode &&
+                                                            v.DateStart <= currentDate &&
+                                                            v.DateEnd >= currentDate &&
+                                                            v.SoLuong > 0);
+                if (voucher == null)
+                {
+                    return Json(new { success = false, message = "Mã giảm giá không hợp lệ hoặc đã hết hiệu lực." });
+                }
+
+                // Lấy giỏ hàng từ Session
+                var cart = Session["cart"] as List<Models.Home.Item>;
+                if (cart == null)
+                {
+                    return Json(new { success = false, message = "Giỏ hàng trống." });
+                }
+
+                // Tính lại tổng tiền sau giảm giá
+                decimal total = (decimal)cart.Sum(item => item.Quantity * item.Product.Price);
+                decimal discountAmount = total * 0.05m;
+                decimal discountedTotal = total - discountAmount;
+                Session["discountedTotal"] = discountedTotal;
+                dbContext.SaveChanges();
+
+                return Json(new
+                {
+                    success = true,
+                    message = "Đơn hàng của bạn được giảm 5%.",
+                    totalAfterDiscount = discountedTotal.ToString("C0", new System.Globalization.CultureInfo("vi-VN"))
+                });
+            }
         }
     }
 }

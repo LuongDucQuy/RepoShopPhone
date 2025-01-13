@@ -91,7 +91,6 @@
         max-width: 100px; /* Kích thước tối đa của ảnh, có thể điều chỉnh */
         height: auto;
     }
-
 </style>
 <link href="~/AdminStyle/css/IndexHome.css" rel="stylesheet" />
 <!-- Carousel Start -->
@@ -622,4 +621,24 @@
             }, 3000); // 3 giây
         }
     };
+</script>
+<script>
+    function claimVoucher() {
+        var email = document.getElementById("email").value;
+
+        // Gửi AJAX yêu cầu đến Controller
+        $.ajax({
+            url: '/Home/ClaimVoucher', // Đường dẫn Controller
+            type: 'POST',
+            data: { email: email },
+            success: function (response) {
+                // Hiển thị thông báo dựa trên phản hồi từ server
+                document.getElementById("voucher-status").innerText = response.message;
+            },
+            error: function (xhr) {
+                document.getElementById("voucher-status").innerText =
+                    "Có lỗi xảy ra. Vui lòng thử lại.";
+            }
+        });
+    }
 </script>

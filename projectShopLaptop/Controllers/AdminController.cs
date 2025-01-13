@@ -14,6 +14,7 @@ using System.Web.Helpers;
 using System.Web.Mvc;
 using projectShopLaptop.Filters;
 using projectShopLaptop.Mail;
+using System.IO;
 namespace projectShopLaptop.Controllers
 {
     [AuthorizeAdmin]
@@ -593,8 +594,6 @@ namespace projectShopLaptop.Controllers
             return View();
         }
 
-
-
         public ActionResult Product()
         {
             return View(_unitOfWork.GetRepositoryInstance<Tbl_Product>().GetProduct());
@@ -607,20 +606,46 @@ namespace projectShopLaptop.Controllers
         }
 
         [HttpPost]
-        public ActionResult ProductEdit(Tbl_Product tbl, HttpPostedFileBase file)
+        [ValidateAntiForgeryToken]
+        public ActionResult ProductEdit(Tbl_Product product, HttpPostedFileBase file)
         {
-            string pic = null;
-            if (file != null)
+            if (ModelState.IsValid)
             {
-                pic = System.IO.Path.GetFileName(file.FileName);
-                string path = System.IO.Path.Combine(Server.MapPath("~/img/"), pic);
-                file.SaveAs(path);
+                var existingProduct = ctx.Tbl_Product.Find(product.ProductId);
+
+                if (existingProduct != null)
+                {
+                    // Cập nhật các trường khác
+                    existingProduct.ProductName = product.ProductName;
+                    existingProduct.CategoryId = product.CategoryId;
+                    existingProduct.Quantity = product.Quantity;
+                    existingProduct.IsActive = product.IsActive;
+                    existingProduct.Price = product.Price;
+
+                    // Kiểm tra nếu có file hình ảnh mới
+                    if (file != null && file.ContentLength > 0)
+                    {
+                        // Lưu file hình ảnh mới
+                        var fileName = Path.GetFileName(file.FileName);
+                        var path = Path.Combine(Server.MapPath("~/img/"), fileName);
+                        file.SaveAs(path);
+
+                        existingProduct.ProductImage = fileName;
+                    }
+                    if (product.Quantity == 0)
+                    {
+                        existingProduct.IsActive = false; // Nếu số lượng bằng 0, trạng thái hoạt động chuyển thành false
+                    }
+                    ctx.SaveChanges();
+                    TempData["mess"] = "Cập nhật sản phẩm thành công!";
+                    return RedirectToAction("Product");
+                }
             }
-            tbl.ProductImage = file != null ? pic : tbl.ProductImage;
-            tbl.ModifiedDate = DateTime.Now;
-            _unitOfWork.GetRepositoryInstance<Tbl_Product>().Update(tbl);
-            return RedirectToAction("Product");
+
+            ViewBag.CategoryList = new SelectList(ctx.Tbl_Category, "CategoryId", "CategoryName", product.CategoryId);
+            return View(product);
         }
+
         public ActionResult ProductAdd()
         {
             ViewBag.CategoryList = GetCategory();
@@ -630,6 +655,12 @@ namespace projectShopLaptop.Controllers
         [HttpPost]
         public ActionResult ProductAdd(Tbl_Product tbl, HttpPostedFileBase file)
         {
+            if (tbl.Quantity > 200)
+            {
+                ModelState.AddModelError("Quantity", "Số lượng không được vượt quá 200 sản phẩm.");
+                ViewBag.CategoryList = GetCategory(); // Đảm bảo danh mục được load lại khi có lỗi
+                return View(tbl); // Trả lại View với thông tin đã nhập
+            }
             string pic = null;
             if (file != null)
             {
@@ -641,7 +672,78 @@ namespace projectShopLaptop.Controllers
             tbl.CreateDate = DateTime.Now;
             tbl.IsActive = true;
             _unitOfWork.GetRepositoryInstance<Tbl_Product>().Add(tbl);
+            TempData["mess"] = "Thêm mới sản phẩm thành công!";
             return RedirectToAction("Product");
+        }
+
+        public ActionResult Evaluate()
+        {
+            var reviews = ctx.Reviews
+                            .OrderByDescending(r => r.ReviewDate) // Sắp xếp theo ngày đánh giá mới nhất
+                            .Take(1000) // Lấy 1000 đánh giá mới nhất
+                            .ToList();
+
+            return View(reviews);
+        }
+
+        [HttpPost]
+        public ActionResult DeleteReview(int reviewId)
+        {
+            var review = ctx.Reviews.FirstOrDefault(r => r.ReviewId == reviewId);
+            if (review != null)
+            {
+                ctx.Reviews.Remove(review);
+                ctx.SaveChanges();  // Lưu thay đổi vào cơ sở dữ liệu
+                TempData["mess"] = "Đánh giá đã được xóa thành công.";
+            }
+            else
+            {
+                TempData["mess"] = "Không tìm thấy đánh giá để xóa.";
+            }
+
+            return RedirectToAction("Evaluate"); // Quay lại trang danh sách đánh giá
+        }
+
+        public ActionResult Voucher()
+        {
+            var vouchers = ctx.Tbl_KhuyenMai
+                            .OrderByDescending(r => r.KhuyenMaiID) // Sắp xếp theo ngày đánh giá mới nhất
+                            .Take(1000) // Lấy 1000 đánh giá mới nhất
+                            .ToList();
+
+            return View(vouchers);
+        }
+
+        [HttpPost]
+        public JsonResult DeleteVoucher(int voucherId)
+        {
+            try
+            {
+                // Tìm voucher theo ID
+                var voucher = ctx.Tbl_KhuyenMai.FirstOrDefault(v => v.KhuyenMaiID == voucherId);
+                if (voucher != null)
+                {
+                    // Xóa voucher
+                    ctx.Tbl_KhuyenMai.Remove(voucher);
+                    ctx.SaveChanges();
+
+                    // Lấy lại danh sách voucher
+                    var vouchers = ctx.Tbl_KhuyenMai
+                                    .OrderByDescending(r => r.KhuyenMaiID)
+                                    .Take(1000)
+                                    .ToList();
+
+                    return Json(new { success = true, vouchers = vouchers, message = "Xóa voucher thành công!" });
+                }
+                else
+                {
+                    return Json(new { success = false, message = "Voucher không tồn tại!" });
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Đã xảy ra lỗi: " + ex.Message });
+            }
         }
     }
 }
