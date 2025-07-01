@@ -40,6 +40,7 @@ Khách hàng (User):
 Tìm kiếm và xem thông tin sản phẩm.
 Thêm sản phẩm vào giỏ hàng.
 Đặt hàng và thanh toán trực tuyến.
+Đánh giá sản phẩm đã mua.
 Theo dõi trạng thái đơn hàng.
 ## 3.2 Công nghệ sử dụng
 Công cụ: Visual Studio Code, SQLServer, GitHub Desktop.
