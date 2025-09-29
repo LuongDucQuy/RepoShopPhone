@@ -5,7 +5,7 @@ USE dbClickShop;
 GO
 
 -- Tbl_Bill
-CREATE TABLE [dbo].[Tbl_Bill] 
+CREATE TABLE [dbo].[Tbl_Bill] (
     [IDBill] INT IDENTITY(1, 1) NOT NULL PRIMARY KEY,
     [user_id] INT NOT NULL,
     [ngayDat] DATETIME NOT NULL,
