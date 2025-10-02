@@ -4,7 +4,7 @@ GO
 USE dbClickShop;
 GO
 
--- Tbl_Bill
+-- Tbl_Bil
 CREATE TABLE [dbo].[Tbl_Bill] (
     [IDBill] INT IDENTITY(1, 1) NOT NULL PRIMARY KEY,
     [user_id] INT NOT NULL,
@@ -196,5 +196,6 @@ BEGIN
     (@user_id, @ngayDat, @HoTen, @diaChi, @dienThoai, @cachThanhToan, @soTien, @ProductId);
 END;
 GO
+
 
 
